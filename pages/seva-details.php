@@ -1,0 +1,63 @@
+<?php
+// pages/seva-details.php - Seva Opportunity Detail Page
+
+require_once __DIR__ . '/../includes/header.php';
+
+$sevaId = (int)($_GET['id'] ?? 0);
+$stmt = $pdo->prepare("SELECT * FROM seva WHERE id = ?");
+$stmt->execute([$sevaId]);
+$seva = $stmt->fetch();
+
+if (!$seva) {
+    echo "<div class='container text-center' style='padding:100px 0;'><h2>Seva Program Not Found</h2><p>The requested Seva program does not exist.</p><a href='seva.php' class='btn btn-secondary'>Back to Seva</a></div>";
+    require_once __DIR__ . '/../includes/footer.php';
+    exit;
+}
+
+$pageTitle = htmlspecialchars($seva['title']) . " - Kamadhenu Goushala Seva";
+?>
+
+<div class="page-banner">
+  <div class="container">
+    <h1><?= htmlspecialchars($seva['title']) ?></h1>
+    <div class="breadcrumb">
+      <a href="<?= $baseUrl ?>index.php">Home</a> / <a href="seva.php">Seva</a> / <span><?= htmlspecialchars($seva['title']) ?></span>
+    </div>
+  </div>
+</div>
+
+<section class="section-padding bg-white">
+  <div class="container">
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 50px;">
+      
+      <div>
+        <div style="border-radius: var(--radius-md); overflow: hidden; box-shadow: var(--shadow-md); border: 1px solid var(--border-light); margin-bottom: 20px;">
+          <img src="<?= $baseUrl . htmlspecialchars($seva['image']) ?>" alt="<?= htmlspecialchars($seva['title']) ?>" onerror="this.src='https://images.unsplash.com/photo-1500595046743-cd271d694d30?auto=format&fit=crop&w=800&q=80'" style="width:100%; height:380px; object-fit:cover;">
+        </div>
+      </div>
+
+      <div>
+        <span class="section-subtitle"><?= htmlspecialchars($seva['category']) ?> SEVA</span>
+        <h2 style="font-size: 2.2rem; color: var(--primary-dark); margin-bottom: 10px;"><?= htmlspecialchars($seva['title']) ?></h2>
+        <p style="font-size: 1.1rem; color: var(--accent-orange); font-weight: 600; margin-bottom: 20px;"><?= htmlspecialchars($seva['subtitle']) ?></p>
+
+        <div style="background: var(--bg-light-green); padding: 20px; border-radius: var(--radius-md); margin-bottom: 25px; border: 1px solid var(--border-light);">
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <span>Suggested Seva Offering:</span>
+            <span style="font-size: 1.8rem; font-weight: bold; color: var(--primary-dark);"><?= format_currency($seva['suggested_amount']) ?></span>
+          </div>
+        </div>
+
+        <h3>Program Impact</h3>
+        <p style="color: var(--text-dark); line-height: 1.8; margin-bottom: 30px;">
+          <?= nl2br(htmlspecialchars($seva['description'])) ?>
+        </p>
+
+        <a href="donate.php?amount=<?= (int)$seva['suggested_amount'] ?>&purpose=<?= urlencode($seva['title']) ?>" class="btn btn-primary btn-lg btn-block">Sponsor This Seva Now 💖</a>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<?php require_once __DIR__ . '/../includes/footer.php'; ?>
