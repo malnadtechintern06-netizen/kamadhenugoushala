@@ -36,8 +36,14 @@ $upcomingEvents = $stmtEvents->fetchAll();
 ?>
 
 <!-- 2. Hero Section -->
-<section class="hero-section">
-  <div class="container">
+<section class="hero-section" style="position:relative;">
+  <!-- Subtle Background Animation -->
+  <div class="bg-animation">
+    <div class="circle circle-1"></div>
+    <div class="circle circle-2"></div>
+    <div class="circle circle-3"></div>
+  </div>
+  <div class="container" style="position:relative; z-index:2;">
     <div class="hero-content">
       <span class="hero-badge"> sacred sanctuary</span>
       <h1 class="hero-title">Love, Care & Seva for Gau Mata</h1>
@@ -91,6 +97,31 @@ $upcomingEvents = $stmtEvents->fetchAll();
       <div class="stat-box">
         <div class="stat-number"><?= htmlspecialchars(get_setting('years_of_service', '15')) ?>+</div>
         <div class="stat-label">Years of Pure Seva</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 3.5 Video Presentation Section -->
+<section class="section-padding" style="background-color: var(--bg-cream);">
+  <div class="container">
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 40px; align-items: center;">
+      <div>
+        <span class="section-subtitle">OUR JOURNEY</span>
+        <h2 class="section-title">Experience Our Goushala</h2>
+        <p style="margin-bottom: 15px; color: var(--text-dark);">
+          Watch this beautiful presentation that captures the essence of our daily Seva. See firsthand how your contributions help us rescue, feed, and provide lifelong medical care to our beloved cows in Vrindavan Dham.
+        </p>
+        <p style="margin-bottom: 25px; color: var(--text-muted);">
+          Every moment spent serving Gau Mata is a blessing. We invite you to witness the peace, devotion, and joy that fills our sanctuary every single day.
+        </p>
+        <a href="<?= $baseUrl ?>pages/cows.php" class="btn btn-primary">Meet Our Residents</a>
+      </div>
+      
+      <div>
+        <div style="border-radius: var(--radius-lg); overflow: hidden; box-shadow: var(--shadow-lg); border: 4px solid var(--border-light); position: relative; padding-bottom: 56.25%; height: 0;">
+          <iframe src="https://www.youtube.com/embed/pRsrn9THN8Q?si=5O5FUOouK_HIET1b" title="Goushala Video" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"></iframe>
+        </div>
       </div>
     </div>
   </div>

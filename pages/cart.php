@@ -44,10 +44,10 @@ $items = $cartData['items'];
 <section class="section-padding bg-light">
   <div class="container">
     <?php if (!empty($items)): ?>
-      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 40px; align-items: start;">
+      <div class="cart-layout">
         
         <!-- Cart Table Column -->
-        <div style="grid-column: span 2;">
+        <div class="cart-table-col">
           <div class="table-responsive">
             <table class="custom-table">
               <thead>

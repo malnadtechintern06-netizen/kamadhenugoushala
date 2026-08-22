@@ -51,6 +51,7 @@ function navActive($page) {
       <a href="events.php" class="admin-nav-item <?= navActive('events.php') ?>">📅 Manage Events</a>
       <a href="messages.php" class="admin-nav-item <?= navActive('messages.php') ?>">📩 Messages</a>
       <a href="users.php" class="admin-nav-item <?= navActive('users.php') ?>">👥 Manage Users</a>
+      <a href="settings.php" class="admin-nav-item <?= navActive('settings.php') ?>">⚙️ Site Settings</a>
       <a href="../index.php" class="admin-nav-item" target="_blank" style="margin-top:20px; color:var(--accent-gold);">🌐 Public Website ↗</a>
       <a href="logout.php" class="admin-nav-item" style="color:#FF8A80;">🚪 Logout</a>
     </nav>

@@ -9,7 +9,42 @@ document.addEventListener('DOMContentLoaded', () => {
   initGalleryLightbox();
   initCardFilters();
   initQuantityControls();
+  initThemeToggle();
 });
+
+/**
+ * Theme Toggle (Dark / Light Mode)
+ */
+function initThemeToggle() {
+  const themeBtn = document.getElementById('theme-toggle');
+  if (!themeBtn) return;
+
+  // Check saved theme or system preference
+  const savedTheme = localStorage.getItem('theme');
+  if (savedTheme === 'dark') {
+    document.documentElement.setAttribute('data-theme', 'dark');
+    themeBtn.textContent = '☀️';
+  } else if (savedTheme === 'light') {
+    document.documentElement.removeAttribute('data-theme');
+    themeBtn.textContent = '🌙';
+  } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+    document.documentElement.setAttribute('data-theme', 'dark');
+    themeBtn.textContent = '☀️';
+  }
+
+  themeBtn.addEventListener('click', () => {
+    const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+    if (isDark) {
+      document.documentElement.removeAttribute('data-theme');
+      localStorage.setItem('theme', 'light');
+      themeBtn.textContent = '🌙';
+    } else {
+      document.documentElement.setAttribute('data-theme', 'dark');
+      localStorage.setItem('theme', 'dark');
+      themeBtn.textContent = '☀️';
+    }
+  });
+}
 
 /**
  * Mobile Navigation Menu Drawer Toggle
@@ -242,3 +277,4 @@ function getApiUrl(endpoint) {
   }
   return '/api/' + endpoint;
 }
+
