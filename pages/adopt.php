@@ -1,8 +1,9 @@
 <?php
 // pages/adopt.php - Cow Adoption Page
 
-$pageTitle = 'Adopt a Cow - Kamadhenu Goushala';
-require_once __DIR__ . '/../includes/header.php';
+require_once __DIR__ . '/../includes/db.php';
+require_once __DIR__ . '/../includes/functions.php';
+require_once __DIR__ . '/../includes/auth.php';
 
 $selectedCowId = (int)($_GET['cow_id'] ?? 0);
 $allCows = $pdo->query("SELECT id, tag_number, name, breed, monthly_adoption_fee, main_image FROM cows ORDER BY name ASC")->fetchAll();
@@ -21,6 +22,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $address = sanitize($_POST['address'] ?? '');
     $duration = (int)($_POST['duration_months'] ?? 1);
     $message = sanitize($_POST['message'] ?? '');
+    $paymentMethod = sanitize($_POST['payment_method'] ?? 'UPI / QR Code (GPay, PhonePe, Paytm)');
 
     // Fetch cow details to verify fee
     $stmtC = $pdo->prepare("SELECT id, name, monthly_adoption_fee FROM cows WHERE id = ?");
@@ -54,12 +56,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             // Update cow status
             $pdo->prepare("UPDATE cows SET adoption_status = 'Adopted' WHERE id = ?")->execute([$cowId]);
 
-            // Payment simulation
+            // Payment record
             $stmtPay = $pdo->prepare("
                 INSERT INTO payments (reference_type, reference_id, amount, payment_method, transaction_id, status)
-                VALUES ('adoption', ?, ?, 'Online Gateway Simulation', ?, 'Success')
+                VALUES ('adoption', ?, ?, ?, ?, 'Success')
             ");
-            $stmtPay->execute([$adoptionId, $totalAmount, $txnId]);
+            $stmtPay->execute([$adoptionId, $totalAmount, $paymentMethod, $txnId]);
 
             $pdo->commit();
 
@@ -72,6 +74,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
 }
+
+$pageTitle = 'Adopt a Cow - Kamadhenu Goushala';
+require_once __DIR__ . '/../includes/header.php';
 ?>
 
 <div class="page-banner">
@@ -102,6 +107,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
           <span class="section-subtitle">LIFELONG PATRONAGE</span>
           <h2 style="color:var(--primary-dark);">Become a Cow Guardian</h2>
           <p style="color:var(--text-muted);">Sponsor monthly food, medicine, and care. Receive monthly health updates and video clips of your adopted cow.</p>
+        <!-- WhatsApp Direct Adopt Banner -->
+        <div style="background:#E8F5E9; border: 2px dashed #25D366; padding: 18px; border-radius: var(--radius-md); margin-bottom: 25px; text-align: center;">
+          <span style="font-weight: 700; color: #1B5E20; font-size: 1.05rem;">💬 Prefer Quick Adoption via WhatsApp?</span>
+          <p style="font-size: 0.88rem; color: #2E7D32; margin: 4px 0 12px 0;">Connect directly with our sanctuary manager on WhatsApp to confirm your cow adoption details instantly.</p>
+          <a href="https://wa.me/<?= preg_replace('/[^0-9]/', '', get_setting('contact_phone', '919876543210')) ?>?text=<?= urlencode('Jai Shree Krishna! 🙏 I want to adopt a cow from Kamadhenu Goushala. Please assist me with the adoption details.') ?>" target="_blank" class="btn btn-primary btn-sm" style="background:#25D366; border-color:#25D366; color:white; padding: 8px 20px; font-weight: 700; display:inline-flex; align-items:center; justify-content:center; gap:3px;">
+            <?= get_whatsapp_icon_svg() ?> Chat &amp; Adopt on WhatsApp
+          </a>
         </div>
 
         <form method="POST" action="adopt.php">
@@ -161,6 +173,207 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
           <div class="form-group">
             <label class="form-label">Special Message / Note (Optional)</label>
             <textarea name="message" class="form-control" rows="3" placeholder="Add a note or occasion (e.g. Birthday, Anniversary)..."><?= htmlspecialchars($_POST['message'] ?? '') ?></textarea>
+          </div>
+
+          <!-- Payment Options Selection -->
+          <div class="form-group" style="margin-top: 25px;">
+            <label class="form-label" style="font-size: 1.05rem; margin-bottom: 12px; display:flex; align-items:center; gap:8px;">
+              <span>💳</span> Select Payment Method *
+            </label>
+            
+            <div class="payment-options-grid">
+              <label class="payment-option-card active">
+                <input type="radio" name="payment_method" value="UPI / QR Code (GPay, PhonePe, Paytm)" checked>
+                <div class="payment-option-content">
+                  <div class="payment-option-header">
+                    <span class="payment-icon">📱</span>
+                    <span class="payment-title">UPI / QR Code</span>
+                    <span class="payment-badge">Fast</span>
+                  </div>
+                  <div class="payment-subtext">Google Pay, PhonePe, Paytm, BHIM</div>
+                </div>
+              </label>
+
+              <label class="payment-option-card">
+                <input type="radio" name="payment_method" value="Credit / Debit Card (Visa, MasterCard, RuPay)">
+                <div class="payment-option-content">
+                  <div class="payment-option-header">
+                    <span class="payment-icon">💳</span>
+                    <span class="payment-title">Credit / Debit Card</span>
+                  </div>
+                  <div class="payment-subtext">Visa, MasterCard, RuPay, Maestro</div>
+                </div>
+              </label>
+
+              <label class="payment-option-card">
+                <input type="radio" name="payment_method" value="Net Banking (SBI, HDFC, ICICI, etc.)">
+                <div class="payment-option-content">
+                  <div class="payment-option-header">
+                    <span class="payment-icon">🏛️</span>
+                    <span class="payment-title">Net Banking</span>
+                  </div>
+                  <div class="payment-subtext">SBI, HDFC, ICICI & 50+ Banks</div>
+                </div>
+              </label>
+
+              <label class="payment-option-card">
+                <input type="radio" name="payment_method" value="Digital Wallets (Paytm, Amazon Pay, Mobikwik)">
+                <div class="payment-option-content">
+                  <div class="payment-option-header">
+                    <span class="payment-icon">👛</span>
+                    <span class="payment-title">Digital Wallets</span>
+                  </div>
+                  <div class="payment-subtext">Paytm Wallet, Mobikwik, Amazon Pay</div>
+                </div>
+              </label>
+
+              <label class="payment-option-card">
+                <input type="radio" name="payment_method" value="Direct Bank Transfer (NEFT / RTGS)">
+                <div class="payment-option-content">
+                  <div class="payment-option-header">
+                    <span class="payment-icon">🏦</span>
+                    <span class="payment-title">Bank NEFT / RTGS</span>
+                  </div>
+                  <div class="payment-subtext">Direct Goushala Account Transfer</div>
+                </div>
+              </label>
+            </div>
+
+            <!-- Dynamic Sub-fields -->
+            <div class="payment-details-container" style="margin-top: 15px;">
+              <div id="payment-field-upi" class="payment-subfield" style="display: block;">
+                <div class="qr-payment-card" style="background: var(--bg-light-green); border: 2px dashed var(--accent-orange); padding: 20px; border-radius: var(--radius-md); text-align: center;">
+                  <div style="font-weight: 700; font-size: 1.05rem; color: var(--primary-dark); margin-bottom: 4px;">
+                    📲 Scan QR Code To Pay (GPay / PhonePe / Paytm / BHIM)
+                  </div>
+                  <div style="font-size: 0.82rem; color: var(--text-muted); margin-bottom: 15px;">
+                    Scan with any UPI Scanner app or copy the official Goushala VPA below
+                  </div>
+
+                  <!-- Visual QR Code Badge -->
+                  <div class="qr-code-box" style="display: inline-block; background: white; padding: 16px; border-radius: 16px; box-shadow: var(--shadow-md); border: 3px solid var(--primary-dark); position: relative;">
+                    <svg width="160" height="160" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" style="display: block;">
+                      <rect width="200" height="200" fill="#ffffff" rx="10"/>
+                      <!-- Top Left Marker -->
+                      <rect x="15" y="15" width="45" height="45" fill="#84418e" rx="6"/>
+                      <rect x="23" y="23" width="29" height="29" fill="#ffffff" rx="3"/>
+                      <rect x="29" y="29" width="17" height="17" fill="#84418e" rx="2"/>
+                      <!-- Top Right Marker -->
+                      <rect x="140" y="15" width="45" height="45" fill="#84418e" rx="6"/>
+                      <rect x="148" y="23" width="29" height="29" fill="#ffffff" rx="3"/>
+                      <rect x="154" y="29" width="17" height="17" fill="#84418e" rx="2"/>
+                      <!-- Bottom Left Marker -->
+                      <rect x="15" y="140" width="45" height="45" fill="#84418e" rx="6"/>
+                      <rect x="23" y="148" width="29" height="29" fill="#ffffff" rx="3"/>
+                      <rect x="29" y="154" width="17" height="17" fill="#84418e" rx="2"/>
+                      <!-- QR Data Grid Pattern -->
+                      <g fill="#2B121A">
+                        <rect x="70" y="15" width="9" height="9" rx="2"/>
+                        <rect x="86" y="15" width="9" height="9" rx="2"/>
+                        <rect x="102" y="15" width="9" height="9" rx="2"/>
+                        <rect x="118" y="15" width="9" height="9" rx="2"/>
+                        <rect x="70" y="31" width="9" height="9" rx="2"/>
+                        <rect x="94" y="31" width="9" height="9" rx="2"/>
+                        <rect x="110" y="31" width="9" height="9" rx="2"/>
+                        <rect x="126" y="31" width="9" height="9" rx="2"/>
+                        <rect x="78" y="47" width="9" height="9" rx="2"/>
+                        <rect x="94" y="47" width="9" height="9" rx="2"/>
+                        <rect x="118" y="47" width="9" height="9" rx="2"/>
+                        <rect x="15" y="70" width="9" height="9" rx="2"/>
+                        <rect x="31" y="70" width="9" height="9" rx="2"/>
+                        <rect x="47" y="70" width="9" height="9" rx="2"/>
+                        <rect x="140" y="70" width="9" height="9" rx="2"/>
+                        <rect x="156" y="70" width="9" height="9" rx="2"/>
+                        <rect x="172" y="70" width="9" height="9" rx="2"/>
+                        <rect x="15" y="86" width="9" height="9" rx="2"/>
+                        <rect x="39" y="86" width="9" height="9" rx="2"/>
+                        <rect x="55" y="86" width="9" height="9" rx="2"/>
+                        <rect x="148" y="86" width="9" height="9" rx="2"/>
+                        <rect x="164" y="86" width="9" height="9" rx="2"/>
+                        <rect x="23" y="102" width="9" height="9" rx="2"/>
+                        <rect x="47" y="102" width="9" height="9" rx="2"/>
+                        <rect x="140" y="102" width="9" height="9" rx="2"/>
+                        <rect x="172" y="102" width="9" height="9" rx="2"/>
+                        <rect x="15" y="118" width="9" height="9" rx="2"/>
+                        <rect x="31" y="118" width="9" height="9" rx="2"/>
+                        <rect x="55" y="118" width="9" height="9" rx="2"/>
+                        <rect x="148" y="118" width="9" height="9" rx="2"/>
+                        <rect x="164" y="118" width="9" height="9" rx="2"/>
+                        <rect x="70" y="140" width="9" height="9" rx="2"/>
+                        <rect x="94" y="140" width="9" height="9" rx="2"/>
+                        <rect x="110" y="140" width="9" height="9" rx="2"/>
+                        <rect x="126" y="140" width="9" height="9" rx="2"/>
+                        <rect x="140" y="140" width="9" height="9" rx="2"/>
+                        <rect x="156" y="140" width="9" height="9" rx="2"/>
+                        <rect x="172" y="140" width="9" height="9" rx="2"/>
+                        <rect x="78" y="156" width="9" height="9" rx="2"/>
+                        <rect x="102" y="156" width="9" height="9" rx="2"/>
+                        <rect x="118" y="156" width="9" height="9" rx="2"/>
+                        <rect x="148" y="156" width="9" height="9" rx="2"/>
+                        <rect x="164" y="156" width="9" height="9" rx="2"/>
+                        <rect x="70" y="172" width="9" height="9" rx="2"/>
+                        <rect x="86" y="172" width="9" height="9" rx="2"/>
+                        <rect x="110" y="172" width="9" height="9" rx="2"/>
+                        <rect x="126" y="172" width="9" height="9" rx="2"/>
+                        <rect x="140" y="172" width="9" height="9" rx="2"/>
+                        <rect x="172" y="172" width="9" height="9" rx="2"/>
+                      </g>
+                      <!-- Center Gau Emblem -->
+                      <circle cx="100" cy="100" r="22" fill="#ffffff" stroke="#D9A441" stroke-width="2"/>
+                      <text x="100" y="106" font-size="18" text-anchor="middle">🐄</text>
+                    </svg>
+                  </div>
+
+                  <!-- UPI VPA and Copy Button -->
+                  <div style="margin-top: 14px; display: flex; align-items: center; justify-content: center; gap: 8px; flex-wrap: wrap;">
+                    <span style="font-weight: 600; font-size: 0.9rem; color: var(--primary-dark);">Official UPI VPA:</span>
+                    <code style="background: rgba(0,0,0,0.06); padding: 4px 12px; border-radius: 6px; font-weight: bold; color: var(--accent-orange); font-size: 1rem;">kamadhenugoushala@sbi</code>
+                    <button type="button" class="btn btn-secondary btn-sm" onclick="copyUpiId()" style="padding: 4px 12px; font-size: 0.8rem;">Copy 📋</button>
+                  </div>
+                  <div style="font-size: 0.78rem; color: var(--text-muted); margin-top: 6px;">
+                    Verified Merchant: <strong>Kamadhenu Gau Seva Trust</strong>
+                  </div>
+                </div>
+              </div>
+
+              <div id="payment-field-card" class="payment-subfield" style="display: none;">
+                <div class="form-row">
+                  <div class="form-group" style="flex:2;">
+                    <label class="form-label" style="font-size:0.85rem;">Card Number</label>
+                    <input type="text" class="form-control" placeholder="1234 5678 9012 3456" maxlength="19">
+                  </div>
+                  <div class="form-group" style="flex:1;">
+                    <label class="form-label" style="font-size:0.85rem;">Expiry (MM/YY)</label>
+                    <input type="text" class="form-control" placeholder="12/28" maxlength="5">
+                  </div>
+                  <div class="form-group" style="flex:1;">
+                    <label class="form-label" style="font-size:0.85rem;">CVV</label>
+                    <input type="password" class="form-control" placeholder="•••" maxlength="3">
+                  </div>
+                </div>
+              </div>
+
+              <div id="payment-field-netbanking" class="payment-subfield" style="display: none;">
+                <label class="form-label" style="font-size:0.85rem;">Select Bank</label>
+                <select class="form-control">
+                  <option>State Bank of India (SBI)</option>
+                  <option>HDFC Bank</option>
+                  <option>ICICI Bank</option>
+                  <option>Axis Bank</option>
+                  <option>Punjab National Bank (PNB)</option>
+                  <option>Bank of Baroda</option>
+                </select>
+              </div>
+
+              <div id="payment-field-bank" class="payment-subfield" style="display: none;">
+                <div style="background: var(--bg-light-green); padding: 15px; border-radius: var(--radius-sm); font-size: 0.9rem;">
+                  <div><strong>Account Name:</strong> Kamadhenu Goushala Trust</div>
+                  <div><strong>Bank Name:</strong> State Bank of India (Vrindavan Branch)</div>
+                  <div><strong>Account No:</strong> 398745612301</div>
+                  <div><strong>IFSC Code:</strong> SBIN0001234</div>
+                </div>
+              </div>
+            </div>
           </div>
 
           <button type="submit" class="btn btn-primary btn-lg btn-block">Confirm Adoption & Pay 🐄</button>

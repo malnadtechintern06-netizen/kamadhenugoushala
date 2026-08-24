@@ -31,8 +31,8 @@ $pageTitle = htmlspecialchars($seva['title']) . " - Kamadhenu Goushala Seva";
     <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 50px;">
       
       <div>
-        <div style="border-radius: var(--radius-md); overflow: hidden; box-shadow: var(--shadow-md); border: 1px solid var(--border-light); margin-bottom: 20px;">
-          <img src="<?= $baseUrl . htmlspecialchars($seva['image']) ?>" alt="<?= htmlspecialchars($seva['title']) ?>" onerror="this.src='https://images.unsplash.com/photo-1500595046743-cd271d694d30?auto=format&fit=crop&w=800&q=80'" style="width:100%; height:380px; object-fit:cover;">
+        <div style="border-radius: var(--radius-md); overflow: hidden; box-shadow: var(--shadow-md); border: 1px solid var(--border-light); margin-bottom: 20px; background:#fdfbf7; display:flex; align-items:center; justify-content:center;">
+          <img src="<?= $baseUrl . htmlspecialchars($seva['image']) ?>" alt="<?= htmlspecialchars($seva['title']) ?>" onerror="this.src='https://images.unsplash.com/photo-1500595046743-cd271d694d30?auto=format&fit=crop&w=800&q=80'" style="width:100%; height:380px; object-fit:contain; padding:8px;">
         </div>
       </div>
 
@@ -53,7 +53,27 @@ $pageTitle = htmlspecialchars($seva['title']) . " - Kamadhenu Goushala Seva";
           <?= nl2br(htmlspecialchars($seva['description'])) ?>
         </p>
 
-        <a href="donate.php?amount=<?= (int)$seva['suggested_amount'] ?>&purpose=<?= urlencode($seva['title']) ?>" class="btn btn-primary btn-lg btn-block">Sponsor This Seva Now 💖</a>
+        <?php 
+          $sevaMode = get_item_checkout_mode($seva, 'donation'); 
+          $waUrl = get_whatsapp_donation_url($seva['title'], $seva);
+          $donateUrl = get_base_url() . 'pages/donate.php?amount=' . (int)$seva['suggested_amount'] . '&purpose=' . urlencode($seva['title']);
+        ?>
+        <div style="display:flex; gap:15px; flex-wrap:wrap;">
+          <?php if ($sevaMode === 'both'): ?>
+            <a href="<?= $donateUrl ?>" class="btn btn-primary btn-lg" style="flex:1; display:inline-flex; align-items:center; justify-content:center; gap:5px;">
+              🌐 Sponsor Online 💖
+            </a>
+            <a href="<?= $waUrl ?>" target="_blank" class="btn btn-lg" style="flex:1; background:#25D366; border-color:#25D366; color:white; display:inline-flex; align-items:center; justify-content:center; gap:5px;">
+              <?= get_whatsapp_icon_svg('1.2em') ?> Sponsor via WhatsApp 📱
+            </a>
+          <?php elseif ($sevaMode === 'whatsapp'): ?>
+            <a href="<?= $waUrl ?>" target="_blank" class="btn btn-primary btn-lg btn-block" style="background:#25D366; border-color:#25D366; color:white; display:inline-flex; align-items:center; justify-content:center; gap:4px;">
+              <?= get_whatsapp_icon_svg('1.2em') ?> Sponsor <?= htmlspecialchars($seva['title']) ?> on WhatsApp 📱
+            </a>
+          <?php else: ?>
+            <a href="<?= $donateUrl ?>" class="btn btn-primary btn-lg btn-block">Sponsor This Seva Now 💖</a>
+          <?php endif; ?>
+        </div>
       </div>
 
     </div>

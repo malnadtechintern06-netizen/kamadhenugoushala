@@ -3,13 +3,14 @@
 
 $pageTitle = 'Kamadhenu Goushala - Love, Care & Seva for Gau Mata';
 require_once __DIR__ . '/includes/header.php';
+require_once __DIR__ . '/includes/preloader.php';
 
 // Fetch Featured Cows from MySQL
 $stmtCows = $pdo->query("SELECT * FROM cows ORDER BY id ASC LIMIT 3");
 $featuredCows = $stmtCows->fetchAll();
 
 // Fetch Featured Seva Opportunities from MySQL
-$stmtSeva = $pdo->query("SELECT * FROM seva WHERE is_featured = 1 ORDER BY id ASC LIMIT 4");
+$stmtSeva = $pdo->query("SELECT * FROM seva WHERE is_featured = 1 ORDER BY id ASC LIMIT 6");
 $sevaItems = $stmtSeva->fetchAll();
 
 // Fetch Featured Products from MySQL
@@ -18,12 +19,12 @@ $stmtProducts = $pdo->query("
     FROM products p 
     JOIN product_categories c ON p.category_id = c.id 
     WHERE p.is_featured = 1 
-    LIMIT 4
+    LIMIT 6
 ");
 $featuredProducts = $stmtProducts->fetchAll();
 
 // Fetch Gallery Preview
-$stmtGallery = $pdo->query("SELECT * FROM gallery ORDER BY id DESC LIMIT 6");
+$stmtGallery = $pdo->query("SELECT * FROM gallery ORDER BY id DESC LIMIT 8");
 $galleryItems = $stmtGallery->fetchAll();
 
 // Fetch Testimonials
@@ -36,7 +37,14 @@ $upcomingEvents = $stmtEvents->fetchAll();
 ?>
 
 <!-- 2. Hero Section -->
-<section class="hero-section" style="position:relative;">
+<?php 
+  $customHeroImg = get_setting('hero_bg_image', ''); 
+  $heroBgStyle = !empty($customHeroImg) ? "background: linear-gradient(135deg, rgba(28, 56, 30, 0.88), rgba(46, 125, 50, 0.65)), url('" . $baseUrl . htmlspecialchars($customHeroImg) . "') center/cover no-repeat;" : "";
+?>
+<section class="hero-section">
+  <!-- 3D Animated Background Photo Layer -->
+  <div class="hero-bg-photo" style="<?= $heroBgStyle ?>"></div>
+
   <!-- Subtle Background Animation -->
   <div class="bg-animation">
     <div class="circle circle-1"></div>
@@ -45,14 +53,14 @@ $upcomingEvents = $stmtEvents->fetchAll();
   </div>
   <div class="container" style="position:relative; z-index:2;">
     <div class="hero-content">
-      <span class="hero-badge"> sacred sanctuary</span>
-      <h1 class="hero-title">Love, Care & Seva for Gau Mata</h1>
+      <span class="hero-badge"><?= htmlspecialchars(get_setting('hero_badge_text', 'SACRED SANCTUARY')) ?></span>
+      <h1 class="hero-title"><?= htmlspecialchars(get_setting('hero_title', 'Love, Care & Seva for Gau Mata')) ?></h1>
       <p class="hero-desc">
-        Join our holy endeavor to protect, shelter, nurse, and feed indigenous Indian cows in Vrindavan Dham. Every small contribution supports lifelong medical care and green fodder.
+        <?= htmlspecialchars(get_setting('hero_description', 'Join our holy endeavor to protect, shelter, nurse, and feed indigenous Indian cows in Vrindavan Dham. Every small contribution supports lifelong medical care and green fodder.')) ?>
       </p>
       <div class="hero-buttons">
-        <a href="<?= $baseUrl ?>pages/donate.php" class="btn btn-primary btn-lg">Donate Now 💖</a>
-        <a href="<?= $baseUrl ?>pages/cows.php" class="btn btn-outline btn-lg" style="color:var(--bg-white); border-color:var(--bg-white);">Meet Our Cows 🐄</a>
+        <a href="<?= $baseUrl ?>pages/donate.php" class="btn btn-primary btn-lg"><?= htmlspecialchars(get_setting('hero_primary_btn_text', 'Donate Now 💖')) ?></a>
+        <a href="<?= $baseUrl ?>pages/cows.php" class="btn btn-outline btn-lg" style="color:var(--bg-white); border-color:var(--bg-white);"><?= htmlspecialchars(get_setting('hero_secondary_btn_text', 'Meet Our Cows 🐄')) ?></a>
       </div>
     </div>
   </div>
@@ -64,18 +72,16 @@ $upcomingEvents = $stmtEvents->fetchAll();
     <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 40px; align-items: center;">
       <div>
         <span class="section-subtitle">OUR SACRED MISSION</span>
-        <h2 class="section-title">Nurturing Indigenous Desi Cows With Devotion</h2>
-        <p style="margin-bottom: 15px; color: var(--text-dark);">
-          Kamadhenu Goushala was established with the sole mission of serving non-lactating, old, injured, and street-abandoned cows. We provide a peaceful, natural environment where cows roam freely in open green pastures.
-        </p>
-        <p style="margin-bottom: 25px; color: var(--text-muted);">
-          Our Vedic organic farming initiatives produce 100% pure A2 Gir Cow Ghee, herbal Panchagavya soaps, and bio-vermicompost, making our sanctuary self-sustainable.
+        <h2 class="section-title"><?= htmlspecialchars(get_setting('about_section_title', 'Nurturing Indigenous Desi Cows With Devotion')) ?></h2>
+        <p style="margin-bottom: 25px; color: var(--text-dark); line-height:1.7;">
+          <?= nl2br(htmlspecialchars(get_setting('about_section_text', 'Kamadhenu Goushala was established with the sole mission of serving non-lactating, old, injured, and street-abandoned cows. We provide a peaceful, natural environment where cows roam freely in open green pastures.'))) ?>
         </p>
         <a href="<?= $baseUrl ?>pages/about.php" class="btn btn-secondary">Know More About Us</a>
       </div>
       <div>
-        <div style="border-radius: var(--radius-lg); overflow: hidden; box-shadow: var(--shadow-lg); border: 4px solid var(--bg-light-green);">
-          <img src="<?= $baseUrl ?>images/hero/about-preview.jpg" alt="Kamadhenu Goushala Sanctuary" onerror="this.src='https://images.unsplash.com/photo-1546445317-29f4545f9d52?auto=format&fit=crop&w=800&q=80'" style="width:100%; height:400px; object-fit:cover;">
+        <div style="border-radius: var(--radius-lg); overflow: hidden; box-shadow: var(--shadow-lg); border: 4px solid var(--bg-light-green); background:#fdfbf7; display:flex; align-items:center; justify-content:center;">
+          <?php $customAboutImg = get_setting('about_section_image', ''); ?>
+          <img src="<?= !empty($customAboutImg) ? ($baseUrl . htmlspecialchars($customAboutImg)) : ($baseUrl . 'images/hero/about-preview.jpg') ?>" alt="Kamadhenu Goushala Sanctuary" onerror="this.src='https://images.unsplash.com/photo-1546445317-29f4545f9d52?auto=format&fit=crop&w=800&q=80'" style="width:100%; height:400px; object-fit:contain; padding:8px;">
         </div>
       </div>
     </div>
@@ -120,7 +126,7 @@ $upcomingEvents = $stmtEvents->fetchAll();
       
       <div>
         <div style="border-radius: var(--radius-lg); overflow: hidden; box-shadow: var(--shadow-lg); border: 4px solid var(--border-light); position: relative; padding-bottom: 56.25%; height: 0;">
-          <iframe src="https://www.youtube.com/embed/pRsrn9THN8Q?si=5O5FUOouK_HIET1b" title="Goushala Video" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"></iframe>
+          <iframe src="<?= get_youtube_embed_url(get_setting('homepage_youtube_url', 'https://www.youtube.com/watch?v=pRsrn9THN8Q')) ?>" title="Goushala Video" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"></iframe>
         </div>
       </div>
     </div>
@@ -131,8 +137,8 @@ $upcomingEvents = $stmtEvents->fetchAll();
 <section class="section-padding bg-light">
   <div class="container">
     <div class="text-center" style="max-width: 600px; margin: 0 auto 30px auto;">
-      <span class="section-subtitle">MEET OUR RESIDENTS</span>
-      <h2 class="section-title center">Our Beloved Cows</h2>
+      <span class="section-subtitle"><?= htmlspecialchars(get_setting('cows_section_subtitle', 'MEET OUR RESIDENTS')) ?></span>
+      <h2 class="section-title center"><?= htmlspecialchars(get_setting('cows_section_title', 'Our Beloved Cows')) ?></h2>
       <p>Each cow in our Goushala has a unique story. You can adopt, sponsor feeding, or visit them.</p>
     </div>
 
@@ -153,9 +159,29 @@ $upcomingEvents = $stmtEvents->fetchAll();
               <span>Tag: <strong><?= htmlspecialchars($cow['tag_number']) ?></strong></span>
               <span style="color:var(--accent-orange); font-weight:bold;"><?= format_currency($cow['monthly_adoption_fee']) ?>/mo</span>
             </div>
-            <div class="card-actions">
-              <a href="<?= $baseUrl ?>pages/cow-details.php?id=<?= $cow['id'] ?>" class="btn btn-outline btn-sm" style="flex:1;">View Details</a>
-              <a href="<?= $baseUrl ?>pages/adopt.php?cow_id=<?= $cow['id'] ?>" class="btn btn-primary btn-sm" style="flex:1;">Adopt Cow</a>
+            <?php 
+              $cowMode = get_item_checkout_mode($cow, 'cow'); 
+              $waUrl = get_whatsapp_cow_url($cow);
+              $siteUrl = get_base_url() . 'pages/adopt.php?cow_id=' . $cow['id'];
+            ?>
+            <div class="card-actions" style="display:flex; flex-direction:column; gap:6px;">
+              <?php if ($cowMode === 'both'): ?>
+                <div style="display:flex; gap:6px;">
+                  <a href="<?= $siteUrl ?>" class="btn btn-primary btn-sm" style="flex:1; display:inline-flex; align-items:center; justify-content:center;">🌐 Adopt Online</a>
+                  <a href="<?= $waUrl ?>" target="_blank" class="btn btn-sm" style="flex:1; background:#25D366; border-color:#25D366; color:white; display:inline-flex; align-items:center; justify-content:center; gap:2px;"><?= get_whatsapp_icon_svg() ?> WhatsApp</a>
+                </div>
+                <a href="<?= $baseUrl ?>pages/cow-details.php?id=<?= $cow['id'] ?>" class="btn btn-outline btn-sm text-center">View Profile</a>
+              <?php elseif ($cowMode === 'whatsapp'): ?>
+                <div style="display:flex; gap:6px;">
+                  <a href="<?= $baseUrl ?>pages/cow-details.php?id=<?= $cow['id'] ?>" class="btn btn-outline btn-sm" style="flex:1;">Details</a>
+                  <a href="<?= $waUrl ?>" target="_blank" class="btn btn-primary btn-sm" style="flex:1; background:#25D366; border-color:#25D366; color:white; display:inline-flex; align-items:center; justify-content:center; gap:2px;"><?= get_whatsapp_icon_svg() ?> WhatsApp</a>
+                </div>
+              <?php else: ?>
+                <div style="display:flex; gap:6px;">
+                  <a href="<?= $baseUrl ?>pages/cow-details.php?id=<?= $cow['id'] ?>" class="btn btn-outline btn-sm" style="flex:1;">Details</a>
+                  <a href="<?= $siteUrl ?>" class="btn btn-primary btn-sm" style="flex:1;">Adopt Online</a>
+                </div>
+              <?php endif; ?>
             </div>
           </div>
         </div>
@@ -172,8 +198,8 @@ $upcomingEvents = $stmtEvents->fetchAll();
 <section class="section-padding bg-white">
   <div class="container">
     <div class="text-center" style="max-width: 600px; margin: 0 auto 30px auto;">
-      <span class="section-subtitle">HOLY SERVICE</span>
-      <h2 class="section-title center">Ways To Offer Seva</h2>
+      <span class="section-subtitle"><?= htmlspecialchars(get_setting('seva_section_subtitle', 'HOLY SERVICE')) ?></span>
+      <h2 class="section-title center"><?= htmlspecialchars(get_setting('seva_section_title', 'Ways To Offer Seva')) ?></h2>
       <p>Sponsor essential grass, medicines, shelter construction, or daily care for sacred cows.</p>
     </div>
 
@@ -206,8 +232,8 @@ $upcomingEvents = $stmtEvents->fetchAll();
 <section class="section-padding bg-light">
   <div class="container">
     <div class="text-center" style="max-width: 600px; margin: 0 auto 30px auto;">
-      <span class="section-subtitle">GOUSHALA STORE</span>
-      <h2 class="section-title center">Pure Organic Panchagavya Products</h2>
+      <span class="section-subtitle"><?= htmlspecialchars(get_setting('products_section_subtitle', 'GOUSHALA STORE')) ?></span>
+      <h2 class="section-title center"><?= htmlspecialchars(get_setting('products_section_title', 'Pure Organic Panchagavya Products')) ?></h2>
       <p>Support Goushala maintenance by purchasing authentic A2 Bilona Ghee, herbal soaps, and organic compost.</p>
     </div>
 
@@ -230,9 +256,28 @@ $upcomingEvents = $stmtEvents->fetchAll();
               </div>
               <span style="font-size:0.85rem; color:#2E7D32;">In Stock (<?= $prod['stock_quantity'] ?>)</span>
             </div>
-            <div class="card-actions">
-              <a href="<?= $baseUrl ?>pages/product-details.php?id=<?= $prod['id'] ?>" class="btn btn-outline btn-sm" style="flex:1;">View Product</a>
-              <button class="btn btn-primary btn-sm add-to-cart-btn" data-product-id="<?= $prod['id'] ?>" style="flex:1;">Add to Cart</button>
+            <?php 
+              $prodMode = get_item_checkout_mode($prod, 'product'); 
+              $waUrl = get_whatsapp_product_url($prod);
+            ?>
+            <div class="card-actions" style="display:flex; flex-direction:column; gap:6px;">
+              <?php if ($prodMode === 'both'): ?>
+                <div style="display:flex; gap:6px;">
+                  <button class="btn btn-primary btn-sm add-to-cart-btn" data-product-id="<?= $prod['id'] ?>" style="flex:1;">🛒 Add to Cart</button>
+                  <a href="<?= $waUrl ?>" target="_blank" class="btn btn-sm" style="flex:1; background:#25D366; border-color:#25D366; color:white; display:inline-flex; align-items:center; justify-content:center; gap:2px;"><?= get_whatsapp_icon_svg() ?> WhatsApp</a>
+                </div>
+                <a href="<?= $baseUrl ?>pages/product-details.php?id=<?= $prod['id'] ?>" class="btn btn-outline btn-sm text-center">View Product</a>
+              <?php elseif ($prodMode === 'whatsapp'): ?>
+                <div style="display:flex; gap:6px;">
+                  <a href="<?= $baseUrl ?>pages/product-details.php?id=<?= $prod['id'] ?>" class="btn btn-outline btn-sm" style="flex:1;">Details</a>
+                  <a href="<?= $waUrl ?>" target="_blank" class="btn btn-primary btn-sm" style="flex:1; background:#25D366; border-color:#25D366; color:white; display:inline-flex; align-items:center; justify-content:center; gap:2px;"><?= get_whatsapp_icon_svg() ?> WhatsApp</a>
+                </div>
+              <?php else: ?>
+                <div style="display:flex; gap:6px;">
+                  <a href="<?= $baseUrl ?>pages/product-details.php?id=<?= $prod['id'] ?>" class="btn btn-outline btn-sm" style="flex:1;">Details</a>
+                  <button class="btn btn-primary btn-sm add-to-cart-btn" data-product-id="<?= $prod['id'] ?>" style="flex:1;">Add to Cart</button>
+                </div>
+              <?php endif; ?>
             </div>
           </div>
         </div>
@@ -249,8 +294,8 @@ $upcomingEvents = $stmtEvents->fetchAll();
 <section class="section-padding bg-white">
   <div class="container">
     <div class="text-center" style="max-width: 600px; margin: 0 auto 30px auto;">
-      <span class="section-subtitle">VISUAL MEMORIES</span>
-      <h2 class="section-title center">Sanctuary Gallery</h2>
+      <span class="section-subtitle"><?= htmlspecialchars(get_setting('gallery_section_subtitle', 'VISUAL MEMORIES')) ?></span>
+      <h2 class="section-title center"><?= htmlspecialchars(get_setting('gallery_section_title', 'Sanctuary Gallery')) ?></h2>
       <p>Glance into the serene daily life, feeding rituals, and festivals at Kamadhenu Goushala.</p>
     </div>
 
@@ -342,15 +387,15 @@ $upcomingEvents = $stmtEvents->fetchAll();
 </section>
 
 <!-- 9. Donation CTA Banner -->
-<section style="background: linear-gradient(135deg, var(--primary-dark), var(--primary-green)); color: var(--bg-white); padding: 70px 0; text-align: center;">
+<section class="cta-banner-section" style="background: linear-gradient(135deg, #1C381E, #2E7D32); color: #FFFFFF; padding: 70px 0; text-align: center;">
   <div class="container" style="max-width: 800px;">
-    <h2 style="color: var(--bg-white); font-size: 2.5rem; margin-bottom: 15px;">Transform a Cow's Life Today</h2>
-    <p style="font-size: 1.15rem; color: var(--bg-light-green); margin-bottom: 30px;">
+    <h2 style="color: #FFFFFF !important; font-size: 2.5rem; margin-bottom: 15px;">Transform a Cow's Life Today</h2>
+    <p style="font-size: 1.15rem; color: #E0E7DE !important; margin-bottom: 30px;">
       Gau Seva brings peace, prosperity, and spiritual blessings to your family. Sponsor feeding or medical treatment with 100% tax exemption.
     </p>
     <div style="display: flex; gap: 15px; justify-content: center; flex-wrap: wrap;">
       <a href="<?= $baseUrl ?>pages/donate.php" class="btn btn-primary btn-lg">Make a Donation 💖</a>
-      <a href="<?= $baseUrl ?>pages/adopt.php" class="btn btn-outline btn-lg" style="color: var(--bg-white); border-color: var(--bg-white);">Adopt a Cow 🐄</a>
+      <a href="<?= $baseUrl ?>pages/adopt.php" class="btn btn-outline btn-lg" style="color: #FFFFFF !important; border-color: #FFFFFF !important;">Adopt a Cow 🐄</a>
     </div>
   </div>
 </section>

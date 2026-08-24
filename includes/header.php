@@ -24,6 +24,14 @@ $flashMessages = get_flash();
   
   <!-- Master Stylesheet -->
   <link rel="stylesheet" href="<?= $baseUrl ?>css/style.css?v=<?= time() ?>">
+  <script>
+    (function() {
+      var savedTheme = localStorage.getItem('theme');
+      if (savedTheme) {
+        document.documentElement.setAttribute('data-theme', savedTheme);
+      }
+    })();
+  </script>
 </head>
 <body>
 <?php include __DIR__ . '/navbar.php'; ?>

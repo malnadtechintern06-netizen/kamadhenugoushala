@@ -42,8 +42,8 @@ $pageTitle = htmlspecialchars($prod['name']) . " - Kamadhenu Goushala Store";
       
       <!-- Media -->
       <div>
-        <div style="border-radius: var(--radius-md); overflow: hidden; box-shadow: var(--shadow-md); border: 1px solid var(--border-light);">
-          <img src="<?= $baseUrl . htmlspecialchars($prod['image']) ?>" alt="<?= htmlspecialchars($prod['name']) ?>" onerror="this.src='https://images.unsplash.com/photo-1589927986089-35812388d1f4?auto=format&fit=crop&w=800&q=80'" style="width:100%; height:400px; object-fit:cover;">
+        <div style="border-radius: var(--radius-md); overflow: hidden; box-shadow: var(--shadow-md); border: 1px solid var(--border-light); background:#fdfbf7; display:flex; align-items:center; justify-content:center;">
+          <img src="<?= $baseUrl . htmlspecialchars($prod['image']) ?>" alt="<?= htmlspecialchars($prod['name']) ?>" onerror="this.src='https://images.unsplash.com/photo-1589927986089-35812388d1f4?auto=format&fit=crop&w=800&q=80'" style="width:100%; height:400px; object-fit:contain; padding:8px;">
         </div>
       </div>
 
@@ -75,17 +75,38 @@ $pageTitle = htmlspecialchars($prod['name']) . " - Kamadhenu Goushala Store";
           <?= nl2br(htmlspecialchars($prod['description'])) ?>
         </p>
 
-        <!-- Quantity & Add to Cart -->
-        <div style="display: flex; gap: 20px; align-items: center; margin-bottom: 30px;">
-          <div class="quantity-control">
-            <button class="qty-btn qty-minus">-</button>
-            <input type="number" class="qty-input" data-product-id="<?= $prod['id'] ?>" value="1" min="1" max="<?= $prod['stock_quantity'] ?>">
-            <button class="qty-btn qty-plus">+</button>
-          </div>
-
-          <button class="btn btn-primary btn-lg add-to-cart-btn" data-product-id="<?= $prod['id'] ?>" style="flex:1;">
-            🛒 Add to Cart
-          </button>
+        <!-- Quantity & Add to Cart / Order -->
+        <?php 
+          $prodMode = get_item_checkout_mode($prod, 'product'); 
+          $waUrl = get_whatsapp_product_url($prod);
+        ?>
+        <div style="display: flex; gap: 15px; align-items: center; margin-bottom: 30px; flex-wrap:wrap;">
+          <?php if ($prodMode === 'both'): ?>
+            <div class="quantity-control">
+              <button class="qty-btn qty-minus">-</button>
+              <input type="number" class="qty-input" data-product-id="<?= $prod['id'] ?>" value="1" min="1" max="<?= $prod['stock_quantity'] ?>">
+              <button class="qty-btn qty-plus">+</button>
+            </div>
+            <button class="btn btn-primary btn-lg add-to-cart-btn" data-product-id="<?= $prod['id'] ?>" style="flex:1;">
+              🛒 Add to Cart
+            </button>
+            <a href="<?= $waUrl ?>" target="_blank" class="btn btn-lg" style="flex:1; background:#25D366; border-color:#25D366; color:white; display:inline-flex; align-items:center; justify-content:center; gap:4px;">
+              <?= get_whatsapp_icon_svg('1.25em') ?> Order via WhatsApp 🛍️
+            </a>
+          <?php elseif ($prodMode === 'whatsapp'): ?>
+            <a href="<?= $waUrl ?>" target="_blank" class="btn btn-primary btn-lg" style="flex:1; background:#25D366; border-color:#25D366; color:white; display:inline-flex; align-items:center; justify-content:center; gap:4px;">
+              <?= get_whatsapp_icon_svg('1.25em') ?> Order <?= htmlspecialchars($prod['name']) ?> on WhatsApp 🛍️
+            </a>
+          <?php else: ?>
+            <div class="quantity-control">
+              <button class="qty-btn qty-minus">-</button>
+              <input type="number" class="qty-input" data-product-id="<?= $prod['id'] ?>" value="1" min="1" max="<?= $prod['stock_quantity'] ?>">
+              <button class="qty-btn qty-plus">+</button>
+            </div>
+            <button class="btn btn-primary btn-lg add-to-cart-btn" data-product-id="<?= $prod['id'] ?>" style="flex:1;">
+              🛒 Add to Cart
+            </button>
+          <?php endif; ?>
         </div>
 
         <div style="padding:15px; background:var(--bg-light-green); border-radius:var(--radius-sm); font-size:0.88rem; color:var(--text-dark);">

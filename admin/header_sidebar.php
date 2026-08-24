@@ -22,8 +22,16 @@ function navActive($page) {
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title><?= htmlspecialchars($pageTitle) ?></title>
   <link rel="stylesheet" href="../css/style.css">
+  <script>
+    (function() {
+      var savedTheme = localStorage.getItem('theme');
+      if (savedTheme) {
+        document.documentElement.setAttribute('data-theme', savedTheme);
+      }
+    })();
+  </script>
 </head>
-<body style="background: #F8F9FA;">
+<body>
 
 <div class="admin-layout">
   
@@ -64,7 +72,10 @@ function navActive($page) {
         <h2 style="margin:0; font-size:1.6rem;"><?= htmlspecialchars($adminPageTitle ?? 'Dashboard') ?></h2>
         <p style="margin:0; font-size:0.88rem; color:var(--text-muted);">Logged in as Administrator (<?= htmlspecialchars($_SESSION['user_name']) ?>)</p>
       </div>
-      <div>
-        <a href="../index.php" class="btn btn-outline btn-sm">View Public Site</a>
+      <div style="display:flex; align-items:center; gap:12px;">
+        <button id="theme-toggle" class="theme-toggle-btn" aria-label="Toggle Dark Mode" title="Toggle Dark Mode" style="border: 1.5px solid var(--primary-green); padding: 8px 14px; border-radius: 30px; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; font-weight: 600;">
+          🌙 Night Mode
+        </button>
+        <a href="../index.php" class="btn btn-outline btn-sm" target="_blank">🌐 View Public Site</a>
       </div>
     </div>

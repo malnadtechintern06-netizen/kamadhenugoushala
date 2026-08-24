@@ -127,7 +127,24 @@ $items = $cartData['items'];
               <strong style="color:var(--accent-orange);"><?= format_currency($cartData['total']) ?></strong>
             </div>
 
-            <a href="checkout.php" class="btn btn-primary btn-lg btn-block">Proceed to Checkout →</a>
+            <?php 
+              $prodMode = get_checkout_mode('product'); 
+              $waUrl = get_whatsapp_product_url('Cart Items (Total: ' . format_currency($cartData['total']) . ')');
+            ?>
+            <?php if ($prodMode === 'both'): ?>
+              <div style="display:flex; flex-direction:column; gap:10px;">
+                <a href="checkout.php" class="btn btn-primary btn-lg btn-block">🌐 Website Checkout →</a>
+                <a href="<?= $waUrl ?>" target="_blank" class="btn btn-lg btn-block" style="background:#25D366; border-color:#25D366; color:white; display:inline-flex; align-items:center; justify-content:center; gap:4px;">
+                  <?= get_whatsapp_icon_svg('1.25em') ?> Checkout via WhatsApp 📱
+                </a>
+              </div>
+            <?php elseif ($prodMode === 'whatsapp'): ?>
+              <a href="<?= $waUrl ?>" target="_blank" class="btn btn-primary btn-lg btn-block" style="background:#25D366; border-color:#25D366; color:white; display:inline-flex; align-items:center; justify-content:center; gap:4px;">
+                <?= get_whatsapp_icon_svg('1.25em') ?> Checkout Order on WhatsApp 📱
+              </a>
+            <?php else: ?>
+              <a href="checkout.php" class="btn btn-primary btn-lg btn-block">Proceed to Checkout →</a>
+            <?php endif; ?>
           </div>
         </div>
 

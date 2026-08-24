@@ -8,9 +8,9 @@
     <div class="footer-grid">
       <!-- Col 1: About -->
       <div class="footer-col">
-        <h4>Kamadhenu Goushala</h4>
+        <h4><?= htmlspecialchars(get_setting('site_name', 'Kamadhenu Goushala')) ?></h4>
         <p style="color: rgba(255,255,255,0.8); font-size: 0.92rem; margin-bottom: 20px;">
-          Dedicated to the protection, rescue, medical care, and lifelong service of indigenous Indian cows. Operating with pure devotion in sacred Vrindavan Dham.
+          <?= htmlspecialchars(get_setting('footer_about_text', 'Dedicated to the protection, rescue, medical care, and lifelong service of indigenous Indian cows. Operating with pure devotion in sacred Vrindavan Dham.')) ?>
         </p>
         <p style="color: var(--accent-orange); font-size: 0.88rem; font-weight: 600; margin-bottom: 15px;">
           * All Donations are Eligible for 80G Tax Exemption.
@@ -67,7 +67,7 @@
 
   <div class="footer-bottom">
     <div class="container">
-      <p>&copy; <?= date('Y') ?> Kamadhenu Goushala Sanctuary. All Rights Reserved.</p>
+      <p>&copy; <?= date('Y') ?> <?= htmlspecialchars(get_setting('footer_copyright_text', get_setting('site_name', 'Kamadhenu Goushala') . ' Sanctuary. All Rights Reserved.')) ?></p>
       <p>Built with Devotion & Care for Gau Mata</p>
     </div>
   </div>

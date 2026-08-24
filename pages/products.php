@@ -87,9 +87,30 @@ $categories = $pdo->query("SELECT * FROM product_categories ORDER BY name ASC")-
                 </div>
                 <span style="font-size:0.85rem; color:#2E7D32;">In Stock (<?= $prod['stock_quantity'] ?>)</span>
               </div>
-              <div class="card-actions">
-                <a href="product-details.php?id=<?= $prod['id'] ?>" class="btn btn-outline btn-sm" style="flex:1;">View Product</a>
-                <button class="btn btn-primary btn-sm add-to-cart-btn" data-product-id="<?= $prod['id'] ?>" style="flex:1;">Add to Cart</button>
+              <?php 
+                $prodMode = get_item_checkout_mode($prod, 'product'); 
+                $waUrl = get_whatsapp_product_url($prod);
+              ?>
+              <div class="card-actions" style="display:flex; flex-direction:column; gap:6px;">
+                <?php if ($prodMode === 'both'): ?>
+                  <div style="display:flex; gap:6px;">
+                    <button class="btn btn-primary btn-sm add-to-cart-btn" data-product-id="<?= $prod['id'] ?>" style="flex:1;">🛒 Add to Cart</button>
+                    <a href="<?= $waUrl ?>" target="_blank" class="btn btn-sm" style="flex:1; background:#25D366; border-color:#25D366; color:white; display:inline-flex; align-items:center; justify-content:center; gap:3px;">
+                      <?= get_whatsapp_icon_svg() ?> Order WhatsApp
+                    </a>
+                  </div>
+                  <a href="product-details.php?id=<?= $prod['id'] ?>" class="btn btn-outline btn-sm text-center">View Details</a>
+                <?php elseif ($prodMode === 'whatsapp'): ?>
+                  <div style="display:flex; gap:6px;">
+                    <a href="product-details.php?id=<?= $prod['id'] ?>" class="btn btn-outline btn-sm" style="flex:1;">View Details</a>
+                    <a href="<?= $waUrl ?>" target="_blank" class="btn btn-sm" style="flex:1; background:#25D366; border-color:#25D366; color:white; display:inline-flex; align-items:center; justify-content:center; gap:3px;"><?= get_whatsapp_icon_svg() ?> Order WhatsApp</a>
+                  </div>
+                <?php else: ?>
+                  <div style="display:flex; gap:6px;">
+                    <a href="product-details.php?id=<?= $prod['id'] ?>" class="btn btn-outline btn-sm" style="flex:1;">View Details</a>
+                    <button class="btn btn-primary btn-sm add-to-cart-btn" data-product-id="<?= $prod['id'] ?>" style="flex:1;">Add to Cart</button>
+                  </div>
+                <?php endif; ?>
               </div>
             </div>
           </div>

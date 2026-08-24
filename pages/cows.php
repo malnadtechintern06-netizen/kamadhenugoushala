@@ -106,9 +106,35 @@ $statuses = $pdo->query("SELECT DISTINCT health_status FROM cows ORDER BY health
                 <span>Tag: <strong><?= htmlspecialchars($cow['tag_number']) ?></strong></span>
                 <span style="color:var(--accent-orange); font-weight:bold;"><?= format_currency($cow['monthly_adoption_fee']) ?>/mo</span>
               </div>
-              <div class="card-actions">
-                <a href="cow-details.php?id=<?= $cow['id'] ?>" class="btn btn-outline btn-sm" style="flex:1;">View Details</a>
-                <a href="adopt.php?cow_id=<?= $cow['id'] ?>" class="btn btn-primary btn-sm" style="flex:1;">Adopt Cow</a>
+              <?php 
+                $cowMode = get_item_checkout_mode($cow, 'cow'); 
+                $waUrl = get_whatsapp_cow_url($cow);
+                $siteUrl = get_base_url() . 'pages/adopt.php?cow_id=' . $cow['id'];
+              ?>
+              <div class="card-actions" style="display:flex; flex-direction:column; gap:6px;">
+                <?php if ($cowMode === 'both'): ?>
+                  <div style="display:flex; gap:6px;">
+                    <a href="<?= $siteUrl ?>" class="btn btn-primary btn-sm" style="flex:1; display:inline-flex; align-items:center; justify-content:center; gap:3px;">
+                      🌐 Adopt Online
+                    </a>
+                    <a href="<?= $waUrl ?>" target="_blank" class="btn btn-sm" style="flex:1; background:#25D366; border-color:#25D366; color:white; display:inline-flex; align-items:center; justify-content:center; gap:3px;">
+                      <?= get_whatsapp_icon_svg() ?> WhatsApp
+                    </a>
+                  </div>
+                  <a href="cow-details.php?id=<?= $cow['id'] ?>" class="btn btn-outline btn-sm text-center">View Profile</a>
+                <?php elseif ($cowMode === 'whatsapp'): ?>
+                  <div style="display:flex; gap:6px;">
+                    <a href="cow-details.php?id=<?= $cow['id'] ?>" class="btn btn-outline btn-sm" style="flex:1;">Details</a>
+                    <a href="<?= $waUrl ?>" target="_blank" class="btn btn-sm" style="flex:1; background:#25D366; border-color:#25D366; color:white; display:inline-flex; align-items:center; justify-content:center; gap:3px;">
+                      <?= get_whatsapp_icon_svg() ?> WhatsApp
+                    </a>
+                  </div>
+                <?php else: ?>
+                  <div style="display:flex; gap:6px;">
+                    <a href="cow-details.php?id=<?= $cow['id'] ?>" class="btn btn-outline btn-sm" style="flex:1;">Details</a>
+                    <a href="<?= $siteUrl ?>" class="btn btn-primary btn-sm" style="flex:1;">Adopt Online</a>
+                  </div>
+                <?php endif; ?>
               </div>
             </div>
           </div>

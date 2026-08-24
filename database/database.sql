@@ -100,7 +100,9 @@ INSERT INTO `seva` (`id`, `title`, `subtitle`, `category`, `suggested_amount`, `
 (1, 'Gau Grass & Fodder Seva', 'Provide fresh green fodder, jaggery, and nutrition', 'Feeding', 501.00, 'Provide nutritious green grass, dry fodder, jaggery, and mineral mixture for one cow for a week.', 'images/seva/seva1.jpg', 1),
 (2, 'Medical Treatment & Healthcare', 'Emergency surgeries, medicine & doctor checkups', 'Medical', 1501.00, 'Support critical veterinary medicine, surgeries, bandages, and daily health checkups for sick & injured rescued cows.', 'images/seva/seva2.jpg', 1),
 (3, 'Nitya Gau Seva (Daily Care)', 'Sponsor daily care, bath, and shed hygiene', 'Daily', 251.00, 'Sponsor daily grooming, clean water supply, shed cleaning, and love for our sacred cows.', 'images/seva/seva3.jpg', 1),
-(4, 'Goushala Shelter Construction', 'Build clean, airy, rain-proof cow sheds', 'Shelter', 5001.00, 'Help construct durable solar-roofed shelters, water troughs, and padded resting areas for senior cows.', 'images/seva/seva4.jpg', 1);
+(4, 'Goushala Shelter Construction', 'Build clean, airy, rain-proof cow sheds', 'Shelter', 5001.00, 'Help construct durable solar-roofed shelters, water troughs, and padded resting areas for senior cows.', 'images/seva/seva4.jpg', 1),
+(12, 'Gau Bhandara & Festival Annadan Seva', 'Sponsor special jaggery, fruits & wheat feast for sanctuary cows on special occasions', 'Special', 2100.00, 'Sponsor a rich, nourishing feast (Gau Bhandara) featuring fresh sugarcane, apples, jaggery, and wheat flour balls for all 450+ sanctuary cows on your birthday, anniversary, or holy festival.', 'images/seva/seva1.jpg', 1),
+(13, 'Elderly & Injured Cow Care Seva', 'Specialized lifelong nursing care, orthopedic bedding & medical rehab', 'Medical', 3100.00, 'Provide dedicated lifelong nursing, soft green hydroponic fodder, orthopedic straw bedding, and daily pain-relief therapies for non-lactating, blind, and rescued elderly mother cows.', 'images/seva/seva2.jpg', 1);
 
 -- --------------------------------------------------------
 -- Table: product_categories
@@ -143,8 +145,10 @@ INSERT INTO `products` (`id`, `category_id`, `name`, `slug`, `description`, `pri
 (2, 2, 'Panchagavya Herbal Bathing Soap (Pack of 3)', 'panchagavya-herbal-bathing-soap', 'Infused with cow ghee, milk, curd, neem, and camphor. 100% natural, chemical-free skin nourishment.', 299.00, 249.00, 120, 'images/products/soap.jpg', 1),
 (3, 3, 'Organic Gau Maya Dhoop Batti (100g Stick Pack)', 'organic-gau-maya-dhoop-batti', 'Pure cow dung and aromatic herbs like Guggal, Havan Samagri, and Camphor. Purification and spiritual serenity.', 199.00, 149.00, 85, 'images/products/dhoop.jpg', 1),
 (4, 4, 'Enriched Bio-Organic Vermicompost (5kg Bag)', 'enriched-bio-organic-vermicompost-5kg', 'Nutrient-rich earthworm-processed cow dung manure for home gardens and organic farming.', 399.00, 349.00, 60, 'images/products/compost.jpg', 1),
-(5, 3, 'Handmade Eco Cow Dung Diyas (Pack of 12)', 'handmade-eco-cow-dung-diyas', 'Biodegradable, sacred cow-dung lamps for puja, festivals, and home rituals.', 180.00, 150.00, 100, 'images/products/diya.jpg', 0),
-(6, 2, 'Herbal Panchagavya Hair Oil (200ml)', 'herbal-panchagavya-hair-oil-200ml', 'Enriched with A2 ghee, bhringraj, and amla for deep root nourishment.', 450.00, 399.00, 40, 'images/products/hair-oil.jpg', 0);
+(5, 3, 'Handmade Eco Cow Dung Diyas (Pack of 12)', 'handmade-eco-cow-dung-diyas', 'Biodegradable, sacred cow-dung lamps for puja, festivals, and home rituals.', 180.00, 150.00, 100, 'images/products/diya.jpg', 1),
+(6, 2, 'Herbal Panchagavya Hair Oil (200ml)', 'herbal-panchagavya-hair-oil-200ml', 'Enriched with A2 ghee, bhringraj, and amla for deep root nourishment.', 450.00, 399.00, 40, 'images/products/hair-oil.jpg', 1),
+(7, 2, 'Sacred Gau Ark Distillate (Immunity Tonic 500ml)', 'sacred-gau-ark-distillate-500ml', 'Pure distilled A2 cow urine distillate processed with medicinal Tulsi and Ajwain. Supports natural immunity and digestion.', 250.00, 199.00, 75, 'images/products/ghee.jpg', 1),
+(8, 3, 'Herbal Gau Dant Manjan / Tooth Powder (100g)', 'herbal-gau-dant-manjan-100g', 'Traditional ayurvedic tooth powder prepared with cow dung ash, clove oil, camphor, and rock salt for strong gums & teeth.', 180.00, 149.00, 90, 'images/products/soap.jpg', 1);
 
 -- --------------------------------------------------------
 -- Table: product_images
@@ -304,7 +308,9 @@ INSERT INTO `gallery` (`id`, `category_id`, `title`, `image_path`, `description`
 (3, 4, 'Volunteers Serving Fresh Jaggery & Fodder', 'images/gallery/gallery3.jpg', 'Devotees offering fresh green fodder and organic jaggery to Gau Mata.'),
 (4, 5, 'Gopashtami Mahotsav Celebration', 'images/gallery/gallery4.jpg', 'Annual Gopashtami festival with Vedic chants, cow pooja, and community feast.'),
 (5, 6, 'School Children Learning Cow Protection', 'images/gallery/gallery5.jpg', 'Young visitors connecting with gentle calves during an educational tour.'),
-(6, 2, 'Mother Cow & Newborn Calf', 'images/gallery/gallery6.jpg', 'A peaceful moment between mother Gir cow and her healthy newborn calf.');
+(6, 2, 'Mother Cow & Newborn Calf', 'images/gallery/gallery6.jpg', 'A peaceful moment between mother Gir cow and her healthy newborn calf.'),
+(7, 5, 'Vedic Cow Aarti & Evening Deepotsav', 'images/gallery/gallery1.jpg', 'Evening Gau Aarti accompanied by Vedic mantras, ghee lamps, and devotional kirtan at the sanctuary courtyard.'),
+(8, 2, 'Rescued Calves Playing in Open Green Fields', 'images/gallery/gallery2.jpg', 'Playful newborn and rescued calves joyfully running across the spacious green pastures of Vrindavan sanctuary.');
 
 -- --------------------------------------------------------
 -- Table: testimonials

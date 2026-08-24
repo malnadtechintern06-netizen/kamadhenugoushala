@@ -29,7 +29,7 @@ $recentDonations = $pdo->query("SELECT * FROM donations ORDER BY id DESC LIMIT 5
     <div class="stat-label">Total Cows Registered</div>
   </div>
   <div class="stat-box">
-    <div class="stat-number"><?= format_currency($totalDonationRev + $totalOrderRev) ?></div>
+    <div class="stat-number stat-currency" title="<?= format_currency($totalDonationRev + $totalOrderRev) ?>"><?= format_currency($totalDonationRev + $totalOrderRev) ?></div>
     <div class="stat-label">Total Funds Raised</div>
   </div>
   <div class="stat-box">
@@ -121,7 +121,4 @@ $recentDonations = $pdo->query("SELECT * FROM donations ORDER BY id DESC LIMIT 5
 
 </div>
 
-</main>
-</div>
-</body>
-</html>
+<?php require_once __DIR__ . '/footer.php'; ?>

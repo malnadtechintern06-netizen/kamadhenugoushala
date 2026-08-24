@@ -29,6 +29,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $amount = (float)($_POST['suggested_amount'] ?? 500.00);
     $description = sanitize($_POST['description'] ?? '');
     $isFeatured = isset($_POST['is_featured']) ? 1 : 0;
+    $checkoutMode = sanitize($_POST['checkout_mode'] ?? 'default');
+    $whatsappNumber = sanitize($_POST['whatsapp_number'] ?? '');
 
     $imagePath = $_POST['existing_image'] ?? 'images/seva/seva-default.jpg';
     if (isset($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
@@ -44,12 +46,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if (empty($errors)) {
         if ($editId > 0) {
-            $stmt = $pdo->prepare("UPDATE seva SET title = ?, subtitle = ?, category = ?, suggested_amount = ?, description = ?, image = ?, is_featured = ? WHERE id = ?");
-            $stmt->execute([$title, $subtitle, $category, $amount, $description, $imagePath, $isFeatured, $editId]);
+            $stmt = $pdo->prepare("UPDATE seva SET title = ?, subtitle = ?, category = ?, suggested_amount = ?, description = ?, image = ?, is_featured = ?, checkout_mode = ?, whatsapp_number = ? WHERE id = ?");
+            $stmt->execute([$title, $subtitle, $category, $amount, $description, $imagePath, $isFeatured, $checkoutMode, $whatsappNumber, $editId]);
             set_flash('success', 'Seva program updated.');
         } else {
-            $stmt = $pdo->prepare("INSERT INTO seva (title, subtitle, category, suggested_amount, description, image, is_featured) VALUES (?, ?, ?, ?, ?, ?, ?)");
-            $stmt->execute([$title, $subtitle, $category, $amount, $description, $imagePath, $isFeatured]);
+            $stmt = $pdo->prepare("INSERT INTO seva (title, subtitle, category, suggested_amount, description, image, is_featured, checkout_mode, whatsapp_number) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
+            $stmt->execute([$title, $subtitle, $category, $amount, $description, $imagePath, $isFeatured, $checkoutMode, $whatsappNumber]);
             set_flash('success', 'New Seva program added.');
         }
         header('Location: seva.php');
@@ -69,8 +71,8 @@ $sevaList = $pdo->query("SELECT * FROM seva ORDER BY id ASC")->fetchAll();
 
 <?php if ($action === 'add' || $action === 'edit'): ?>
   
-  <div style="background:white; padding:30px; border-radius:var(--radius-md); box-shadow:var(--shadow-sm); max-width:800px;">
-    <h3><?= $action === 'edit' ? 'Edit Seva Program' : 'Add New Seva Program' ?></h3>
+  <div style="background:white; padding:35px; border-radius:var(--radius-md); box-shadow:var(--shadow-sm); width:100%; margin-bottom:30px;">
+    <h3 style="margin-bottom:20px; font-size:1.4rem; color:var(--primary-dark); border-bottom:2px solid var(--bg-light-green); padding-bottom:12px;"><?= $action === 'edit' ? 'Edit Seva Program' : 'Add New Seva Program' ?></h3>
 
     <?php if (!empty($errors)): ?>
       <div class="alert alert-error"><ul><?php foreach ($errors as $e): ?><li><?= htmlspecialchars($e) ?></li><?php endforeach; ?></ul></div>
@@ -113,8 +115,26 @@ $sevaList = $pdo->query("SELECT * FROM seva ORDER BY id ASC")->fetchAll();
       </div>
 
       <div class="form-group">
-        <label class="form-label">Image</label>
-        <input type="file" name="image" class="form-control">
+        <label class="form-label" style="font-weight:bold; color:var(--accent-orange);">🛒 Checkout Option for this Seva Program</label>
+        <select name="checkout_mode" class="form-control" style="font-weight:bold; background:#fffcf6; border:1.5px solid var(--accent-orange);">
+          <option value="default" <?= ($editSeva['checkout_mode'] ?? 'default') === 'default' ? 'selected' : '' ?>>⚙️ Global Setting Default (Use Admin Settings Mode)</option>
+          <option value="both" <?= ($editSeva['checkout_mode'] ?? 'default') === 'both' ? 'selected' : '' ?>>🤝 Both Options (Show Website Payment &amp; WhatsApp Buttons)</option>
+          <option value="website" <?= ($editSeva['checkout_mode'] ?? 'default') === 'website' ? 'selected' : '' ?>>🌐 Website Checkout Only (Online Form &amp; Payment Gateway)</option>
+          <option value="whatsapp" <?= ($editSeva['checkout_mode'] ?? 'default') === 'whatsapp' ? 'selected' : '' ?>>📱 WhatsApp Checkout Only (Direct WhatsApp Seva Chat)</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" style="font-weight:bold; color:#2E7D32;">📱 Select WhatsApp Helpline Number for this Seva Program</label>
+        <select name="whatsapp_number" class="form-control" style="font-weight:bold;">
+          <option value="">⚙️ Default Primary WhatsApp Number (Use Admin Settings Default)</option>
+          <?php foreach (get_whatsapp_numbers_list() as $key => $phoneInfo): ?>
+            <option value="<?= htmlspecialchars($phoneInfo['number']) ?>" <?= ($editSeva['whatsapp_number'] ?? '') === $phoneInfo['number'] ? 'selected' : '' ?>>
+              📞 <?= htmlspecialchars($phoneInfo['label']) ?>
+            </option>
+          <?php endforeach; ?>
+        </select>
+        <small style="color:var(--text-muted); font-size:0.8rem; display:block; margin-top:4px;">Choose which helpline number receives WhatsApp sponsorship inquiries for this specific Seva program.</small>
       </div>
 
       <div class="form-group" style="display:flex; align-items:center; gap:10px;">
@@ -168,7 +188,4 @@ $sevaList = $pdo->query("SELECT * FROM seva ORDER BY id ASC")->fetchAll();
 
 <?php endif; ?>
 
-</main>
-</div>
-</body>
-</html>
+<?php require_once __DIR__ . '/footer.php'; ?>

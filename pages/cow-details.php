@@ -37,8 +37,8 @@ $pageTitle = htmlspecialchars($cow['name']) . " (" . htmlspecialchars($cow['bree
       
       <!-- Cow Media Column -->
       <div>
-        <div style="border-radius: var(--radius-md); overflow: hidden; box-shadow: var(--shadow-md); border: 1px solid var(--border-light); margin-bottom: 20px;">
-          <img id="main-cow-image" src="<?= $baseUrl . htmlspecialchars($cow['main_image']) ?>" alt="<?= htmlspecialchars($cow['name']) ?>" onerror="this.src='https://images.unsplash.com/photo-1570042707223-2cb2ed999557?auto=format&fit=crop&w=800&q=80'" style="width:100%; height:400px; object-fit:cover;">
+        <div style="border-radius: var(--radius-md); overflow: hidden; box-shadow: var(--shadow-md); border: 1px solid var(--border-light); margin-bottom: 20px; background:#fdfbf7; display:flex; align-items:center; justify-content:center;">
+          <img id="main-cow-image" src="<?= $baseUrl . htmlspecialchars($cow['main_image']) ?>" alt="<?= htmlspecialchars($cow['name']) ?>" onerror="this.src='https://images.unsplash.com/photo-1570042707223-2cb2ed999557?auto=format&fit=crop&w=800&q=80'" style="width:100%; height:400px; object-fit:contain; padding:8px;">
         </div>
 
         <?php if (!empty($additionalImages)): ?>
@@ -77,9 +77,27 @@ $pageTitle = htmlspecialchars($cow['name']) . " (" . htmlspecialchars($cow['bree
           <?= nl2br(htmlspecialchars($cow['bio'])) ?>
         </p>
 
+        <?php 
+          $cowMode = get_item_checkout_mode($cow, 'cow');
+          $waUrl = get_whatsapp_cow_url($cow);
+          $siteUrl = get_base_url() . 'pages/adopt.php?cow_id=' . $cow['id'];
+        ?>
         <div style="display: flex; gap: 15px; flex-wrap: wrap;">
-          <a href="adopt.php?cow_id=<?= $cow['id'] ?>" class="btn btn-primary btn-lg" style="flex:1;">Adopt <?= htmlspecialchars($cow['name']) ?> Now 🐄</a>
-          <a href="donate.php" class="btn btn-secondary btn-lg" style="flex:1;">Sponsor Fodder 🌾</a>
+          <?php if ($cowMode === 'both'): ?>
+            <a href="<?= $siteUrl ?>" class="btn btn-primary btn-lg" style="flex:1; display:inline-flex; align-items:center; justify-content:center; gap:5px;">
+              🌐 Adopt Online
+            </a>
+            <a href="<?= $waUrl ?>" target="_blank" class="btn btn-lg" style="flex:1; background:#25D366; border-color:#25D366; color:white; display:inline-flex; align-items:center; justify-content:center; gap:5px;">
+              <?= get_whatsapp_icon_svg('1.25em') ?> Adopt via WhatsApp
+            </a>
+          <?php elseif ($cowMode === 'whatsapp'): ?>
+            <a href="<?= $waUrl ?>" target="_blank" class="btn btn-lg" style="flex:1; background:#25D366; border-color:#25D366; color:white; display:inline-flex; align-items:center; justify-content:center; gap:5px;">
+              <?= get_whatsapp_icon_svg('1.25em') ?> Adopt <?= htmlspecialchars($cow['name']) ?> on WhatsApp
+            </a>
+          <?php else: ?>
+            <a href="<?= $siteUrl ?>" class="btn btn-primary btn-lg" style="flex:1;">🐄 Adopt <?= htmlspecialchars($cow['name']) ?> Online</a>
+          <?php endif; ?>
+          <a href="<?= get_donation_action_url('Fodder Seva for ' . $cow['name']) ?>" <?= get_checkout_mode('donation') === 'whatsapp' ? 'target="_blank"' : '' ?> class="btn btn-secondary btn-lg" style="flex:1;">Sponsor Fodder 🌾</a>
         </div>
       </div>
 

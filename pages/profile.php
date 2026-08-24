@@ -62,10 +62,6 @@ $adoptions = $stmtAdp->fetchAll();
             <p><strong>Location:</strong> <?= htmlspecialchars($user['city'] ?: '') ?>, <?= htmlspecialchars($user['state'] ?: '') ?></p>
             <p><strong>Member Since:</strong> <?= date('d M Y', strtotime($user['created_at'])) ?></p>
           </div>
-
-          <div style="margin-top:20px;">
-            <a href="login.php?action=logout" class="btn btn-outline btn-block" style="color:#C62828; border-color:#C62828;">Log Out</a>
-          </div>
         </div>
       </div>
 

@@ -1,8 +1,9 @@
 <?php
 // pages/checkout.php - Secure Order Checkout Page
 
-$pageTitle = 'Order Checkout - Kamadhenu Goushala';
-require_once __DIR__ . '/../includes/header.php';
+require_once __DIR__ . '/../includes/db.php';
+require_once __DIR__ . '/../includes/functions.php';
+require_once __DIR__ . '/../includes/auth.php';
 
 $cartData = get_cart_details();
 $items = $cartData['items'];
@@ -29,6 +30,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $state = sanitize($_POST['state'] ?? '');
     $pincode = sanitize($_POST['pincode'] ?? '');
     $notes = sanitize($_POST['notes'] ?? '');
+    $paymentMethod = sanitize($_POST['payment_method'] ?? 'UPI / QR Code (GPay, PhonePe, Paytm)');
 
     if (empty($fullName)) $errors[] = 'Full Name is required.';
     if (empty($email) || !filter_var($email, FILTER_VALIDATE_EMAIL)) $errors[] = 'Valid Email Address is required.';
@@ -42,12 +44,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         try {
             $pdo->beginTransaction();
 
-            // 1. Re-verify stock & total amount directly from Database to prevent tampering
             $verifiedTotal = 0;
             $orderItemsToInsert = [];
 
             foreach ($items as $item) {
-                // Fetch fresh database record
                 $stmtP = $pdo->prepare("SELECT id, name, price, sale_price, stock_quantity FROM products WHERE id = ? FOR UPDATE");
                 $stmtP->execute([$item['product_id']]);
                 $freshP = $stmtP->fetch();
@@ -63,44 +63,43 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $orderItemsToInsert[] = [
                     'product_id' => $freshP['id'],
                     'product_name' => $freshP['name'],
-                    'price' => $effectivePrice,
+                    'unit_price' => $effectivePrice,
                     'quantity' => $item['quantity'],
-                    'subtotal' => $subtotal
+                    'total_price' => $subtotal
                 ];
-
-                // Deduct stock
-                $stmtDeduct = $pdo->prepare("UPDATE products SET stock_quantity = stock_quantity - ? WHERE id = ?");
-                $stmtDeduct->execute([$item['quantity'], $freshP['id']]);
             }
 
-            // 2. Generate unique Order Number
+            // 2. Create Order Header
             $orderNumber = 'KG-ORD-' . strtoupper(bin2hex(random_bytes(4)));
             $userId = $_SESSION['user_id'] ?? null;
 
-            // 3. Insert into `orders`
-            $stmtOrder = $pdo->prepare("
+            $stmtOrd = $pdo->prepare("
                 INSERT INTO orders (order_number, user_id, full_name, email, phone, address, city, state, pincode, total_amount, payment_method, payment_status, order_status, notes)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'Online Payment Simulation', 'Paid', 'Confirmed', ?)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'Paid', 'Processing', ?)
             ");
-            $stmtOrder->execute([$orderNumber, $userId, $fullName, $email, $phone, $address, $city, $state, $pincode, $verifiedTotal, $notes]);
+            $stmtOrd->execute([$orderNumber, $userId, $fullName, $email, $phone, $address, $city, $state, $pincode, $verifiedTotal, $paymentMethod, $notes]);
             $orderId = $pdo->lastInsertId();
 
-            // 4. Insert into `order_items`
+            // 3. Insert Order Line Items
             $stmtItem = $pdo->prepare("
-                INSERT INTO order_items (order_id, product_id, product_name, price, quantity, subtotal)
+                INSERT INTO order_items (order_id, product_id, product_name, unit_price, quantity, total_price)
                 VALUES (?, ?, ?, ?, ?, ?)
             ");
-            foreach ($orderItemsToInsert as $oi) {
-                $stmtItem->execute([$orderId, $oi['product_id'], $oi['product_name'], $oi['price'], $oi['quantity'], $oi['subtotal']]);
+            foreach ($orderItemsToInsert as $oItem) {
+                $stmtItem->execute([$orderId, $oItem['product_id'], $oItem['product_name'], $oItem['unit_price'], $oItem['quantity'], $oItem['total_price']]);
+
+                // 4. Deduct Inventory Stock
+                $pdo->prepare("UPDATE products SET stock_quantity = stock_quantity - ? WHERE id = ?")
+                    ->execute([$oItem['quantity'], $oItem['product_id']]);
             }
 
-            // 5. Record Payment Simulation
+            // 5. Record Payment Record
             $txnId = 'TXN-ORD-' . time() . '-' . rand(1000, 9999);
             $stmtPay = $pdo->prepare("
                 INSERT INTO payments (reference_type, reference_id, amount, payment_method, transaction_id, status)
-                VALUES ('order', ?, ?, 'Online Gateway Simulation', ?, 'Success')
+                VALUES ('order', ?, ?, ?, ?, 'Success')
             ");
-            $stmtPay->execute([$orderId, $verifiedTotal, $txnId]);
+            $stmtPay->execute([$orderId, $verifiedTotal, $paymentMethod, $txnId]);
 
             // 6. Clear Cart
             $cartId = get_or_create_cart_id();
@@ -108,16 +107,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             $pdo->commit();
 
-            // Redirect to Success Page
             header("Location: success.php?type=order&number=" . urlencode($orderNumber));
             exit;
 
         } catch (Exception $e) {
             $pdo->rollBack();
-            $errors[] = 'Checkout failed: ' . $e->getMessage();
+            $errors[] = 'Order placement failed: ' . $e->getMessage();
         }
     }
 }
+
+$pageTitle = 'Order Checkout - Kamadhenu Goushala';
+require_once __DIR__ . '/../includes/header.php';
 ?>
 
 <div class="page-banner">
@@ -224,8 +225,196 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
               <strong style="color:var(--accent-orange);"><?= format_currency($cartData['total']) ?></strong>
             </div>
 
-            <div style="background:var(--bg-light-green); padding:15px; border-radius:var(--radius-sm); margin-bottom:20px; font-size:0.85rem;">
-              💳 <strong>Payment Method:</strong> Secure Online Gateway Simulation (Razorpay / Cashfree ready).
+            <!-- Payment Options Selection -->
+            <div class="form-group" style="margin-top: 25px; margin-bottom: 20px;">
+              <label class="form-label" style="font-size: 1.05rem; margin-bottom: 12px; display:flex; align-items:center; gap:8px;">
+                <span>💳</span> Select Payment Method *
+              </label>
+              
+              <div class="payment-options-grid">
+                <label class="payment-option-card active">
+                  <input type="radio" name="payment_method" value="UPI / QR Code (GPay, PhonePe, Paytm)" checked>
+                  <div class="payment-option-content">
+                    <div class="payment-option-header">
+                      <span class="payment-icon">📱</span>
+                      <span class="payment-title">UPI / QR Code</span>
+                      <span class="payment-badge">Fast</span>
+                    </div>
+                    <div class="payment-subtext">Google Pay, PhonePe, Paytm, BHIM</div>
+                  </div>
+                </label>
+
+                <label class="payment-option-card">
+                  <input type="radio" name="payment_method" value="Credit / Debit Card (Visa, MasterCard, RuPay)">
+                  <div class="payment-option-content">
+                    <div class="payment-option-header">
+                      <span class="payment-icon">💳</span>
+                      <span class="payment-title">Credit / Debit Card</span>
+                    </div>
+                    <div class="payment-subtext">Visa, MasterCard, RuPay, Maestro</div>
+                  </div>
+                </label>
+
+                <label class="payment-option-card">
+                  <input type="radio" name="payment_method" value="Net Banking (SBI, HDFC, ICICI, etc.)">
+                  <div class="payment-option-content">
+                    <div class="payment-option-header">
+                      <span class="payment-icon">🏛️</span>
+                      <span class="payment-title">Net Banking</span>
+                    </div>
+                    <div class="payment-subtext">SBI, HDFC, ICICI & 50+ Banks</div>
+                  </div>
+                </label>
+
+                <label class="payment-option-card">
+                  <input type="radio" name="payment_method" value="Digital Wallets (Paytm, Amazon Pay, Mobikwik)">
+                  <div class="payment-option-content">
+                    <div class="payment-option-header">
+                      <span class="payment-icon">👛</span>
+                      <span class="payment-title">Digital Wallets</span>
+                    </div>
+                    <div class="payment-subtext">Paytm Wallet, Mobikwik, Amazon Pay</div>
+                  </div>
+                </label>
+
+                <label class="payment-option-card">
+                  <input type="radio" name="payment_method" value="Cash on Delivery (COD)">
+                  <div class="payment-option-content">
+                    <div class="payment-option-header">
+                      <span class="payment-icon">💵</span>
+                      <span class="payment-title">Cash on Delivery</span>
+                    </div>
+                    <div class="payment-subtext">Pay upon physical product delivery</div>
+                  </div>
+                </label>
+              </div>
+
+              <!-- Dynamic Sub-fields -->
+              <div class="payment-details-container" style="margin-top: 15px;">
+                <div id="payment-field-upi" class="payment-subfield" style="display: block;">
+                  <div class="qr-payment-card" style="background: var(--bg-light-green); border: 2px dashed var(--accent-orange); padding: 20px; border-radius: var(--radius-md); text-align: center;">
+                    <div style="font-weight: 700; font-size: 1.05rem; color: var(--primary-dark); margin-bottom: 4px;">
+                      📲 Scan QR Code To Pay (GPay / PhonePe / Paytm / BHIM)
+                    </div>
+                    <div style="font-size: 0.82rem; color: var(--text-muted); margin-bottom: 15px;">
+                      Scan with any UPI Scanner app or copy the official Goushala VPA below
+                    </div>
+
+                    <!-- Visual QR Code Badge -->
+                    <div class="qr-code-box" style="display: inline-block; background: white; padding: 16px; border-radius: 16px; box-shadow: var(--shadow-md); border: 3px solid var(--primary-dark); position: relative;">
+                      <svg width="160" height="160" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" style="display: block;">
+                        <rect width="200" height="200" fill="#ffffff" rx="10"/>
+                        <!-- Top Left Marker -->
+                        <rect x="15" y="15" width="45" height="45" fill="#84418e" rx="6"/>
+                        <rect x="23" y="23" width="29" height="29" fill="#ffffff" rx="3"/>
+                        <rect x="29" y="29" width="17" height="17" fill="#84418e" rx="2"/>
+                        <!-- Top Right Marker -->
+                        <rect x="140" y="15" width="45" height="45" fill="#84418e" rx="6"/>
+                        <rect x="148" y="23" width="29" height="29" fill="#ffffff" rx="3"/>
+                        <rect x="154" y="29" width="17" height="17" fill="#84418e" rx="2"/>
+                        <!-- Bottom Left Marker -->
+                        <rect x="15" y="140" width="45" height="45" fill="#84418e" rx="6"/>
+                        <rect x="23" y="148" width="29" height="29" fill="#ffffff" rx="3"/>
+                        <rect x="29" y="154" width="17" height="17" fill="#84418e" rx="2"/>
+                        <!-- QR Data Grid Pattern -->
+                        <g fill="#2B121A">
+                          <rect x="70" y="15" width="9" height="9" rx="2"/>
+                          <rect x="86" y="15" width="9" height="9" rx="2"/>
+                          <rect x="102" y="15" width="9" height="9" rx="2"/>
+                          <rect x="118" y="15" width="9" height="9" rx="2"/>
+                          <rect x="70" y="31" width="9" height="9" rx="2"/>
+                          <rect x="94" y="31" width="9" height="9" rx="2"/>
+                          <rect x="110" y="31" width="9" height="9" rx="2"/>
+                          <rect x="126" y="31" width="9" height="9" rx="2"/>
+                          <rect x="78" y="47" width="9" height="9" rx="2"/>
+                          <rect x="94" y="47" width="9" height="9" rx="2"/>
+                          <rect x="118" y="47" width="9" height="9" rx="2"/>
+                          <rect x="15" y="70" width="9" height="9" rx="2"/>
+                          <rect x="31" y="70" width="9" height="9" rx="2"/>
+                          <rect x="47" y="70" width="9" height="9" rx="2"/>
+                          <rect x="140" y="70" width="9" height="9" rx="2"/>
+                          <rect x="156" y="70" width="9" height="9" rx="2"/>
+                          <rect x="172" y="70" width="9" height="9" rx="2"/>
+                          <rect x="15" y="86" width="9" height="9" rx="2"/>
+                          <rect x="39" y="86" width="9" height="9" rx="2"/>
+                          <rect x="55" y="86" width="9" height="9" rx="2"/>
+                          <rect x="148" y="86" width="9" height="9" rx="2"/>
+                          <rect x="164" y="86" width="9" height="9" rx="2"/>
+                          <rect x="23" y="102" width="9" height="9" rx="2"/>
+                          <rect x="47" y="102" width="9" height="9" rx="2"/>
+                          <rect x="140" y="102" width="9" height="9" rx="2"/>
+                          <rect x="172" y="102" width="9" height="9" rx="2"/>
+                          <rect x="15" y="118" width="9" height="9" rx="2"/>
+                          <rect x="31" y="118" width="9" height="9" rx="2"/>
+                          <rect x="55" y="118" width="9" height="9" rx="2"/>
+                          <rect x="148" y="118" width="9" height="9" rx="2"/>
+                          <rect x="164" y="118" width="9" height="9" rx="2"/>
+                          <rect x="70" y="140" width="9" height="9" rx="2"/>
+                          <rect x="94" y="140" width="9" height="9" rx="2"/>
+                          <rect x="110" y="140" width="9" height="9" rx="2"/>
+                          <rect x="126" y="140" width="9" height="9" rx="2"/>
+                          <rect x="140" y="140" width="9" height="9" rx="2"/>
+                          <rect x="156" y="140" width="9" height="9" rx="2"/>
+                          <rect x="172" y="140" width="9" height="9" rx="2"/>
+                          <rect x="78" y="156" width="9" height="9" rx="2"/>
+                          <rect x="102" y="156" width="9" height="9" rx="2"/>
+                          <rect x="118" y="156" width="9" height="9" rx="2"/>
+                          <rect x="148" y="156" width="9" height="9" rx="2"/>
+                          <rect x="164" y="156" width="9" height="9" rx="2"/>
+                          <rect x="70" y="172" width="9" height="9" rx="2"/>
+                          <rect x="86" y="172" width="9" height="9" rx="2"/>
+                          <rect x="110" y="172" width="9" height="9" rx="2"/>
+                          <rect x="126" y="172" width="9" height="9" rx="2"/>
+                          <rect x="140" y="172" width="9" height="9" rx="2"/>
+                          <rect x="172" y="172" width="9" height="9" rx="2"/>
+                        </g>
+                        <!-- Center Gau Emblem -->
+                        <circle cx="100" cy="100" r="22" fill="#ffffff" stroke="#D9A441" stroke-width="2"/>
+                        <text x="100" y="106" font-size="18" text-anchor="middle">🐄</text>
+                      </svg>
+                    </div>
+
+                    <!-- UPI VPA and Copy Button -->
+                    <div style="margin-top: 14px; display: flex; align-items: center; justify-content: center; gap: 8px; flex-wrap: wrap;">
+                      <span style="font-weight: 600; font-size: 0.9rem; color: var(--primary-dark);">Official UPI VPA:</span>
+                      <code style="background: rgba(0,0,0,0.06); padding: 4px 12px; border-radius: 6px; font-weight: bold; color: var(--accent-orange); font-size: 1rem;">kamadhenugoushala@sbi</code>
+                      <button type="button" class="btn btn-secondary btn-sm" onclick="copyUpiId()" style="padding: 4px 12px; font-size: 0.8rem;">Copy 📋</button>
+                    </div>
+                    <div style="font-size: 0.78rem; color: var(--text-muted); margin-top: 6px;">
+                      Verified Merchant: <strong>Kamadhenu Gau Seva Trust</strong>
+                    </div>
+                  </div>
+                </div>
+
+                <div id="payment-field-card" class="payment-subfield" style="display: none;">
+                  <div class="form-row">
+                    <div class="form-group" style="flex:2;">
+                      <label class="form-label" style="font-size:0.85rem;">Card Number</label>
+                      <input type="text" class="form-control" placeholder="1234 5678 9012 3456" maxlength="19">
+                    </div>
+                    <div class="form-group" style="flex:1;">
+                      <label class="form-label" style="font-size:0.85rem;">Expiry (MM/YY)</label>
+                      <input type="text" class="form-control" placeholder="12/28" maxlength="5">
+                    </div>
+                    <div class="form-group" style="flex:1;">
+                      <label class="form-label" style="font-size:0.85rem;">CVV</label>
+                      <input type="password" class="form-control" placeholder="•••" maxlength="3">
+                    </div>
+                  </div>
+                </div>
+
+                <div id="payment-field-netbanking" class="payment-subfield" style="display: none;">
+                  <label class="form-label" style="font-size:0.85rem;">Select Bank</label>
+                  <select class="form-control">
+                    <option>State Bank of India (SBI)</option>
+                    <option>HDFC Bank</option>
+                    <option>ICICI Bank</option>
+                    <option>Axis Bank</option>
+                    <option>Punjab National Bank (PNB)</option>
+                    <option>Bank of Baroda</option>
+                  </select>
+                </div>
+              </div>
             </div>
 
             <button type="submit" class="btn btn-primary btn-lg btn-block">Place Order & Pay <?= format_currency($cartData['total']) ?> 🎉</button>

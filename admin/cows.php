@@ -34,6 +34,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $adoptionStatus = sanitize($_POST['adoption_status'] ?? 'Available');
     $fee = (float)($_POST['monthly_adoption_fee'] ?? 1500.00);
     $bio = sanitize($_POST['bio'] ?? '');
+    $checkoutMode = sanitize($_POST['checkout_mode'] ?? 'default');
+    $whatsappNumber = sanitize($_POST['whatsapp_number'] ?? '');
 
     if (empty($tagNumber)) $errors[] = 'Tag Number is required.';
     if (empty($name)) $errors[] = 'Cow Name is required.';
@@ -54,18 +56,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if ($editId > 0) {
             // Update
             $stmt = $pdo->prepare("
-                UPDATE cows SET tag_number = ?, name = ?, breed = ?, age_years = ?, gender = ?, health_status = ?, adoption_status = ?, monthly_adoption_fee = ?, bio = ?, main_image = ?
+                UPDATE cows SET tag_number = ?, name = ?, breed = ?, age_years = ?, gender = ?, health_status = ?, adoption_status = ?, monthly_adoption_fee = ?, bio = ?, main_image = ?, checkout_mode = ?, whatsapp_number = ?
                 WHERE id = ?
             ");
-            $stmt->execute([$tagNumber, $name, $breed, $ageYears, $gender, $healthStatus, $adoptionStatus, $fee, $bio, $imagePath, $editId]);
+            $stmt->execute([$tagNumber, $name, $breed, $ageYears, $gender, $healthStatus, $adoptionStatus, $fee, $bio, $imagePath, $checkoutMode, $whatsappNumber, $editId]);
             set_flash('success', 'Cow record updated.');
         } else {
             // Insert
             $stmt = $pdo->prepare("
-                INSERT INTO cows (tag_number, name, breed, age_years, gender, health_status, adoption_status, monthly_adoption_fee, bio, main_image)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                INSERT INTO cows (tag_number, name, breed, age_years, gender, health_status, adoption_status, monthly_adoption_fee, bio, main_image, checkout_mode, whatsapp_number)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             ");
-            $stmt->execute([$tagNumber, $name, $breed, $ageYears, $gender, $healthStatus, $adoptionStatus, $fee, $bio, $imagePath]);
+            $stmt->execute([$tagNumber, $name, $breed, $ageYears, $gender, $healthStatus, $adoptionStatus, $fee, $bio, $imagePath, $checkoutMode, $whatsappNumber]);
             set_flash('success', 'New cow added successfully.');
         }
         header('Location: cows.php');
@@ -86,8 +88,8 @@ $cowsList = $pdo->query("SELECT * FROM cows ORDER BY id DESC")->fetchAll();
 
 <?php if ($action === 'add' || $action === 'edit'): ?>
   
-  <div style="background:white; padding:30px; border-radius:var(--radius-md); box-shadow:var(--shadow-sm); max-width:800px; margin-bottom:30px;">
-    <h3 style="margin-bottom:20px;"><?= $action === 'edit' ? 'Edit Cow Details' : 'Add New Cow Record' ?></h3>
+  <div style="background:white; padding:35px; border-radius:var(--radius-md); box-shadow:var(--shadow-sm); width:100%; margin-bottom:30px;">
+    <h3 style="margin-bottom:20px; font-size:1.4rem; color:var(--primary-dark); border-bottom:2px solid var(--bg-light-green); padding-bottom:12px;"><?= $action === 'edit' ? 'Edit Cow Details' : 'Add New Cow Record' ?></h3>
     
     <?php if (!empty($errors)): ?>
       <div class="alert alert-error">
@@ -156,6 +158,29 @@ $cowsList = $pdo->query("SELECT * FROM cows ORDER BY id DESC")->fetchAll();
       </div>
 
       <div class="form-group">
+        <label class="form-label" style="font-weight:bold; color:var(--accent-orange);">🛒 Checkout / Adoption Option for this Cow</label>
+        <select name="checkout_mode" class="form-control" style="font-weight:bold; background:#fffcf6; border:1.5px solid var(--accent-orange);">
+          <option value="default" <?= ($editCow['checkout_mode'] ?? 'default') === 'default' ? 'selected' : '' ?>>⚙️ Global Setting Default (Use Admin Settings Mode)</option>
+          <option value="both" <?= ($editCow['checkout_mode'] ?? 'default') === 'both' ? 'selected' : '' ?>>🤝 Both Options (Show Both Website &amp; WhatsApp Adoption Buttons)</option>
+          <option value="whatsapp" <?= ($editCow['checkout_mode'] ?? 'default') === 'whatsapp' ? 'selected' : '' ?>>📱 WhatsApp Checkout Only (Direct WhatsApp Chat Link)</option>
+          <option value="website" <?= ($editCow['checkout_mode'] ?? 'default') === 'website' ? 'selected' : '' ?>>🌐 Website Checkout Only (Online Form &amp; Payment)</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" style="font-weight:bold; color:#2E7D32;">📱 Select WhatsApp Helpline Number for this Cow</label>
+        <select name="whatsapp_number" class="form-control" style="font-weight:bold;">
+          <option value="">⚙️ Default Primary WhatsApp Number (Use Admin Settings Default)</option>
+          <?php foreach (get_whatsapp_numbers_list() as $key => $phoneInfo): ?>
+            <option value="<?= htmlspecialchars($phoneInfo['number']) ?>" <?= ($editCow['whatsapp_number'] ?? '') === $phoneInfo['number'] ? 'selected' : '' ?>>
+              📞 <?= htmlspecialchars($phoneInfo['label']) ?>
+            </option>
+          <?php endforeach; ?>
+        </select>
+        <small style="color:var(--text-muted); font-size:0.8rem; display:block; margin-top:4px;">Choose which helpline number receives WhatsApp adoption inquiries for this specific cow.</small>
+      </div>
+
+      <div class="form-group">
         <label class="form-label">Biography & Rescue Details</label>
         <textarea name="bio" class="form-control" rows="4"><?= htmlspecialchars($editCow['bio'] ?? '') ?></textarea>
       </div>
@@ -217,7 +242,4 @@ $cowsList = $pdo->query("SELECT * FROM cows ORDER BY id DESC")->fetchAll();
 
 <?php endif; ?>
 
-</main>
-</div>
-</body>
-</html>
+<?php require_once __DIR__ . '/footer.php'; ?>

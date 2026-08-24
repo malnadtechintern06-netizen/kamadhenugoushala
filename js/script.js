@@ -3,6 +3,7 @@
  */
 
 document.addEventListener('DOMContentLoaded', () => {
+  initSitePreloader();
   initMobileMenu();
   initCartActions();
   initDonationPresets();
@@ -10,7 +11,52 @@ document.addEventListener('DOMContentLoaded', () => {
   initCardFilters();
   initQuantityControls();
   initThemeToggle();
+  initHeroBg3D();
+  initPaymentMethodSelector();
 });
+
+/**
+ * Website Opening & Refresh Loader (Index Page)
+ */
+function initSitePreloader() {
+  const preloader = document.getElementById('site-preloader');
+  if (!preloader) return;
+
+  const progressBar = preloader.querySelector('.preloader-bar');
+  const statusText = document.getElementById('preloader-status-text');
+
+  if (progressBar) {
+    requestAnimationFrame(() => {
+      setTimeout(() => {
+        progressBar.style.width = '100%';
+      }, 80);
+    });
+  }
+
+  // Update status messages gracefully during loading
+  if (statusText) {
+    setTimeout(() => {
+      statusText.textContent = 'Preparing Gau Seva...';
+    }, 700);
+    setTimeout(() => {
+      statusText.textContent = 'Welcome to Gau Sanctuary ✨';
+    }, 1400);
+  }
+
+  const finishLoading = () => {
+    if (preloader.classList.contains('preloader-done')) return;
+    preloader.classList.add('preloader-done');
+    setTimeout(() => {
+      preloader.style.display = 'none';
+      if (preloader.parentNode) preloader.parentNode.removeChild(preloader);
+    }, 600);
+  };
+
+  // Allow comfortable ~1.8s load display time so user experiences the animation nicely
+  setTimeout(finishLoading, 1800);
+}
+
+
 
 /**
  * Theme Toggle (Dark / Light Mode)
@@ -277,4 +323,157 @@ function getApiUrl(endpoint) {
   }
   return '/api/' + endpoint;
 }
+
+/**
+ * Subtle 3D Mouse Parallax on Hero Background Photo
+ */
+function initHeroBg3D() {
+  const hero = document.querySelector('.hero-section');
+  const heroBg = document.querySelector('.hero-bg-photo');
+  if (!hero || !heroBg) return;
+
+  hero.addEventListener('mousemove', (e) => {
+    const rect = hero.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    const centerX = rect.width / 2;
+    const centerY = rect.height / 2;
+    const moveX = (x - centerX) / centerX;
+    const moveY = (y - centerY) / centerY;
+
+    const rotateX = -moveY * 3;
+    const rotateY = moveX * 3.5;
+    const transX = -moveX * 14;
+    const transY = -moveY * 14;
+
+    heroBg.style.transform = `scale(1.06) translate3d(${transX}px, ${transY}px, 25px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+    heroBg.style.transition = 'transform 0.15s ease-out';
+  });
+
+  hero.addEventListener('mouseleave', () => {
+    heroBg.style.transform = '';
+    heroBg.style.transition = 'transform 1s ease-out';
+  });
+}
+
+/**
+ * Interactive Payment Options Selector
+ */
+function initPaymentMethodSelector() {
+  const cards = document.querySelectorAll('.payment-option-card');
+  if (!cards.length) return;
+
+  cards.forEach(card => {
+    const radio = card.querySelector('input[type="radio"]');
+    if (!radio) return;
+
+    const handleSelect = () => {
+      const container = card.closest('.payment-options-grid');
+      if (container) {
+        container.querySelectorAll('.payment-option-card').forEach(c => c.classList.remove('active'));
+      }
+      card.classList.add('active');
+      radio.checked = true;
+
+      const val = radio.value.toLowerCase();
+      const parentForm = card.closest('form');
+      if (!parentForm) return;
+
+      const subfields = parentForm.querySelectorAll('.payment-subfield');
+      subfields.forEach(sub => sub.style.display = 'none');
+
+      if (val.includes('upi')) {
+        const field = parentForm.querySelector('#payment-field-upi');
+        if (field) field.style.display = 'block';
+      } else if (val.includes('card')) {
+        const field = parentForm.querySelector('#payment-field-card');
+        if (field) field.style.display = 'block';
+      } else if (val.includes('banking') || val.includes('net')) {
+        const field = parentForm.querySelector('#payment-field-netbanking');
+        if (field) field.style.display = 'block';
+      } else if (val.includes('bank') || val.includes('neft')) {
+        const field = parentForm.querySelector('#payment-field-bank');
+        if (field) field.style.display = 'block';
+      }
+    };
+
+    card.addEventListener('click', handleSelect);
+    radio.addEventListener('change', handleSelect);
+  });
+}
+
+/**
+ * Copy UPI VPA ID to Clipboard with Toast Notification
+ */
+function copyUpiId(idText = 'kamadhenugoushala@sbi') {
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(idText).then(() => {
+      showToast('✓ UPI ID copied: ' + idText, 'success');
+    }).catch(() => {
+      fallbackCopy(idText);
+    });
+  } else {
+    fallbackCopy(idText);
+  }
+}
+
+function fallbackCopy(idText) {
+  const textarea = document.createElement('textarea');
+  textarea.value = idText;
+  document.body.appendChild(textarea);
+  textarea.select();
+  try {
+    document.execCommand('copy');
+    showToast('✓ UPI ID copied: ' + idText, 'success');
+  } catch (e) {
+    showToast('UPI VPA: ' + idText, 'info');
+  }
+  document.body.removeChild(textarea);
+}
+
+/**
+ * Day & Night Theme Toggle Handler (Light / Dark Mode)
+ */
+function initThemeToggle() {
+  const toggleBtn = document.getElementById('theme-toggle');
+  
+  // Read saved theme preference or default to light
+  const currentTheme = localStorage.getItem('theme') || 'light';
+  document.documentElement.setAttribute('data-theme', currentTheme);
+
+  const updateToggleUI = (theme) => {
+    if (!toggleBtn) return;
+    if (theme === 'dark') {
+      toggleBtn.innerHTML = '☀️ Day Mode';
+      toggleBtn.title = 'Switch to Day Mode (Light)';
+      toggleBtn.setAttribute('aria-label', 'Switch to Day Mode');
+    } else {
+      toggleBtn.innerHTML = '🌙 Night Mode';
+      toggleBtn.title = 'Switch to Night Mode (Dark)';
+      toggleBtn.setAttribute('aria-label', 'Switch to Night Mode');
+    }
+  };
+
+  updateToggleUI(currentTheme);
+
+  if (toggleBtn) {
+    toggleBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      const activeTheme = document.documentElement.getAttribute('data-theme');
+      const newTheme = activeTheme === 'dark' ? 'light' : 'dark';
+      
+      document.documentElement.setAttribute('data-theme', newTheme);
+      localStorage.setItem('theme', newTheme);
+      
+      updateToggleUI(newTheme);
+
+      if (typeof showToast === 'function') {
+        showToast(newTheme === 'dark' ? '🌙 Switched to Night Mode' : '☀️ Switched to Day Mode', 'info');
+      }
+    });
+  }
+}
+
+
+
 

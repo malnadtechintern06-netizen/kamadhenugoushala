@@ -40,8 +40,28 @@ $sevas = $stmt->fetchAll();
               <span>Suggested Contribution:</span>
               <span class="card-price"><?= format_currency($seva['suggested_amount']) ?></span>
             </div>
-            <div class="card-actions">
-              <a href="seva-details.php?id=<?= $seva['id'] ?>" class="btn btn-primary btn-sm" style="width:100%;">View Details & Offer Seva</a>
+            <?php 
+              $sevaMode = get_item_checkout_mode($seva, 'donation'); 
+              $waUrl = get_whatsapp_donation_url($seva['title'], $seva);
+              $siteUrl = get_base_url() . 'pages/seva-details.php?id=' . $seva['id'];
+            ?>
+            <div class="card-actions" style="display:flex; flex-direction:column; gap:6px;">
+              <?php if ($sevaMode === 'both'): ?>
+                <div style="display:flex; gap:6px;">
+                  <a href="<?= $siteUrl ?>" class="btn btn-primary btn-sm" style="flex:1; display:inline-flex; align-items:center; justify-content:center; gap:3px;">
+                    🌐 Donate Online
+                  </a>
+                  <a href="<?= $waUrl ?>" target="_blank" class="btn btn-sm" style="flex:1; background:#25D366; border-color:#25D366; color:white; display:inline-flex; align-items:center; justify-content:center; gap:3px;">
+                    <?= get_whatsapp_icon_svg() ?> WhatsApp
+                  </a>
+                </div>
+              <?php elseif ($sevaMode === 'whatsapp'): ?>
+                <a href="<?= $waUrl ?>" target="_blank" class="btn btn-primary btn-sm" style="width:100%; background:#25D366; border-color:#25D366; color:white; display:inline-flex; align-items:center; justify-content:center; gap:3px;">
+                  <?= get_whatsapp_icon_svg() ?> Offer Seva on WhatsApp
+                </a>
+              <?php else: ?>
+                <a href="<?= $siteUrl ?>" class="btn btn-primary btn-sm" style="width:100%;">View Details &amp; Offer Seva</a>
+              <?php endif; ?>
             </div>
           </div>
         </div>
