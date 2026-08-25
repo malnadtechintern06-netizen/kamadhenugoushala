@@ -19,8 +19,16 @@ $flashMessages = get_flash();
   <meta name="description" content="Kamadhenu Goushala - Non-profit sanctuary dedicated to cow protection, Gau Seva, organic Panchagavya products, and cow adoption in India.">
   <meta name="keywords" content="Goushala, Cow Protection, Gau Seva, Desi Cow, A2 Ghee, Gir Cow, Cow Adoption, Donation">
   
-  <!-- Favicon -->
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🐄</text></svg>">
+  <!-- Favicon / Tab Icon -->
+  <?php 
+    $faviconImg = get_setting('site_favicon_image', get_setting('site_logo_image', '')); 
+    $favIconEmoji = get_setting('site_logo_icon', '🐄');
+  ?>
+  <?php if (!empty($faviconImg)): ?>
+    <link rel="icon" href="<?= $baseUrl . htmlspecialchars($faviconImg) ?>">
+  <?php else: ?>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22><?= rawurlencode($favIconEmoji) ?></text></svg>">
+  <?php endif; ?>
   
   <!-- Master Stylesheet -->
   <link rel="stylesheet" href="<?= $baseUrl ?>css/style.css?v=<?= time() ?>">

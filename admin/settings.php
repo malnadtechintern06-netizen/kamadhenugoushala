@@ -19,10 +19,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             
             // ② Homepage Hero Banner
             'hero_badge_text', 'hero_title', 'hero_description',
-            'hero_primary_btn_text', 'hero_secondary_btn_text',
+            'hero_primary_btn_text', 'hero_secondary_btn_text', 'about_page_title',
             
             // ③ Video & About Mission
-            'homepage_youtube_url', 'about_section_title', 'about_section_text',
+            'homepage_youtube_url', 'homepage_youtube_urls', 'about_section_title', 'about_section_text',
             
             // ④ Homepage Section Titles & Subtitles
             'cows_section_title', 'cows_section_subtitle',
@@ -47,6 +47,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             // ⑦ Checkout Modes
             'cow_checkout_mode', 'product_checkout_mode', 'donation_checkout_mode',
+
+            // ⑧ Payment & QR Code Settings
+            'payment_upi_id',
         ];
 
         $stmt = $pdo->prepare("
@@ -56,12 +59,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         ");
 
         foreach ($keys as $key) {
-            $value = trim((string)($_POST[$key] ?? ''));
+            if ($key === 'homepage_youtube_urls') {
+                $urls = $_POST[$key] ?? [];
+                if (is_array($urls)) {
+                    $urls = array_filter(array_map('trim', $urls));
+                    $value = json_encode(array_values($urls));
+                } else {
+                    $value = '[]';
+                }
+            } else {
+                $value = trim((string)($_POST[$key] ?? ''));
+            }
             $stmt->execute([$key, $value]);
         }
 
         // Handle Image File Uploads for Site Settings
-        $imageKeys = ['site_logo_image', 'hero_bg_image', 'about_section_image'];
+        $imageKeys = ['site_logo_image', 'hero_bg_image', 'about_section_image', 'site_favicon_image', 'payment_qr_code_image', 'about_page_image'];
         foreach ($imageKeys as $imgKey) {
             if (isset($_FILES[$imgKey]) && $_FILES[$imgKey]['error'] === UPLOAD_ERR_OK) {
                 $upload = upload_file($_FILES[$imgKey], 'images/site');
@@ -230,13 +243,7 @@ function s($key, $default = '') {
   }
 </style>
 
-<!-- Page Header -->
-<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:24px;">
-  <div>
-    <h3 style="margin:0 0 4px; font-size:1.5rem;">Site Settings</h3>
-    <p style="margin:0; font-size:0.88rem; color:var(--text-muted);">All changes are saved directly to the database and reflected live on the public website.</p>
-  </div>
-</div>
+
 
 <?php if ($successMsg): ?>
   <div class="alert-success-settings">✅ <?= htmlspecialchars($successMsg) ?></div>
@@ -293,6 +300,15 @@ function s($key, $default = '') {
         <input type="file" name="site_logo_image" accept="image/*">
         <small style="color:var(--text-muted); display:block; margin-top:4px;">Upload a PNG/WEBP image logo to replace default icon.</small>
       </div>
+      <div class="settings-field" style="background:#fdfbf7; padding:12px; border-radius:8px; border:1px dashed #d0ded0; margin-top:12px;">
+        <label>✨ Custom Browser Tab Icon (Favicon Image File)</label>
+        <?php $favImg = s('site_favicon_image', ''); ?>
+        <?php if (!empty($favImg)): ?>
+          <div style="margin-bottom:8px;"><img src="<?= $baseUrl . $favImg ?>" alt="Favicon" style="height:32px; width:32px; object-fit:contain;"></div>
+        <?php endif; ?>
+        <input type="file" name="site_favicon_image" accept="image/*">
+        <small style="color:var(--text-muted); display:block; margin-top:4px;">Upload a custom PNG/ICO/SVG icon image for browser tabs. If blank, uses logo image or logo emoji icon.</small>
+      </div>
     </div>
 
     <!-- ② Homepage Hero Banner Configuration -->
@@ -328,6 +344,19 @@ function s($key, $default = '') {
         <?php endif; ?>
         <input type="file" name="hero_bg_image" accept="image/*">
         <small style="color:var(--text-muted); display:block; margin-top:4px;">Upload a high-res photo to replace background image.</small>
+      </div>
+      <div class="settings-field" style="background:#fdfbf7; padding:12px; border-radius:8px; border:1px dashed #d0ded0; margin-top:12px;">
+        <label>📖 About Page Main Heading</label>
+        <input type="text" name="about_page_title" value="<?= s('about_page_title', 'Dedicated to the Eternal Sacred Service of Gau Mata') ?>" placeholder="Dedicated to the Eternal Sacred Service of Gau Mata">
+      </div>
+      <div class="settings-field" style="background:#fdfbf7; padding:12px; border-radius:8px; border:1px dashed #d0ded0; margin-top:12px;">
+        <label>📸 Custom About Page Photo (Optional)</label>
+        <?php $aboutPageImg = s('about_page_image', ''); ?>
+        <?php if (!empty($aboutPageImg)): ?>
+          <div style="margin-bottom:8px;"><img src="<?= $baseUrl . $aboutPageImg ?>" alt="About Page Photo" style="height:60px; border-radius:6px; object-fit:cover;"></div>
+        <?php endif; ?>
+        <input type="file" name="about_page_image" accept="image/*">
+        <small style="color:var(--text-muted); display:block; margin-top:4px;">Upload a custom image for the About Page. Replaces the default about-hero.jpg.</small>
       </div>
     </div>
 
@@ -414,6 +443,33 @@ function s($key, $default = '') {
       </div>
     </div>
 
+    <!-- 💰 Payment & UPI QR Code Settings -->
+    <div class="settings-card" style="border: 2px solid #84418e; background: #faf4fc;">
+      <div class="settings-card-title" style="color: #84418e; border-bottom-color: rgba(132,65,142,0.2);">
+        <span class="icon">💰</span> Payment &amp; UPI QR Code Settings
+      </div>
+      <p style="font-size:0.83rem; color:var(--text-muted); margin-bottom:18px; line-height:1.4;">
+        Configure the official merchant payment details. If a custom QR Code image is not uploaded, an actual UPI QR Code will be dynamically generated for your UPI ID on checkout/donation pages!
+      </p>
+      
+      <div class="settings-field">
+        <label>📲 Official UPI VPA (UPI ID)</label>
+        <input type="text" name="payment_upi_id" value="<?= s('payment_upi_id', 'kamadhenugoushala@sbi') ?>" placeholder="e.g. kamadhenugoushala@sbi">
+        <small style="color:var(--text-muted); font-size:0.8rem; display:block; margin-top:4px;">This UPI ID is copied by users and used to generate the dynamic QR Code.</small>
+      </div>
+
+      <div class="settings-field" style="background:#fff; padding:12px; border-radius:8px; border:1px dashed #84418e;">
+        <label>📸 Custom Merchant QR Code Image (Optional)</label>
+        <?php $qrImg = s('payment_qr_code_image', ''); ?>
+        <?php if (!empty($qrImg)): ?>
+          <div style="margin-bottom:8px;">
+            <img src="<?= $baseUrl . $qrImg ?>" alt="Merchant QR Code" style="height:120px; border: 1px solid #ddd; padding: 4px; background: #fff; border-radius: 4px;">
+          </div>
+        <?php endif; ?>
+        <input type="file" name="payment_qr_code_image" accept="image/*">
+        <small style="color:var(--text-muted); display:block; margin-top:4px;">Upload your official UPI/Merchant QR Code (PNG, JPG or WEBP). If left blank, a dynamic QR code will be generated from the UPI VPA above.</small>
+      </div>
+    </div>
 
     <!-- Category 3: Titles, Video & Mission -->
     <div class="settings-section-title">
@@ -464,9 +520,28 @@ function s($key, $default = '') {
       <div class="settings-card-title">
         <span class="icon">📺</span> Video &amp; About Mission Section
       </div>
-      <div class="settings-field">
-        <label>Home Video Presentation URL (YouTube)</label>
-        <input type="url" name="homepage_youtube_url" value="<?= s('homepage_youtube_url', 'https://www.youtube.com/watch?v=pRsrn9THN8Q') ?>" placeholder="https://www.youtube.com/watch?v=pRsrn9THN8Q">
+      <!-- YouTube Video URLs list -->
+      <div class="settings-field" id="youtube-videos-container" style="background:#fffdf9; padding:15px; border-radius:10px; border:1px solid #ffe0b2; margin-bottom: 20px;">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 10px;">
+          <label style="font-weight:bold; color:var(--accent-orange); margin:0;">📺 Homepage YouTube Presentation Videos</label>
+          <button type="button" class="btn btn-secondary btn-sm" id="add-video-btn" style="padding:4px 12px; font-size:0.78rem; border-color:var(--accent-orange); color:var(--accent-orange);">+ Add Video</button>
+        </div>
+        <div id="video-inputs-list">
+          <?php 
+          $rawUrls = get_setting('homepage_youtube_urls', '');
+          $videoUrls = json_decode($rawUrls, true);
+          if (!is_array($videoUrls) || empty($videoUrls)) {
+              $oldUrl = get_setting('homepage_youtube_url', 'https://www.youtube.com/watch?v=pRsrn9THN8Q');
+              $videoUrls = [$oldUrl];
+          }
+          foreach ($videoUrls as $index => $url): ?>
+            <div class="video-input-item" style="display:flex; align-items:center; gap:8px; margin-bottom:8px;">
+              <input type="url" name="homepage_youtube_urls[]" value="<?= htmlspecialchars($url) ?>" placeholder="https://www.youtube.com/watch?v=..." class="form-control" style="flex:1;">
+              <button type="button" class="btn btn-danger btn-sm remove-video-btn" style="padding: 10px 12px; border-radius: 8px;">❌</button>
+            </div>
+          <?php endforeach; ?>
+        </div>
+        <small style="color:var(--text-muted); display:block; margin-top:6px; line-height:1.4;">Add one or more YouTube video links. They will display as a beautiful video carousel/gallery on the homepage. Keep at least one video.</small>
       </div>
       <div class="settings-field">
         <label>About Mission Section Title</label>
@@ -593,5 +668,39 @@ function s($key, $default = '') {
   </div>
 
 </form>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const container = document.getElementById('video-inputs-list');
+  const addBtn = document.getElementById('add-video-btn');
+
+  if (addBtn && container) {
+    addBtn.addEventListener('click', () => {
+      const div = document.createElement('div');
+      div.className = 'video-input-item';
+      div.style.display = 'flex';
+      div.style.alignItems = 'center';
+      div.style.gap = '8px';
+      div.style.marginBottom = '8px';
+      div.innerHTML = `
+        <input type="url" name="homepage_youtube_urls[]" value="" placeholder="https://www.youtube.com/watch?v=..." class="form-control" style="flex:1;">
+        <button type="button" class="btn btn-danger btn-sm remove-video-btn" style="padding: 10px 12px; border-radius: 8px;">❌</button>
+      `;
+      container.appendChild(div);
+    });
+
+    container.addEventListener('click', (e) => {
+      if (e.target.classList.contains('remove-video-btn') || e.target.closest('.remove-video-btn')) {
+        const item = e.target.closest('.video-input-item');
+        if (container.querySelectorAll('.video-input-item').length > 1) {
+          item.remove();
+        } else {
+          item.querySelector('input').value = '';
+        }
+      }
+    });
+  }
+});
+</script>
 
 <?php require_once __DIR__ . '/footer.php'; ?>

@@ -19,7 +19,7 @@ require_once __DIR__ . '/../includes/header.php';
     <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 50px; align-items: center;">
       <div>
         <span class="section-subtitle">OUR HERITAGE</span>
-        <h2 class="section-title">Dedicated to the Eternal Sacred Service of Gau Mata</h2>
+        <h2 class="section-title"><?= htmlspecialchars(get_setting('about_page_title', 'Dedicated to the Eternal Sacred Service of Gau Mata')) ?></h2>
         <p style="margin-bottom: 15px; color: var(--text-dark); line-height: 1.8;">
           Founded over 15 years ago in the sacred land of Vrindavan Dham, <strong>Kamadhenu Goushala</strong> is home to over 450 indigenous Indian cows (Bhos, Gir, Sahiwal, Tharparkar, Kankrej, Rathi).
         </p>
@@ -32,7 +32,8 @@ require_once __DIR__ . '/../includes/header.php';
       </div>
       <div>
         <div style="border-radius: var(--radius-lg); overflow: hidden; box-shadow: var(--shadow-lg); border: 4px solid var(--border-light);">
-          <img src="<?= $baseUrl ?>images/hero/about-hero.jpg" alt="Kamadhenu Goushala Pasture" onerror="this.src='https://images.unsplash.com/photo-1546445317-29f4545f9d52?auto=format&fit=crop&w=800&q=80'" style="width:100%; height:420px; object-fit:cover;">
+          <?php $customAboutPageImg = get_setting('about_page_image', ''); ?>
+          <img src="<?= !empty($customAboutPageImg) ? ($baseUrl . htmlspecialchars($customAboutPageImg)) : ($baseUrl . 'images/hero/about-hero.jpg') ?>" alt="Kamadhenu Goushala Pasture" onerror="this.src='https://images.unsplash.com/photo-1546445317-29f4545f9d52?auto=format&fit=crop&w=800&q=80'" style="width:100%; height:420px; object-fit:cover;">
         </div>
       </div>
     </div>

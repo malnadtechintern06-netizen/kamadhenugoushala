@@ -12,9 +12,10 @@ function is_admin() {
     return is_logged_in() && !empty($_SESSION['role']) && $_SESSION['role'] === 'admin';
 }
 
-function require_login() {
+function require_login($customMessage = 'Please log in or create an account to continue.') {
     if (!is_logged_in()) {
-        set_flash('error', 'Please log in to access this page.');
+        $_SESSION['redirect_after_login'] = $_SERVER['REQUEST_URI'] ?? '';
+        set_flash('error', $customMessage);
         header('Location: ' . get_base_url() . 'pages/login.php');
         exit;
     }

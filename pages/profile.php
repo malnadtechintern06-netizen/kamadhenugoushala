@@ -62,6 +62,12 @@ $adoptions = $stmtAdp->fetchAll();
             <p><strong>Location:</strong> <?= htmlspecialchars($user['city'] ?: '') ?>, <?= htmlspecialchars($user['state'] ?: '') ?></p>
             <p><strong>Member Since:</strong> <?= date('d M Y', strtotime($user['created_at'])) ?></p>
           </div>
+
+          <div style="margin-top: 20px; border-top: 1px solid var(--border-light); padding-top: 15px;">
+            <a href="<?= $baseUrl ?>pages/login.php?action=logout" class="btn btn-outline btn-block" style="color: #d32f2f; border-color: #d32f2f; display: flex; align-items: center; justify-content: center; gap: 6px; font-weight: 600; text-decoration: none;">
+              🚪 Log Out of Account
+            </a>
+          </div>
         </div>
       </div>
 
@@ -77,7 +83,7 @@ $adoptions = $stmtAdp->fetchAll();
                 <thead>
                   <tr>
                     <th>Order #</th>
-                    <th>Date</th>
+                    <th>Date & Time</th>
                     <th>Total</th>
                     <th>Payment</th>
                     <th>Status</th>
@@ -88,7 +94,7 @@ $adoptions = $stmtAdp->fetchAll();
                   <?php foreach ($orders as $o): ?>
                     <tr>
                       <td><strong><?= htmlspecialchars($o['order_number']) ?></strong></td>
-                      <td><?= date('d M Y', strtotime($o['created_at'])) ?></td>
+                      <td><?= date('d M Y, h:i A', strtotime($o['created_at'])) ?></td>
                       <td><?= format_currency($o['total_amount']) ?></td>
                       <td><span style="color:#2E7D32; font-weight:bold;"><?= htmlspecialchars($o['payment_status']) ?></span></td>
                       <td><span class="card-badge" style="position:static;"><?= htmlspecialchars($o['order_status']) ?></span></td>
@@ -114,7 +120,7 @@ $adoptions = $stmtAdp->fetchAll();
                     <th>Donation #</th>
                     <th>Program</th>
                     <th>Amount</th>
-                    <th>Date</th>
+                    <th>Date & Time</th>
                     <th>80G Receipt</th>
                   </tr>
                 </thead>
@@ -124,7 +130,7 @@ $adoptions = $stmtAdp->fetchAll();
                       <td><strong><?= htmlspecialchars($d['donation_number']) ?></strong></td>
                       <td><?= htmlspecialchars($d['purpose']) ?></td>
                       <td style="font-weight:bold; color:var(--accent-orange);"><?= format_currency($d['amount']) ?></td>
-                      <td><?= date('d M Y', strtotime($d['created_at'])) ?></td>
+                      <td><?= date('d M Y, h:i A', strtotime($d['created_at'])) ?></td>
                       <td><a href="success.php?type=donation&number=<?= urlencode($d['donation_number']) ?>" class="btn btn-outline btn-sm">View 80G</a></td>
                     </tr>
                   <?php endforeach; ?>
@@ -149,6 +155,7 @@ $adoptions = $stmtAdp->fetchAll();
                     <th>Duration</th>
                     <th>Total</th>
                     <th>Status</th>
+                    <th>Date & Time</th>
                     <th>Certificate</th>
                   </tr>
                 </thead>
@@ -160,6 +167,7 @@ $adoptions = $stmtAdp->fetchAll();
                       <td><?= $a['duration_months'] ?> Months</td>
                       <td style="font-weight:bold;"><?= format_currency($a['total_amount']) ?></td>
                       <td><span style="color:#2E7D32; font-weight:bold;"><?= htmlspecialchars($a['status']) ?></span></td>
+                      <td><?= date('d M Y, h:i A', strtotime($a['created_at'])) ?></td>
                       <td><a href="success.php?type=adoption&number=<?= urlencode($a['adoption_number']) ?>" class="btn btn-outline btn-sm">View Certificate</a></td>
                     </tr>
                   <?php endforeach; ?>

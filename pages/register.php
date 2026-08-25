@@ -55,7 +55,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $_SESSION['role'] = 'user';
 
         set_flash('success', 'Registration successful! Welcome to Kamadhenu Goushala.');
-        header('Location: profile.php');
+        
+        if (!empty($_SESSION['redirect_after_login'])) {
+            $redirectUrl = $_SESSION['redirect_after_login'];
+            unset($_SESSION['redirect_after_login']);
+            header('Location: ' . $redirectUrl);
+        } else {
+            header('Location: profile.php');
+        }
         exit;
     }
 }

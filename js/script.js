@@ -98,19 +98,36 @@ function initThemeToggle() {
 function initMobileMenu() {
   const hamburgerBtn = document.querySelector('.hamburger-btn');
   const navMenu = document.querySelector('.nav-menu');
+  const backdrop = document.querySelector('.nav-backdrop');
+
+  function toggleMenu(show) {
+    const isActive = show !== undefined ? show : !navMenu.classList.contains('active');
+    if (isActive) {
+      navMenu.classList.add('active');
+      if (backdrop) backdrop.classList.add('active');
+      hamburgerBtn.innerHTML = '✕';
+      document.body.style.overflow = 'hidden';
+    } else {
+      navMenu.classList.remove('active');
+      if (backdrop) backdrop.classList.remove('active');
+      hamburgerBtn.innerHTML = '☰';
+      document.body.style.overflow = '';
+    }
+  }
 
   if (hamburgerBtn && navMenu) {
-    hamburgerBtn.addEventListener('click', () => {
-      navMenu.classList.toggle('active');
-      hamburgerBtn.innerHTML = navMenu.classList.contains('active') ? '✕' : '☰';
+    hamburgerBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      toggleMenu();
     });
 
-    // Close when clicking outside
-    document.addEventListener('click', (e) => {
-      if (!navMenu.contains(e.target) && !hamburgerBtn.contains(e.target)) {
-        navMenu.classList.remove('active');
-        hamburgerBtn.innerHTML = '☰';
-      }
+    if (backdrop) {
+      backdrop.addEventListener('click', () => toggleMenu(false));
+    }
+
+    // Close when clicking nav links inside mobile drawer
+    navMenu.querySelectorAll('a').forEach(link => {
+      link.addEventListener('click', () => toggleMenu(false));
     });
   }
 }
@@ -444,11 +461,11 @@ function initThemeToggle() {
   const updateToggleUI = (theme) => {
     if (!toggleBtn) return;
     if (theme === 'dark') {
-      toggleBtn.innerHTML = '☀️ Day Mode';
+      toggleBtn.innerHTML = '☀️';
       toggleBtn.title = 'Switch to Day Mode (Light)';
       toggleBtn.setAttribute('aria-label', 'Switch to Day Mode');
     } else {
-      toggleBtn.innerHTML = '🌙 Night Mode';
+      toggleBtn.innerHTML = '🌙';
       toggleBtn.title = 'Switch to Night Mode (Dark)';
       toggleBtn.setAttribute('aria-label', 'Switch to Night Mode');
     }

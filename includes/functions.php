@@ -98,6 +98,16 @@ function get_youtube_embed_url($url) {
     return "https://www.youtube.com/embed/pRsrn9THN8Q";
 }
 
+/**
+ * Get YouTube Video ID from any standard link
+ */
+function get_youtube_video_id($url) {
+    if (preg_match('%(?:youtube(?:-nocookie)?\.com/(?:[^/]+/.+/|(?:v|e(?:mbed)?)/|[^/]+/*\?v=)|youtu\.be/)([^"&?/\s]{11})%i', $url, $match)) {
+        return $match[1];
+    }
+    return 'pRsrn9THN8Q'; // Default fallback video ID
+}
+
 
 /**
  * Secure File Upload Handler

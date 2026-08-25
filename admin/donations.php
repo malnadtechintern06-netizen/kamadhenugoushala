@@ -22,7 +22,7 @@ $donations = $pdo->query("SELECT * FROM donations ORDER BY id DESC")->fetchAll()
         <th>Amount</th>
         <th>Payment Status</th>
         <th>Txn ID</th>
-        <th>Date</th>
+        <th>Date & Time</th>
       </tr>
     </thead>
     <tbody>

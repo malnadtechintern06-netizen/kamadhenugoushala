@@ -21,6 +21,18 @@ function navActive($page) {
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title><?= htmlspecialchars($pageTitle) ?></title>
+  <!-- Favicon / Tab Icon -->
+  <?php 
+    $baseUrlAdmin = get_base_url();
+    $faviconImg = get_setting('site_favicon_image', get_setting('site_logo_image', '')); 
+    $favIconEmoji = get_setting('site_logo_icon', '🐄');
+  ?>
+  <?php if (!empty($faviconImg)): ?>
+    <link rel="icon" href="<?= $baseUrlAdmin . htmlspecialchars($faviconImg) ?>">
+  <?php else: ?>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22><?= rawurlencode($favIconEmoji) ?></text></svg>">
+  <?php endif; ?>
+
   <link rel="stylesheet" href="../css/style.css">
   <script>
     (function() {
@@ -56,6 +68,7 @@ function navActive($page) {
       <a href="adoptions.php" class="admin-nav-item <?= navActive('adoptions.php') ?>">🤝 Cow Adoptions</a>
       <a href="orders.php" class="admin-nav-item <?= navActive('orders.php') ?>">🛍 Product Orders</a>
       <a href="gallery.php" class="admin-nav-item <?= navActive('gallery.php') ?>">🖼 Gallery Photos</a>
+      <a href="videos.php" class="admin-nav-item <?= navActive('videos.php') ?>">📺 Manage Videos</a>
       <a href="events.php" class="admin-nav-item <?= navActive('events.php') ?>">📅 Manage Events</a>
       <a href="messages.php" class="admin-nav-item <?= navActive('messages.php') ?>">📩 Messages</a>
       <a href="users.php" class="admin-nav-item <?= navActive('users.php') ?>">👥 Manage Users</a>
@@ -73,9 +86,24 @@ function navActive($page) {
         <p style="margin:0; font-size:0.88rem; color:var(--text-muted);">Logged in as Administrator (<?= htmlspecialchars($_SESSION['user_name']) ?>)</p>
       </div>
       <div style="display:flex; align-items:center; gap:12px;">
-        <button id="theme-toggle" class="theme-toggle-btn" aria-label="Toggle Dark Mode" title="Toggle Dark Mode" style="border: 1.5px solid var(--primary-green); padding: 8px 14px; border-radius: 30px; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; font-weight: 600;">
-          🌙 Night Mode
+        <button id="theme-toggle" class="theme-toggle-btn" aria-label="Toggle Dark Mode" title="Toggle Dark Mode">
+          🌙
         </button>
         <a href="../index.php" class="btn btn-outline btn-sm" target="_blank">🌐 View Public Site</a>
       </div>
     </div>
+
+    <!-- Flash Alerts -->
+    <?php 
+    $flashMessages = get_flash();
+    if (!empty($flashMessages)): 
+    ?>
+      <div style="margin-top: 20px; margin-bottom: 5px;">
+        <?php foreach ($flashMessages as $msg): ?>
+          <div class="alert alert-<?= $msg['type'] === 'error' ? 'danger' : htmlspecialchars($msg['type']) ?>" style="padding: 12px 16px; border-radius: 8px; margin-bottom: 10px; font-weight: 500; display: flex; align-items: center; justify-content: space-between; background: <?= $msg['type'] === 'error' ? '#FFEBEE' : '#E8F5E9' ?>; color: <?= $msg['type'] === 'error' ? '#C62828' : '#2E7D32' ?>; border: 1px solid <?= $msg['type'] === 'error' ? '#FFCDD2' : '#C8E6C9' ?>;">
+            <span><?= htmlspecialchars($msg['message']) ?></span>
+            <button onclick="this.parentElement.remove()" style="background: none; border: none; font-size: 1.1rem; cursor: pointer; color: inherit; padding: 0 4px; line-height: 1;">&times;</button>
+          </div>
+        <?php endforeach; ?>
+      </div>
+    <?php endif; ?>

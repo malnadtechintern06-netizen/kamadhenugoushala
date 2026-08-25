@@ -39,7 +39,7 @@ $upcomingEvents = $stmtEvents->fetchAll();
 <!-- 2. Hero Section -->
 <?php 
   $customHeroImg = get_setting('hero_bg_image', ''); 
-  $heroBgStyle = !empty($customHeroImg) ? "background: linear-gradient(135deg, rgba(28, 56, 30, 0.88), rgba(46, 125, 50, 0.65)), url('" . $baseUrl . htmlspecialchars($customHeroImg) . "') center/cover no-repeat;" : "";
+  $heroBgStyle = !empty($customHeroImg) ? "background: linear-gradient(135deg, rgba(36, 69, 38, 0.72), rgba(56, 142, 60, 0.5)), url('" . $baseUrl . htmlspecialchars($customHeroImg) . "') center/cover no-repeat;" : "";
 ?>
 <section class="hero-section">
   <!-- 3D Animated Background Photo Layer -->
@@ -125,9 +125,58 @@ $upcomingEvents = $stmtEvents->fetchAll();
       </div>
       
       <div>
-        <div style="border-radius: var(--radius-lg); overflow: hidden; box-shadow: var(--shadow-lg); border: 4px solid var(--border-light); position: relative; padding-bottom: 56.25%; height: 0;">
-          <iframe src="<?= get_youtube_embed_url(get_setting('homepage_youtube_url', 'https://www.youtube.com/watch?v=pRsrn9THN8Q')) ?>" title="Goushala Video" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"></iframe>
+        <!-- Main Presentation Video Screen -->
+        <div style="border-radius: var(--radius-lg); overflow: hidden; box-shadow: var(--shadow-lg); border: 4px solid var(--border-light); position: relative; padding-bottom: 56.25%; height: 0; background: #000;">
+          <?php 
+          $rawUrls = get_setting('homepage_youtube_urls', '');
+          $videoUrls = json_decode($rawUrls, true);
+          if (!is_array($videoUrls) || empty($videoUrls)) {
+              $oldUrl = get_setting('homepage_youtube_url', 'https://www.youtube.com/watch?v=pRsrn9THN8Q');
+              $videoUrls = [$oldUrl];
+          }
+          $activeUrl = $videoUrls[0];
+          $activeEmbed = get_youtube_embed_url($activeUrl);
+          ?>
+          <iframe id="main-goushala-video" src="<?= $activeEmbed ?>" title="Goushala Video" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"></iframe>
         </div>
+
+        <!-- Video Selection Thumbnails (Show only if multiple videos exist) -->
+        <?php if (count($videoUrls) > 1): ?>
+          <div class="video-thumbnails-grid">
+            <?php foreach ($videoUrls as $idx => $url): 
+              $vidId = get_youtube_video_id($url);
+              $thumbUrl = "https://img.youtube.com/vi/" . $vidId . "/mqdefault.jpg";
+              $embedUrl = get_youtube_embed_url($url);
+            ?>
+              <div class="video-thumbnail-card <?= $idx === 0 ? 'active' : '' ?>" data-video-url="<?= htmlspecialchars($embedUrl) ?>">
+                <img src="<?= $thumbUrl ?>" alt="Video <?= $idx + 1 ?> Thumbnail">
+                <!-- Play Icon Overlay -->
+                <div class="thumb-play-overlay">
+                  <span>▶</span>
+                </div>
+              </div>
+            <?php endforeach; ?>
+          </div>
+          
+          <script>
+          document.addEventListener('DOMContentLoaded', () => {
+            const mainVideo = document.getElementById('main-goushala-video');
+            const thumbCards = document.querySelectorAll('.video-thumbnail-card');
+
+            thumbCards.forEach(card => {
+              card.addEventListener('click', () => {
+                // Update active state class
+                thumbCards.forEach(c => c.classList.remove('active'));
+                card.classList.add('active');
+
+                // Update main iframe video source url
+                const targetUrl = card.getAttribute('data-video-url');
+                mainVideo.src = targetUrl;
+              });
+            });
+          });
+          </script>
+        <?php endif; ?>
       </div>
     </div>
   </div>
@@ -387,7 +436,7 @@ $upcomingEvents = $stmtEvents->fetchAll();
 </section>
 
 <!-- 9. Donation CTA Banner -->
-<section class="cta-banner-section" style="background: linear-gradient(135deg, #1C381E, #2E7D32); color: #FFFFFF; padding: 70px 0; text-align: center;">
+<section class="cta-banner-section" style="background: linear-gradient(135deg, #244526, #388E3C); color: #FFFFFF; padding: 70px 0; text-align: center;">
   <div class="container" style="max-width: 800px;">
     <h2 style="color: #FFFFFF !important; font-size: 2.5rem; margin-bottom: 15px;">Transform a Cow's Life Today</h2>
     <p style="font-size: 1.15rem; color: #E0E7DE !important; margin-bottom: 30px;">

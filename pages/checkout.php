@@ -5,6 +5,8 @@ require_once __DIR__ . '/../includes/db.php';
 require_once __DIR__ . '/../includes/functions.php';
 require_once __DIR__ . '/../includes/auth.php';
 
+require_login('Please log in or create an account to proceed with checkout.');
+
 $cartData = get_cart_details();
 $items = $cartData['items'];
 
@@ -292,111 +294,74 @@ require_once __DIR__ . '/../includes/header.php';
               <!-- Dynamic Sub-fields -->
               <div class="payment-details-container" style="margin-top: 15px;">
                 <div id="payment-field-upi" class="payment-subfield" style="display: block;">
-                  <div class="qr-payment-card" style="background: var(--bg-light-green); border: 2px dashed var(--accent-orange); padding: 20px; border-radius: var(--radius-md); text-align: center;">
-                    <div style="font-weight: 700; font-size: 1.05rem; color: var(--primary-dark); margin-bottom: 4px;">
-                      📲 Scan QR Code To Pay (GPay / PhonePe / Paytm / BHIM)
-                    </div>
-                    <div style="font-size: 0.82rem; color: var(--text-muted); margin-bottom: 15px;">
-                      Scan with any UPI Scanner app or copy the official Goushala VPA below
-                    </div>
+                  <div class="qr-payment-wrapper">
+                    <div class="qr-payment-container">
+                      
+                      <!-- Scanner Viewfinder Box -->
+                      <div class="qr-scanner-outer">
+                        <div class="qr-scanner-bracket bracket-tl"></div>
+                        <div class="qr-scanner-bracket bracket-tr"></div>
+                        <div class="qr-scanner-bracket bracket-bl"></div>
+                        <div class="qr-scanner-bracket bracket-br"></div>
+                        
+                        <div class="qr-code-box">
+                          <?php 
+                          $upiId = get_setting('payment_upi_id', 'kamadhenugoushala@sbi');
+                          $customQr = get_setting('payment_qr_code_image', '');
+                          $siteName = get_setting('site_name', 'Kamadhenu Goushala');
+                          if (!empty($customQr)): ?>
+                            <img src="<?= $baseUrl . htmlspecialchars($customQr, ENT_QUOTES, 'UTF-8') ?>" alt="UPI QR Code" style="width: 140px; height: 140px; display: block; object-fit: contain;">
+                          <?php else: 
+                            $qrData = "upi://pay?pa=" . $upiId . "&pn=" . urlencode($siteName) . "&cu=INR";
+                            $qrApiUrl = "https://api.qrserver.com/v1/create-qr-code/?size=140x140&margin=0&data=" . urlencode($qrData);
+                          ?>
+                            <img src="<?= $qrApiUrl ?>" alt="Scan to Pay" style="width: 140px; height: 140px; display: block; object-fit: contain;">
+                          <?php endif; ?>
+                        </div>
+                      </div>
 
-                    <!-- Visual QR Code Badge -->
-                    <div class="qr-code-box" style="display: inline-block; background: white; padding: 16px; border-radius: 16px; box-shadow: var(--shadow-md); border: 3px solid var(--primary-dark); position: relative;">
-                      <svg width="160" height="160" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" style="display: block;">
-                        <rect width="200" height="200" fill="#ffffff" rx="10"/>
-                        <!-- Top Left Marker -->
-                        <rect x="15" y="15" width="45" height="45" fill="#84418e" rx="6"/>
-                        <rect x="23" y="23" width="29" height="29" fill="#ffffff" rx="3"/>
-                        <rect x="29" y="29" width="17" height="17" fill="#84418e" rx="2"/>
-                        <!-- Top Right Marker -->
-                        <rect x="140" y="15" width="45" height="45" fill="#84418e" rx="6"/>
-                        <rect x="148" y="23" width="29" height="29" fill="#ffffff" rx="3"/>
-                        <rect x="154" y="29" width="17" height="17" fill="#84418e" rx="2"/>
-                        <!-- Bottom Left Marker -->
-                        <rect x="15" y="140" width="45" height="45" fill="#84418e" rx="6"/>
-                        <rect x="23" y="148" width="29" height="29" fill="#ffffff" rx="3"/>
-                        <rect x="29" y="154" width="17" height="17" fill="#84418e" rx="2"/>
-                        <!-- QR Data Grid Pattern -->
-                        <g fill="#2B121A">
-                          <rect x="70" y="15" width="9" height="9" rx="2"/>
-                          <rect x="86" y="15" width="9" height="9" rx="2"/>
-                          <rect x="102" y="15" width="9" height="9" rx="2"/>
-                          <rect x="118" y="15" width="9" height="9" rx="2"/>
-                          <rect x="70" y="31" width="9" height="9" rx="2"/>
-                          <rect x="94" y="31" width="9" height="9" rx="2"/>
-                          <rect x="110" y="31" width="9" height="9" rx="2"/>
-                          <rect x="126" y="31" width="9" height="9" rx="2"/>
-                          <rect x="78" y="47" width="9" height="9" rx="2"/>
-                          <rect x="94" y="47" width="9" height="9" rx="2"/>
-                          <rect x="118" y="47" width="9" height="9" rx="2"/>
-                          <rect x="15" y="70" width="9" height="9" rx="2"/>
-                          <rect x="31" y="70" width="9" height="9" rx="2"/>
-                          <rect x="47" y="70" width="9" height="9" rx="2"/>
-                          <rect x="140" y="70" width="9" height="9" rx="2"/>
-                          <rect x="156" y="70" width="9" height="9" rx="2"/>
-                          <rect x="172" y="70" width="9" height="9" rx="2"/>
-                          <rect x="15" y="86" width="9" height="9" rx="2"/>
-                          <rect x="39" y="86" width="9" height="9" rx="2"/>
-                          <rect x="55" y="86" width="9" height="9" rx="2"/>
-                          <rect x="148" y="86" width="9" height="9" rx="2"/>
-                          <rect x="164" y="86" width="9" height="9" rx="2"/>
-                          <rect x="23" y="102" width="9" height="9" rx="2"/>
-                          <rect x="47" y="102" width="9" height="9" rx="2"/>
-                          <rect x="140" y="102" width="9" height="9" rx="2"/>
-                          <rect x="172" y="102" width="9" height="9" rx="2"/>
-                          <rect x="15" y="118" width="9" height="9" rx="2"/>
-                          <rect x="31" y="118" width="9" height="9" rx="2"/>
-                          <rect x="55" y="118" width="9" height="9" rx="2"/>
-                          <rect x="148" y="118" width="9" height="9" rx="2"/>
-                          <rect x="164" y="118" width="9" height="9" rx="2"/>
-                          <rect x="70" y="140" width="9" height="9" rx="2"/>
-                          <rect x="94" y="140" width="9" height="9" rx="2"/>
-                          <rect x="110" y="140" width="9" height="9" rx="2"/>
-                          <rect x="126" y="140" width="9" height="9" rx="2"/>
-                          <rect x="140" y="140" width="9" height="9" rx="2"/>
-                          <rect x="156" y="140" width="9" height="9" rx="2"/>
-                          <rect x="172" y="140" width="9" height="9" rx="2"/>
-                          <rect x="78" y="156" width="9" height="9" rx="2"/>
-                          <rect x="102" y="156" width="9" height="9" rx="2"/>
-                          <rect x="118" y="156" width="9" height="9" rx="2"/>
-                          <rect x="148" y="156" width="9" height="9" rx="2"/>
-                          <rect x="164" y="156" width="9" height="9" rx="2"/>
-                          <rect x="70" y="172" width="9" height="9" rx="2"/>
-                          <rect x="86" y="172" width="9" height="9" rx="2"/>
-                          <rect x="110" y="172" width="9" height="9" rx="2"/>
-                          <rect x="126" y="172" width="9" height="9" rx="2"/>
-                          <rect x="140" y="172" width="9" height="9" rx="2"/>
-                          <rect x="172" y="172" width="9" height="9" rx="2"/>
-                        </g>
-                        <!-- Center Gau Emblem -->
-                        <circle cx="100" cy="100" r="22" fill="#ffffff" stroke="#D9A441" stroke-width="2"/>
-                        <text x="100" y="106" font-size="18" text-anchor="middle">🐄</text>
-                      </svg>
-                    </div>
+                      <!-- Payment Information Column -->
+                      <div class="qr-payment-info">
+                        <div class="qr-payment-title">
+                          <span>📲</span> Scan &amp; Pay Instant UPI
+                        </div>
+                        <p style="font-size: 0.8rem; color: var(--text-muted); margin: 0;">
+                          Use GPay, PhonePe, Paytm, BHIM, or any banking app to scan this QR code.
+                        </p>
+                        
+                        <ol class="qr-payment-steps">
+                          <li>Open your preferred UPI or mobile banking app</li>
+                          <li>Scan the QR code displayed on the left</li>
+                          <li>Complete the payment of your order amount</li>
+                        </ol>
 
-                    <!-- UPI VPA and Copy Button -->
-                    <div style="margin-top: 14px; display: flex; align-items: center; justify-content: center; gap: 8px; flex-wrap: wrap;">
-                      <span style="font-weight: 600; font-size: 0.9rem; color: var(--primary-dark);">Official UPI VPA:</span>
-                      <code style="background: rgba(0,0,0,0.06); padding: 4px 12px; border-radius: 6px; font-weight: bold; color: var(--accent-orange); font-size: 1rem;">kamadhenugoushala@sbi</code>
-                      <button type="button" class="btn btn-secondary btn-sm" onclick="copyUpiId()" style="padding: 4px 12px; font-size: 0.8rem;">Copy 📋</button>
-                    </div>
-                    <div style="font-size: 0.78rem; color: var(--text-muted); margin-top: 6px;">
-                      Verified Merchant: <strong>Kamadhenu Gau Seva Trust</strong>
+                        <!-- VPA Block -->
+                        <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-top: 10px;">
+                          <span style="font-weight: 600; font-size: 0.85rem; color: var(--primary-dark);">UPI VPA:</span>
+                          <code style="background: rgba(0,0,0,0.06); padding: 4px 10px; border-radius: 6px; font-weight: bold; color: var(--accent-orange); font-size: 0.9rem;"><?= htmlspecialchars($upiId) ?></code>
+                          <button type="button" class="btn btn-secondary btn-sm" onclick="copyUpiId('<?= htmlspecialchars($upiId, ENT_QUOTES, 'UTF-8') ?>')" style="padding: 3px 10px; font-size: 0.75rem;">Copy 📋</button>
+                        </div>
+
+                        <div class="qr-merchant-tag">
+                          Verified Merchant: <strong>Kamadhenu Gau Seva Trust</strong>
+                        </div>
+                      </div>
+
                     </div>
                   </div>
                 </div>
 
                 <div id="payment-field-card" class="payment-subfield" style="display: none;">
-                  <div class="form-row">
-                    <div class="form-group" style="flex:2;">
+                  <div class="card-details-grid">
+                    <div class="form-group" style="margin-bottom:0;">
                       <label class="form-label" style="font-size:0.85rem;">Card Number</label>
                       <input type="text" class="form-control" placeholder="1234 5678 9012 3456" maxlength="19">
                     </div>
-                    <div class="form-group" style="flex:1;">
+                    <div class="form-group" style="margin-bottom:0;">
                       <label class="form-label" style="font-size:0.85rem;">Expiry (MM/YY)</label>
                       <input type="text" class="form-control" placeholder="12/28" maxlength="5">
                     </div>
-                    <div class="form-group" style="flex:1;">
+                    <div class="form-group" style="margin-bottom:0;">
                       <label class="form-label" style="font-size:0.85rem;">CVV</label>
                       <input type="password" class="form-control" placeholder="•••" maxlength="3">
                     </div>

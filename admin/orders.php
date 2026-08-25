@@ -34,7 +34,7 @@ $orders = $pdo->query("SELECT * FROM orders ORDER BY id DESC")->fetchAll();
         <th>Total Amount</th>
         <th>Payment</th>
         <th>Order Status</th>
-        <th>Date</th>
+        <th>Date & Time</th>
         <th>Action</th>
       </tr>
     </thead>
@@ -61,7 +61,7 @@ $orders = $pdo->query("SELECT * FROM orders ORDER BY id DESC")->fetchAll();
               </select>
             </form>
           </td>
-          <td><?= date('d M Y', strtotime($o['created_at'])) ?></td>
+          <td><?= date('d M Y, h:i A', strtotime($o['created_at'])) ?></td>
           <td>
             <a href="../pages/success.php?type=order&number=<?= urlencode($o['order_number']) ?>" target="_blank" class="btn btn-outline btn-sm">View Receipt</a>
           </td>

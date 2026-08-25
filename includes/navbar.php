@@ -39,6 +39,14 @@ function isActive($page, $dir = '') {
         <li><a href="<?= $baseUrl ?>pages/events.php" class="nav-link <?= isActive('events.php', 'pages') ?>">Events</a></li>
         <li><a href="<?= $baseUrl ?>pages/gallery.php" class="nav-link <?= isActive('gallery.php', 'pages') ?>">Gallery</a></li>
         <li><a href="<?= $baseUrl ?>pages/contact.php" class="nav-link <?= isActive('contact.php', 'pages') ?>">Contact</a></li>
+        <?php if (is_logged_in()): ?>
+          <li><a href="<?= $baseUrl ?>pages/profile.php" class="nav-link <?= isActive('profile.php', 'pages') ?>">My Account</a></li>
+        <?php else: ?>
+          <li><a href="<?= $baseUrl ?>pages/login.php" class="nav-link <?= isActive('login.php', 'pages') ?>">Login</a></li>
+        <?php endif; ?>
+        <li class="mobile-only-action" style="margin-top: 15px; width: 100%;">
+          <a href="<?= $baseUrl ?>pages/donate.php" class="btn btn-primary btn-block text-center" style="display: block; width: 100%;">Donate Now 💖</a>
+        </li>
       </ul>
 
       <!-- Navbar Actions (Cart & Donate CTA) -->
@@ -50,9 +58,21 @@ function isActive($page, $dir = '') {
           🛒
           <span class="cart-badge" style="<?= $cartCount > 0 ? 'display:flex;' : 'display:none;' ?>"><?= $cartCount ?></span>
         </a>
+
+        <?php if (is_logged_in()): ?>
+          <a href="<?= $baseUrl ?>pages/profile.php" class="user-account-btn" title="My Profile" style="display:inline-flex; align-items:center; gap:6px; padding:6px 14px; border-radius:50px; background-color:var(--bg-light-green); color:var(--primary-dark); font-weight:600; text-decoration:none; font-size:0.9rem; transition:var(--transition-fast);">
+            👤 <?= htmlspecialchars(mb_strimwidth($_SESSION['user_name'] ?? 'Account', 0, 10, '..')) ?>
+          </a>
+        <?php else: ?>
+          <a href="<?= $baseUrl ?>pages/login.php" class="user-account-btn" title="Login / Register" style="display:inline-flex; align-items:center; gap:6px; padding:6px 14px; border-radius:50px; background-color:var(--bg-light-green); color:var(--primary-dark); font-weight:600; text-decoration:none; font-size:0.9rem; transition:var(--transition-fast);">
+            👤 Login
+          </a>
+        <?php endif; ?>
+
         <a href="<?= $baseUrl ?>pages/donate.php" class="btn btn-primary btn-sm">Donate Now</a>
         <button class="hamburger-btn" aria-label="Toggle Menu">☰</button>
       </div>
     </nav>
   </div>
 </header>
+<div class="nav-backdrop"></div>

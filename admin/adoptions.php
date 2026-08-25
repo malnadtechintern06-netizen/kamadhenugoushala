@@ -40,6 +40,7 @@ $adoptions = $pdo->query("
         <th>Duration</th>
         <th>Total Amount</th>
         <th>Status</th>
+        <th>Date & Time</th>
         <th>Update</th>
       </tr>
     </thead>
@@ -53,6 +54,7 @@ $adoptions = $pdo->query("
           <td><?= $a['duration_months'] ?> Months</td>
           <td style="font-weight:bold; color:var(--primary-dark);"><?= format_currency($a['total_amount']) ?></td>
           <td><span style="color:<?= $a['status'] === 'Active' ? '#2E7D32' : '#C62828'; ?>; font-weight:bold;"><?= htmlspecialchars($a['status']) ?></span></td>
+          <td><?= date('d M Y, h:i A', strtotime($a['created_at'])) ?></td>
           <td>
             <form method="POST" action="adoptions.php" style="display:flex; gap:5px;">
               <?= csrf_field() ?>
