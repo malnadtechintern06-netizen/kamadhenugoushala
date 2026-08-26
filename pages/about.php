@@ -7,9 +7,9 @@ require_once __DIR__ . '/../includes/header.php';
 
 <div class="page-banner">
   <div class="container">
-    <h1>About Kamadhenu Goushala</h1>
+    <h1><?= __('about_page_heading', 'About Kamadhenu Goushala') ?></h1>
     <div class="breadcrumb">
-      <a href="<?= $baseUrl ?>index.php">Home</a> / <span>About Us</span>
+      <a href="<?= $baseUrl ?>index.php"><?= __('nav_home', 'Home') ?></a> / <span><?= __('nav_about', 'About Us') ?></span>
     </div>
   </div>
 </div>
@@ -18,16 +18,16 @@ require_once __DIR__ . '/../includes/header.php';
   <div class="container">
     <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 50px; align-items: center;">
       <div>
-        <span class="section-subtitle">OUR HERITAGE</span>
-        <h2 class="section-title"><?= htmlspecialchars(get_setting('about_page_title', 'Dedicated to the Eternal Sacred Service of Gau Mata')) ?></h2>
+        <span class="section-subtitle"><?= __('about_heritage', 'OUR HERITAGE') ?></span>
+        <h2 class="section-title"><?= htmlspecialchars(__('about_title', get_setting('about_page_title', 'Dedicated to the Eternal Sacred Service of Gau Mata'))) ?></h2>
         <p style="margin-bottom: 15px; color: var(--text-dark); line-height: 1.8;">
-          Founded over 15 years ago in the sacred land of Vrindavan Dham, <strong>Kamadhenu Goushala</strong> is home to over 450 indigenous Indian cows (Bhos, Gir, Sahiwal, Tharparkar, Kankrej, Rathi).
+          <?= __('about_text_1', 'Founded over 15 years ago in the sacred land of Vrindavan Dham, Kamadhenu Goushala is home to over 450 indigenous Indian cows (Gir, Sahiwal, Tharparkar, Kankrej, Rathi).') ?>
         </p>
         <p style="margin-bottom: 15px; color: var(--text-dark); line-height: 1.8;">
-          Unlike commercial dairy farms, our sanctuary provides unconditional lifelong shelter to non-lactating, stray, aged, and accident-rescued cows. We treat every cow as a manifestation of sacred motherly warmth.
+          <?= __('about_text_2', 'Unlike commercial dairy farms, our sanctuary provides unconditional lifelong shelter to non-lactating, stray, aged, and accident-rescued cows. We treat every cow as a manifestation of sacred motherly warmth.') ?>
         </p>
         <p style="color: var(--text-muted); line-height: 1.8;">
-          Our sanctuary is equipped with round-the-clock veterinary doctors, emergency ambulances, rain-proof solar shelters, and sprawling green fodder pastures.
+          <?= __('about_text_3', 'Our sanctuary is equipped with round-the-clock veterinary doctors, emergency ambulances, rain-proof solar shelters, and sprawling green fodder pastures.') ?>
         </p>
       </div>
       <div>
@@ -44,32 +44,32 @@ require_once __DIR__ . '/../includes/header.php';
 <section class="section-padding bg-light">
   <div class="container">
     <div class="text-center" style="max-width: 600px; margin: 0 auto 40px auto;">
-      <span class="section-subtitle">OUR FOUNDATION</span>
-      <h2 class="section-title center">Vision, Mission & Core Values</h2>
+      <span class="section-subtitle"><?= __('about_foundation', 'OUR FOUNDATION') ?></span>
+      <h2 class="section-title center"><?= __('about_vision_mission', 'Vision, Mission & Core Values') ?></h2>
     </div>
 
     <div class="card-grid">
       <div class="card" style="padding: 30px;">
         <div style="font-size: 2.5rem; color: var(--accent-orange); margin-bottom: 15px;">🌟</div>
-        <h3 class="card-title">Our Vision</h3>
+        <h3 class="card-title"><?= __('about_vision', 'Our Vision') ?></h3>
         <p class="card-text">
-          To create a world where indigenous Desi cow breeds flourish without fear of slaughter, exploitation, or abandonment, serving as the cornerstone of organic agriculture and human wellness.
+          <?= __('about_vision_text', 'To create a world where indigenous Desi cow breeds flourish without fear of slaughter, exploitation, or abandonment, serving as the cornerstone of organic agriculture and human wellness.') ?>
         </p>
       </div>
 
       <div class="card" style="padding: 30px;">
         <div style="font-size: 2.5rem; color: var(--primary-green); margin-bottom: 15px;">🌿</div>
-        <h3 class="card-title">Our Mission</h3>
+        <h3 class="card-title"><?= __('about_mission', 'Our Mission') ?></h3>
         <p class="card-text">
-          Rescue injured and abandoned stray cattle, provide 24/7 veterinary healthcare, cultivate organic green fodder, and promote Vedic Panchagavya products to achieve self-sustained Goushala management.
+          <?= __('about_mission_text', 'Rescue injured and abandoned stray cattle, provide 24/7 veterinary healthcare, cultivate organic green fodder, and promote Vedic Panchagavya products to achieve self-sustained Goushala management.') ?>
         </p>
       </div>
 
       <div class="card" style="padding: 30px;">
         <div style="font-size: 2.5rem; color: var(--primary-dark); margin-bottom: 15px;">🙏</div>
-        <h3 class="card-title">Our Core Values</h3>
+        <h3 class="card-title"><?= __('about_values', 'Our Core Values') ?></h3>
         <p class="card-text">
-          <strong>Ahimsa (Non-Violence)</strong>, <strong>Pure Devotion</strong>, <strong>Complete Transparency</strong> in donor funds, and <strong>Environmental Sustainability</strong> through zero-waste organic farming.
+          <?= __('about_values_text', 'Ahimsa (Non-Violence), Pure Devotion, Complete Transparency in donor funds, and Environmental Sustainability through zero-waste organic farming.') ?>
         </p>
       </div>
     </div>
@@ -80,26 +80,26 @@ require_once __DIR__ . '/../includes/header.php';
 <section class="section-padding bg-white">
   <div class="container">
     <div class="text-center" style="max-width: 600px; margin: 0 auto 30px auto;">
-      <span class="section-subtitle">IMPACT IN NUMBERS</span>
-      <h2 class="section-title center">Live Sanctuary Impact</h2>
+      <span class="section-subtitle"><?= __('about_impact_subtitle', 'IMPACT IN NUMBERS') ?></span>
+      <h2 class="section-title center"><?= __('about_impact_title', 'Live Sanctuary Impact') ?></h2>
     </div>
 
     <div class="stats-grid">
       <div class="stat-box">
         <div class="stat-number"><?= htmlspecialchars(get_setting('total_cows_count', '450')) ?>+</div>
-        <div class="stat-label">Cows Under Sanctuary Care</div>
+        <div class="stat-label"><?= __('about_stat_cows', 'Cows Under Sanctuary Care') ?></div>
       </div>
       <div class="stat-box">
         <div class="stat-number"><?= htmlspecialchars(get_setting('rescued_cows_count', '310')) ?>+</div>
-        <div class="stat-label">Rescued From Accidents & Slaughter</div>
+        <div class="stat-label"><?= __('about_stat_rescued', 'Rescued From Accidents & Slaughter') ?></div>
       </div>
       <div class="stat-box">
         <div class="stat-number"><?= htmlspecialchars(get_setting('volunteers_count', '120')) ?>+</div>
-        <div class="stat-label">Active Sevaks & Volunteers</div>
+        <div class="stat-label"><?= __('about_stat_volunteers', 'Active Sevaks & Volunteers') ?></div>
       </div>
       <div class="stat-box">
         <div class="stat-number"><?= htmlspecialchars(get_setting('years_of_service', '15')) ?>+</div>
-        <div class="stat-label">Years of Uninterrupted Service</div>
+        <div class="stat-label"><?= __('about_stat_years', 'Years of Uninterrupted Service') ?></div>
       </div>
     </div>
   </div>
@@ -109,29 +109,29 @@ require_once __DIR__ . '/../includes/header.php';
 <section class="section-padding bg-light">
   <div class="container">
     <div class="text-center" style="max-width: 600px; margin: 0 auto 40px auto;">
-      <span class="section-subtitle">INFRASTRUCTURE</span>
-      <h2 class="section-title center">World-Class Facilities</h2>
+      <span class="section-subtitle"><?= __('about_infra_subtitle', 'INFRASTRUCTURE') ?></span>
+      <h2 class="section-title center"><?= __('about_infra_title', 'World-Class Facilities') ?></h2>
     </div>
 
     <div class="card-grid">
       <div class="card" style="padding: 25px;">
-        <h4>🏥 Veterinary Hospital & ICU</h4>
-        <p>Outfitted with modern surgical units, X-ray facilities, ambulance vans, and resident doctors for immediate trauma treatment.</p>
+        <h4><?= __('about_facility_1_title', '🏥 Veterinary Hospital & ICU') ?></h4>
+        <p><?= __('about_facility_1_text', 'Outfitted with modern surgical units, X-ray facilities, ambulance vans, and resident doctors for immediate trauma treatment.') ?></p>
       </div>
 
       <div class="card" style="padding: 25px;">
-        <h4>🌾 25-Acre Organic Fodder Farm</h4>
-        <p>Cultivating pesticide-free Napier grass, Lucerne, Sorghum, and green crops watered via drip irrigation.</p>
+        <h4><?= __('about_facility_2_title', '🌾 25-Acre Organic Fodder Farm') ?></h4>
+        <p><?= __('about_facility_2_text', 'Cultivating pesticide-free Napier grass, Lucerne, Sorghum, and green crops watered via drip irrigation.') ?></p>
       </div>
 
       <div class="card" style="padding: 25px;">
-        <h4>☀️ Solar Roofed Aerated Sheds</h4>
-        <p>Spacious, clean, rubber-matted cow sheds with automated drinking water troughs and large ceiling fans.</p>
+        <h4><?= __('about_facility_3_title', '☀️ Solar Roofed Aerated Sheds') ?></h4>
+        <p><?= __('about_facility_3_text', 'Spacious, clean, rubber-matted cow sheds with automated drinking water troughs and large ceiling fans.') ?></p>
       </div>
 
       <div class="card" style="padding: 25px;">
-        <h4>🍯 A2 Bilona Processing Lab</h4>
-        <p>Traditional wooden churner (Bilona) facility ensuring authentic A2 Gir Cow Ghee prepared in accordance with Charaka Samhita.</p>
+        <h4><?= __('about_facility_4_title', '🍯 A2 Bilona Processing Lab') ?></h4>
+        <p><?= __('about_facility_4_text', 'Traditional wooden churner (Bilona) facility ensuring authentic A2 Gir Cow Ghee prepared in accordance with Charaka Samhita.') ?></p>
       </div>
     </div>
   </div>

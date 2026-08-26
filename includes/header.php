@@ -4,6 +4,7 @@
 require_once __DIR__ . '/db.php';
 require_once __DIR__ . '/functions.php';
 require_once __DIR__ . '/auth.php';
+require_once __DIR__ . '/lang.php';
 
 $pageTitle = $pageTitle ?? 'Kamadhenu Goushala - Love, Care & Seva for Gau Mata';
 $baseUrl = get_base_url();
@@ -11,10 +12,11 @@ $cartCount = get_cart_count();
 $flashMessages = get_flash();
 ?>
 <!DOCTYPE html>
-<html lang="en">
+<html lang="<?= htmlspecialchars(get_current_lang()) ?>" class="notranslate" translate="no">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="google" content="notranslate">
   <title><?= htmlspecialchars($pageTitle) ?></title>
   <meta name="description" content="Kamadhenu Goushala - Non-profit sanctuary dedicated to cow protection, Gau Seva, organic Panchagavya products, and cow adoption in India.">
   <meta name="keywords" content="Goushala, Cow Protection, Gau Seva, Desi Cow, A2 Ghee, Gir Cow, Cow Adoption, Donation">

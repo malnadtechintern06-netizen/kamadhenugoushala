@@ -9,7 +9,7 @@ $stmt->execute([$cowId]);
 $cow = $stmt->fetch();
 
 if (!$cow) {
-    echo "<div class='container text-center' style='padding:100px 0;'><h2>Cow Not Found</h2><p>The requested cow record does not exist.</p><a href='cows.php' class='btn btn-secondary'>Back to Cows</a></div>";
+    echo "<div class='container text-center' style='padding:100px 0;'><h2>" . __('cow_not_found', 'Cow Not Found') . "</h2><p>" . __('no_records_found', 'The requested cow record does not exist.') . "</p><a href='cows.php' class='btn btn-secondary'>" . __('btn_back_to_cows', 'Back to Cows') . "</a></div>";
     require_once __DIR__ . '/../includes/footer.php';
     exit;
 }
@@ -19,14 +19,14 @@ $stmtImg = $pdo->prepare("SELECT image_path FROM cow_images WHERE cow_id = ?");
 $stmtImg->execute([$cowId]);
 $additionalImages = $stmtImg->fetchAll(PDO::FETCH_COLUMN);
 
-$pageTitle = htmlspecialchars($cow['name']) . " (" . htmlspecialchars($cow['breed']) . ") - Kamadhenu Goushala";
+$pageTitle = htmlspecialchars(__($cow['name'], $cow['name'])) . " (" . htmlspecialchars(__($cow['breed'], $cow['breed'])) . ") - Kamadhenu Goushala";
 ?>
 
 <div class="page-banner">
   <div class="container">
-    <h1><?= htmlspecialchars($cow['name']) ?></h1>
+    <h1><?= htmlspecialchars(__($cow['name'], $cow['name'])) ?></h1>
     <div class="breadcrumb">
-      <a href="<?= $baseUrl ?>index.php">Home</a> / <a href="cows.php">Our Cows</a> / <span><?= htmlspecialchars($cow['name']) ?></span>
+      <a href="<?= $baseUrl ?>index.php"><?= __('nav_home', 'Home') ?></a> / <a href="cows.php"><?= __('nav_cows', 'Our Cows') ?></a> / <span><?= htmlspecialchars(__($cow['name'], $cow['name'])) ?></span>
     </div>
   </div>
 </div>
@@ -55,26 +55,26 @@ $pageTitle = htmlspecialchars($cow['name']) . " (" . htmlspecialchars($cow['bree
       <div>
         <div style="display: flex; gap: 10px; align-items: center; margin-bottom: 10px;">
           <span class="card-badge status-<?= strtolower(str_replace(' ', '-', $cow['health_status'])) ?>">
-            <?= htmlspecialchars($cow['health_status']) ?>
+            <?= htmlspecialchars(__($cow['health_status'], $cow['health_status'])) ?>
           </span>
-          <span style="font-size: 0.9rem; color: var(--text-muted);">Tag #: <strong><?= htmlspecialchars($cow['tag_number']) ?></strong></span>
+          <span style="font-size: 0.9rem; color: var(--text-muted);"><?= __('tag_label_full', 'Tag #:') ?> <strong><?= htmlspecialchars($cow['tag_number']) ?></strong></span>
         </div>
 
-        <h2 style="font-size: 2.5rem; color: var(--primary-dark); margin-bottom: 10px;"><?= htmlspecialchars($cow['name']) ?></h2>
+        <h2 style="font-size: 2.5rem; color: var(--primary-dark); margin-bottom: 10px;"><?= htmlspecialchars(__($cow['name'], $cow['name'])) ?></h2>
         
         <div style="background: var(--bg-light-green); padding: 20px; border-radius: var(--radius-md); margin-bottom: 25px; border: 1px solid var(--border-light);">
           <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; font-size: 0.95rem;">
-            <div><strong>Breed:</strong> <?= htmlspecialchars($cow['breed']) ?></div>
-            <div><strong>Age:</strong> <?= $cow['age_years'] ?> Years</div>
-            <div><strong>Gender:</strong> <?= htmlspecialchars($cow['gender']) ?></div>
-            <div><strong>Adoption Status:</strong> <span style="color:var(--primary-dark); font-weight:bold;"><?= htmlspecialchars($cow['adoption_status']) ?></span></div>
-            <div style="grid-column: span 2;"><strong>Monthly Support Fee:</strong> <span style="color:var(--accent-orange); font-size: 1.3rem; font-weight:bold;"><?= format_currency($cow['monthly_adoption_fee']) ?> / Month</span></div>
+            <div><strong><?= __('breed_label_full', 'Breed:') ?></strong> <?= htmlspecialchars(__($cow['breed'], $cow['breed'])) ?></div>
+            <div><strong><?= __('age_label_full', 'Age:') ?></strong> <?= $cow['age_years'] ?> <?= __('years_label', 'Years') ?></div>
+            <div><strong><?= __('gender_label_full', 'Gender:') ?></strong> <?= htmlspecialchars(__($cow['gender'], $cow['gender'])) ?></div>
+            <div><strong><?= __('adoption_status_label', 'Adoption Status:') ?></strong> <span style="color:var(--primary-dark); font-weight:bold;"><?= htmlspecialchars(__($cow['adoption_status'], $cow['adoption_status'])) ?></span></div>
+            <div style="grid-column: span 2;"><strong><?= __('monthly_sponsorship_label', 'Monthly Support Fee:') ?></strong> <span style="color:var(--accent-orange); font-size: 1.3rem; font-weight:bold;"><?= format_currency($cow['monthly_adoption_fee']) ?> <?= __('mo_label', '/mo') ?></span></div>
           </div>
         </div>
 
-        <h3>Biography & Story</h3>
+        <h3><?= __('about_gau_mata_heading', 'Biography & Story') ?></h3>
         <p style="color: var(--text-dark); line-height: 1.8; margin-bottom: 30px;">
-          <?= nl2br(htmlspecialchars($cow['bio'])) ?>
+          <?= nl2br(htmlspecialchars(__($cow['bio'], $cow['bio']))) ?>
         </p>
 
         <?php 
@@ -85,19 +85,19 @@ $pageTitle = htmlspecialchars($cow['name']) . " (" . htmlspecialchars($cow['bree
         <div style="display: flex; gap: 15px; flex-wrap: wrap;">
           <?php if ($cowMode === 'both'): ?>
             <a href="<?= $siteUrl ?>" class="btn btn-primary btn-lg" style="flex:1; display:inline-flex; align-items:center; justify-content:center; gap:5px;">
-              🌐 Adopt Online
+              🌐 <?= __('btn_adopt_online', 'Adopt Online') ?>
             </a>
             <a href="<?= $waUrl ?>" target="_blank" class="btn btn-lg" style="flex:1; background:#25D366; border-color:#25D366; color:white; display:inline-flex; align-items:center; justify-content:center; gap:5px;">
-              <?= get_whatsapp_icon_svg('1.25em') ?> Adopt via WhatsApp
+              <?= get_whatsapp_icon_svg('1.25em') ?> WhatsApp
             </a>
           <?php elseif ($cowMode === 'whatsapp'): ?>
             <a href="<?= $waUrl ?>" target="_blank" class="btn btn-lg" style="flex:1; background:#25D366; border-color:#25D366; color:white; display:inline-flex; align-items:center; justify-content:center; gap:5px;">
-              <?= get_whatsapp_icon_svg('1.25em') ?> Adopt <?= htmlspecialchars($cow['name']) ?> on WhatsApp
+              <?= get_whatsapp_icon_svg('1.25em') ?> WhatsApp
             </a>
           <?php else: ?>
-            <a href="<?= $siteUrl ?>" class="btn btn-primary btn-lg" style="flex:1;">🐄 Adopt <?= htmlspecialchars($cow['name']) ?> Online</a>
+            <a href="<?= $siteUrl ?>" class="btn btn-primary btn-lg" style="flex:1;">🐄 <?= __('btn_adopt_online', 'Adopt Online') ?></a>
           <?php endif; ?>
-          <a href="<?= get_donation_action_url('Fodder Seva for ' . $cow['name']) ?>" <?= get_checkout_mode('donation') === 'whatsapp' ? 'target="_blank"' : '' ?> class="btn btn-secondary btn-lg" style="flex:1;">Sponsor Fodder 🌾</a>
+          <a href="<?= get_donation_action_url('Fodder Seva for ' . $cow['name']) ?>" <?= get_checkout_mode('donation') === 'whatsapp' ? 'target="_blank"' : '' ?> class="btn btn-secondary btn-lg" style="flex:1;"><?= __('btn_support_gau_seva', 'Sponsor Fodder 🌾') ?></a>
         </div>
       </div>
 

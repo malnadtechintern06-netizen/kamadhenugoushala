@@ -30,9 +30,9 @@ $categories = $pdo->query("SELECT * FROM gallery_categories ORDER BY id ASC")->f
 
 <div class="page-banner">
   <div class="container">
-    <h1>Photo & Video Gallery</h1>
+    <h1><?= __('banner_gallery', 'Photo & Video Gallery') ?></h1>
     <div class="breadcrumb">
-      <a href="<?= $baseUrl ?>index.php">Home</a> / <span>Gallery</span>
+      <a href="<?= $baseUrl ?>index.php"><?= __('nav_home', 'Home') ?></a> / <span><?= __('nav_gallery', 'Gallery') ?></span>
     </div>
   </div>
 </div>
@@ -43,11 +43,11 @@ $categories = $pdo->query("SELECT * FROM gallery_categories ORDER BY id ASC")->f
     <!-- Category Filter Bar -->
     <div class="filter-bar text-center" style="justify-content:center;">
       <div class="filter-buttons">
-        <a href="gallery.php?category=all" class="filter-btn <?= $catSlug === 'all' ? 'active' : '' ?>">All Photos</a>
+        <a href="gallery.php?category=all" class="filter-btn <?= $catSlug === 'all' ? 'active' : '' ?>"><?= __('all_photos', 'All Photos') ?></a>
         <?php foreach ($categories as $cat): ?>
           <?php if ($cat['slug'] === 'all') continue; ?>
           <a href="gallery.php?category=<?= $cat['slug'] ?>" class="filter-btn <?= $catSlug === $cat['slug'] ? 'active' : '' ?>">
-            <?= htmlspecialchars($cat['name']) ?>
+            <?= htmlspecialchars(__($cat['name'], $cat['name'])) ?>
           </a>
         <?php endforeach; ?>
       </div>
@@ -57,19 +57,19 @@ $categories = $pdo->query("SELECT * FROM gallery_categories ORDER BY id ASC")->f
     <?php if (!empty($galleryImages)): ?>
       <div class="gallery-grid">
         <?php foreach ($galleryImages as $img): ?>
-          <div class="gallery-item" data-image="<?= $baseUrl . htmlspecialchars($img['image_path']) ?>" data-title="<?= htmlspecialchars($img['title']) ?>">
+          <div class="gallery-item" data-image="<?= $baseUrl . htmlspecialchars($img['image_path']) ?>" data-title="<?= htmlspecialchars(__($img['title'], $img['title'])) ?>">
             <img src="<?= $baseUrl . htmlspecialchars($img['image_path']) ?>" alt="<?= htmlspecialchars($img['title']) ?>" onerror="this.src='https://images.unsplash.com/photo-1546445317-29f4545f9d52?auto=format&fit=crop&w=600&q=80'">
             <div class="gallery-overlay">
-              <h4><?= htmlspecialchars($img['title']) ?></h4>
-              <p style="font-size:0.85rem; opacity:0.9;"><?= htmlspecialchars($img['description']) ?></p>
+              <h4><?= htmlspecialchars(__($img['title'], $img['title'])) ?></h4>
+              <p style="font-size:0.85rem; opacity:0.9;"><?= htmlspecialchars(__($img['description'], $img['description'])) ?></p>
             </div>
           </div>
         <?php endforeach; ?>
       </div>
     <?php else: ?>
       <div class="text-center" style="padding:60px; background:white; border-radius:var(--radius-md);">
-        <h3>No photos found in this category.</h3>
-        <a href="gallery.php" class="btn btn-secondary" style="margin-top:15px;">View All Photos</a>
+        <h3><?= __('no_photos_found', 'No photos found in this category.') ?></h3>
+        <a href="gallery.php" class="btn btn-secondary" style="margin-top:15px;"><?= __('all_photos', 'View All Photos') ?></a>
       </div>
     <?php endif; ?>
 

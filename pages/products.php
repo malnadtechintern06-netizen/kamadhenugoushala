@@ -36,9 +36,9 @@ $categories = $pdo->query("SELECT * FROM product_categories ORDER BY name ASC")-
 
 <div class="page-banner">
   <div class="container">
-    <h1>Organic Panchagavya Store</h1>
+    <h1><?= __('banner_products', 'Organic Panchagavya Store') ?></h1>
     <div class="breadcrumb">
-      <a href="<?= $baseUrl ?>index.php">Home</a> / <span>Products</span>
+      <a href="<?= $baseUrl ?>index.php"><?= __('nav_home', 'Home') ?></a> / <span><?= __('nav_products', 'Products') ?></span>
     </div>
   </div>
 </div>
@@ -49,10 +49,10 @@ $categories = $pdo->query("SELECT * FROM product_categories ORDER BY name ASC")-
     <!-- Filter & Search Bar -->
     <div class="filter-bar">
       <div class="filter-buttons">
-        <a href="products.php" class="filter-btn <?= $catId === 0 ? 'active' : '' ?>">All Products</a>
+        <a href="products.php" class="filter-btn <?= $catId === 0 ? 'active' : '' ?>"><?= __('all_products', 'All Products') ?></a>
         <?php foreach ($categories as $cat): ?>
           <a href="products.php?category=<?= $cat['id'] ?>" class="filter-btn <?= $catId === $cat['id'] ? 'active' : '' ?>">
-            <?= htmlspecialchars($cat['name']) ?>
+            <?= htmlspecialchars(__($cat['name'], $cat['name'])) ?>
           </a>
         <?php endforeach; ?>
       </div>
@@ -61,8 +61,8 @@ $categories = $pdo->query("SELECT * FROM product_categories ORDER BY name ASC")-
         <?php if ($catId > 0): ?>
           <input type="hidden" name="category" value="<?= $catId ?>">
         <?php endif; ?>
-        <input type="text" name="search" class="form-control" placeholder="Search products..." value="<?= htmlspecialchars($search) ?>">
-        <button type="submit" class="btn btn-secondary btn-sm">Search</button>
+        <input type="text" name="search" class="form-control" placeholder="<?= __('search_products_ph', 'Search products...') ?>" value="<?= htmlspecialchars($search) ?>">
+        <button type="submit" class="btn btn-secondary btn-sm"><?= __('btn_filter', 'Search') ?></button>
       </form>
     </div>
 
@@ -73,10 +73,10 @@ $categories = $pdo->query("SELECT * FROM product_categories ORDER BY name ASC")-
           <div class="card">
             <div class="card-img-wrapper">
               <img src="<?= $baseUrl . htmlspecialchars($prod['image']) ?>" alt="<?= htmlspecialchars($prod['name']) ?>" onerror="this.src='https://images.unsplash.com/photo-1589927986089-35812388d1f4?auto=format&fit=crop&w=600&q=80'">
-              <span class="card-badge"><?= htmlspecialchars($prod['category_name']) ?></span>
+              <span class="card-badge"><?= htmlspecialchars(__($prod['category_name'], $prod['category_name'])) ?></span>
             </div>
             <div class="card-body">
-              <h3 class="card-title"><?= htmlspecialchars($prod['name']) ?></h3>
+              <h3 class="card-title"><?= htmlspecialchars(__($prod['name'], $prod['name'])) ?></h3>
               <p class="card-text"><?= htmlspecialchars(mb_strimwidth($prod['description'], 0, 95, '...')) ?></p>
               <div class="card-meta">
                 <div class="card-price">
@@ -85,7 +85,7 @@ $categories = $pdo->query("SELECT * FROM product_categories ORDER BY name ASC")-
                     <span class="original-price"><?= format_currency($prod['price']) ?></span>
                   <?php endif; ?>
                 </div>
-                <span style="font-size:0.85rem; color:#2E7D32;">In Stock (<?= $prod['stock_quantity'] ?>)</span>
+                <span style="font-size:0.85rem; color:#2E7D32;"><?= __('in_stock', 'In Stock') ?> (<?= $prod['stock_quantity'] ?>)</span>
               </div>
               <?php 
                 $prodMode = get_item_checkout_mode($prod, 'product'); 
@@ -94,21 +94,21 @@ $categories = $pdo->query("SELECT * FROM product_categories ORDER BY name ASC")-
               <div class="card-actions" style="display:flex; flex-direction:column; gap:6px;">
                 <?php if ($prodMode === 'both'): ?>
                   <div style="display:flex; gap:6px;">
-                    <button class="btn btn-primary btn-sm add-to-cart-btn" data-product-id="<?= $prod['id'] ?>" style="flex:1;">🛒 Add to Cart</button>
+                    <button class="btn btn-primary btn-sm add-to-cart-btn" data-product-id="<?= $prod['id'] ?>" style="flex:1;"><?= __('btn_add_to_cart', '🛒 Add to Cart') ?></button>
                     <a href="<?= $waUrl ?>" target="_blank" class="btn btn-sm" style="flex:1; background:#25D366; border-color:#25D366; color:white; display:inline-flex; align-items:center; justify-content:center; gap:3px;">
-                      <?= get_whatsapp_icon_svg() ?> Order WhatsApp
+                      <?= get_whatsapp_icon_svg() ?> WhatsApp
                     </a>
                   </div>
-                  <a href="product-details.php?id=<?= $prod['id'] ?>" class="btn btn-outline btn-sm text-center">View Details</a>
+                  <a href="product-details.php?id=<?= $prod['id'] ?>" class="btn btn-outline btn-sm text-center"><?= __('btn_view_product', 'View Product') ?></a>
                 <?php elseif ($prodMode === 'whatsapp'): ?>
                   <div style="display:flex; gap:6px;">
-                    <a href="product-details.php?id=<?= $prod['id'] ?>" class="btn btn-outline btn-sm" style="flex:1;">View Details</a>
-                    <a href="<?= $waUrl ?>" target="_blank" class="btn btn-sm" style="flex:1; background:#25D366; border-color:#25D366; color:white; display:inline-flex; align-items:center; justify-content:center; gap:3px;"><?= get_whatsapp_icon_svg() ?> Order WhatsApp</a>
+                    <a href="product-details.php?id=<?= $prod['id'] ?>" class="btn btn-outline btn-sm" style="flex:1;"><?= __('btn_details', 'Details') ?></a>
+                    <a href="<?= $waUrl ?>" target="_blank" class="btn btn-sm" style="flex:1; background:#25D366; border-color:#25D366; color:white; display:inline-flex; align-items:center; justify-content:center; gap:3px;"><?= get_whatsapp_icon_svg() ?> WhatsApp</a>
                   </div>
                 <?php else: ?>
                   <div style="display:flex; gap:6px;">
-                    <a href="product-details.php?id=<?= $prod['id'] ?>" class="btn btn-outline btn-sm" style="flex:1;">View Details</a>
-                    <button class="btn btn-primary btn-sm add-to-cart-btn" data-product-id="<?= $prod['id'] ?>" style="flex:1;">Add to Cart</button>
+                    <a href="product-details.php?id=<?= $prod['id'] ?>" class="btn btn-outline btn-sm" style="flex:1;"><?= __('btn_details', 'Details') ?></a>
+                    <button class="btn btn-primary btn-sm add-to-cart-btn" data-product-id="<?= $prod['id'] ?>" style="flex:1;"><?= __('btn_add_to_cart', 'Add to Cart') ?></button>
                   </div>
                 <?php endif; ?>
               </div>

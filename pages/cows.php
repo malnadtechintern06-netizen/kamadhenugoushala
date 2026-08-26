@@ -43,9 +43,9 @@ $statuses = $pdo->query("SELECT DISTINCT health_status FROM cows ORDER BY health
 
 <div class="page-banner">
   <div class="container">
-    <h1>Our Beloved Cows</h1>
+    <h1><?= __('banner_cows', 'Our Beloved Cows') ?></h1>
     <div class="breadcrumb">
-      <a href="<?= $baseUrl ?>index.php">Home</a> / <span>Our Cows</span>
+      <a href="<?= $baseUrl ?>index.php"><?= __('nav_home', 'Home') ?></a> / <span><?= __('nav_cows', 'Our Cows') ?></span>
     </div>
   </div>
 </div>
@@ -56,31 +56,31 @@ $statuses = $pdo->query("SELECT DISTINCT health_status FROM cows ORDER BY health
     <!-- Search & Filter Controls -->
     <form method="GET" action="cows.php" class="filter-bar">
       <div class="search-input-group" style="flex: 2;">
-        <input type="text" name="search" class="form-control" placeholder="Search by Cow Name, Tag #, or Breed..." value="<?= htmlspecialchars($search) ?>">
+        <input type="text" name="search" class="form-control" placeholder="<?= __('search_cows_ph', 'Search by Cow Name, Tag #, or Breed...') ?>" value="<?= htmlspecialchars($search) ?>">
       </div>
 
       <div style="flex: 1; min-width: 160px;">
         <select name="breed" class="form-control" onchange="this.form.submit()">
-          <option value="">All Breeds</option>
+          <option value=""><?= __('all_breeds', 'All Breeds') ?></option>
           <?php foreach ($breeds as $b): ?>
-            <option value="<?= htmlspecialchars($b) ?>" <?= $breedFilter === $b ? 'selected' : '' ?>><?= htmlspecialchars($b) ?></option>
+            <option value="<?= htmlspecialchars($b) ?>" <?= $breedFilter === $b ? 'selected' : '' ?>><?= htmlspecialchars(__($b, $b)) ?></option>
           <?php endforeach; ?>
         </select>
       </div>
 
       <div style="flex: 1; min-width: 160px;">
         <select name="status" class="form-control" onchange="this.form.submit()">
-          <option value="">All Health Statuses</option>
+          <option value=""><?= __('all_statuses', 'All Health Statuses') ?></option>
           <?php foreach ($statuses as $s): ?>
-            <option value="<?= htmlspecialchars($s) ?>" <?= $statusFilter === $s ? 'selected' : '' ?>><?= htmlspecialchars($s) ?></option>
+            <option value="<?= htmlspecialchars($s) ?>" <?= $statusFilter === $s ? 'selected' : '' ?>><?= htmlspecialchars(__($s, $s)) ?></option>
           <?php endforeach; ?>
         </select>
       </div>
 
       <div>
-        <button type="submit" class="btn btn-secondary">Search</button>
+        <button type="submit" class="btn btn-secondary"><?= __('btn_filter', 'Filter') ?></button>
         <?php if (!empty($search) || !empty($breedFilter) || !empty($statusFilter)): ?>
-          <a href="cows.php" class="btn btn-outline">Reset</a>
+          <a href="cows.php" class="btn btn-outline"><?= __('btn_reset', 'Reset') ?></a>
         <?php endif; ?>
       </div>
     </form>
@@ -93,18 +93,18 @@ $statuses = $pdo->query("SELECT DISTINCT health_status FROM cows ORDER BY health
             <div class="card-img-wrapper">
               <img src="<?= $baseUrl . htmlspecialchars($cow['main_image']) ?>" alt="<?= htmlspecialchars($cow['name']) ?>" onerror="this.src='https://images.unsplash.com/photo-1570042707223-2cb2ed999557?auto=format&fit=crop&w=600&q=80'">
               <span class="card-badge status-<?= strtolower(str_replace(' ', '-', $cow['health_status'])) ?>">
-                <?= htmlspecialchars($cow['health_status']) ?>
+                <?= htmlspecialchars(__($cow['health_status'], $cow['health_status'])) ?>
               </span>
             </div>
             <div class="card-body">
               <h3 class="card-title"><?= htmlspecialchars($cow['name']) ?></h3>
               <p class="card-subtitle">
-                Breed: <strong><?= htmlspecialchars($cow['breed']) ?></strong> | Age: <?= $cow['age_years'] ?> Yrs (<?= htmlspecialchars($cow['gender']) ?>)
+                <?= __('breed_label', 'Breed') ?>: <strong><?= htmlspecialchars(__($cow['breed'], $cow['breed'])) ?></strong> | <?= __('age_label', 'Age') ?>: <?= $cow['age_years'] ?> <?= __('years_label', 'Yrs') ?> (<?= htmlspecialchars(__($cow['gender'], $cow['gender'])) ?>)
               </p>
               <p class="card-text"><?= htmlspecialchars(mb_strimwidth($cow['bio'], 0, 110, '...')) ?></p>
               <div class="card-meta">
-                <span>Tag: <strong><?= htmlspecialchars($cow['tag_number']) ?></strong></span>
-                <span style="color:var(--accent-orange); font-weight:bold;"><?= format_currency($cow['monthly_adoption_fee']) ?>/mo</span>
+                <span><?= __('tag_label', 'Tag:') ?> <strong><?= htmlspecialchars($cow['tag_number']) ?></strong></span>
+                <span style="color:var(--accent-orange); font-weight:bold;"><?= format_currency($cow['monthly_adoption_fee']) ?><?= __('mo_label', '/mo') ?></span>
               </div>
               <?php 
                 $cowMode = get_item_checkout_mode($cow, 'cow'); 
@@ -115,24 +115,24 @@ $statuses = $pdo->query("SELECT DISTINCT health_status FROM cows ORDER BY health
                 <?php if ($cowMode === 'both'): ?>
                   <div style="display:flex; gap:6px;">
                     <a href="<?= $siteUrl ?>" class="btn btn-primary btn-sm" style="flex:1; display:inline-flex; align-items:center; justify-content:center; gap:3px;">
-                      🌐 Adopt Online
+                      🌐 <?= __('btn_adopt_online', 'Adopt Online') ?>
                     </a>
                     <a href="<?= $waUrl ?>" target="_blank" class="btn btn-sm" style="flex:1; background:#25D366; border-color:#25D366; color:white; display:inline-flex; align-items:center; justify-content:center; gap:3px;">
                       <?= get_whatsapp_icon_svg() ?> WhatsApp
                     </a>
                   </div>
-                  <a href="cow-details.php?id=<?= $cow['id'] ?>" class="btn btn-outline btn-sm text-center">View Profile</a>
+                  <a href="cow-details.php?id=<?= $cow['id'] ?>" class="btn btn-outline btn-sm text-center"><?= __('btn_view_profile', 'View Profile') ?></a>
                 <?php elseif ($cowMode === 'whatsapp'): ?>
                   <div style="display:flex; gap:6px;">
-                    <a href="cow-details.php?id=<?= $cow['id'] ?>" class="btn btn-outline btn-sm" style="flex:1;">Details</a>
+                    <a href="cow-details.php?id=<?= $cow['id'] ?>" class="btn btn-outline btn-sm" style="flex:1;"><?= __('btn_details', 'Details') ?></a>
                     <a href="<?= $waUrl ?>" target="_blank" class="btn btn-sm" style="flex:1; background:#25D366; border-color:#25D366; color:white; display:inline-flex; align-items:center; justify-content:center; gap:3px;">
                       <?= get_whatsapp_icon_svg() ?> WhatsApp
                     </a>
                   </div>
                 <?php else: ?>
                   <div style="display:flex; gap:6px;">
-                    <a href="cow-details.php?id=<?= $cow['id'] ?>" class="btn btn-outline btn-sm" style="flex:1;">Details</a>
-                    <a href="<?= $siteUrl ?>" class="btn btn-primary btn-sm" style="flex:1;">Adopt Online</a>
+                    <a href="cow-details.php?id=<?= $cow['id'] ?>" class="btn btn-outline btn-sm" style="flex:1;"><?= __('btn_details', 'Details') ?></a>
+                    <a href="<?= $siteUrl ?>" class="btn btn-primary btn-sm" style="flex:1;"><?= __('btn_adopt_online', 'Adopt Online') ?></a>
                   </div>
                 <?php endif; ?>
               </div>

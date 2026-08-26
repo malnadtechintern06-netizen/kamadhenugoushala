@@ -1,4 +1,4 @@
-/* ==========================================================================
+﻿/* ==========================================================================
    Kamadhenu Goushala - Master stylesheet
    Colors: Dark --Warm Gold #D9A441 | Warm Cream #FFFDF5 | Natural Leaf Green | Cream #FFFDF7
    ========================================================================== */
@@ -187,6 +187,7 @@ h4 {
   transition: var(--transition-normal);
   text-align: center;
   box-shadow: var(--shadow-sm);
+  white-space: nowrap;
 }
 
 .btn-primary {
@@ -303,33 +304,33 @@ header.navbar-wrapper .container {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 22px 0 24px 0;
+  padding: 28px 0 30px 0;
   gap: 30px;
 }
 
 .logo-brand {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 14px;
   color: var(--primary-dark);
   flex-shrink: 0;
 }
 
 .logo-icon {
-  width: 48px;
-  height: 48px;
+  width: 54px;
+  height: 54px;
   background: linear-gradient(135deg, var(--primary-dark), var(--primary-green));
   color: var(--accent-orange);
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.5rem;
+  font-size: 1.65rem;
   font-weight: bold;
 }
 
 .logo-text h2 {
-  font-size: 1.35rem;
+  font-size: 1.5rem;
   margin-bottom: 0;
   line-height: 1.2;
   color: var(--primary-dark);
@@ -337,7 +338,7 @@ header.navbar-wrapper .container {
 }
 
 .logo-text p {
-  font-size: 0.75rem;
+  font-size: 0.8rem;
   color: var(--accent-orange);
   font-weight: 600;
   letter-spacing: 1px;
@@ -349,14 +350,14 @@ header.navbar-wrapper .container {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 28px;
+  gap: 22px;
   margin: 0 auto;
 }
 
 .nav-link {
   font-weight: 500;
   color: var(--text-dark);
-  font-size: 0.95rem;
+  font-size: 1rem;
   padding: 6px 0;
   position: relative;
   white-space: nowrap;
@@ -391,7 +392,12 @@ header.navbar-wrapper .container {
 .nav-actions {
   display: flex;
   align-items: center;
-  gap: 20px;
+  gap: 14px;
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+.nav-actions>* {
   flex-shrink: 0;
 }
 
@@ -399,7 +405,11 @@ header.navbar-wrapper .container {
   position: relative;
   font-size: 1.25rem;
   color: var(--primary-dark);
-  padding: 6px 12px;
+  width: 42px;
+  height: 42px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   border-radius: 50px;
   background-color: var(--bg-light-green);
   transition: var(--transition-fast);
@@ -415,7 +425,11 @@ header.navbar-wrapper .container {
   border: none;
   font-size: 1.25rem;
   color: var(--primary-dark);
-  padding: 6px 10px;
+  width: 42px;
+  height: 42px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   border-radius: 50px;
   background-color: var(--bg-light-green);
   transition: var(--transition-fast);
@@ -424,6 +438,36 @@ header.navbar-wrapper .container {
 
 .theme-toggle-btn:hover {
   background-color: var(--border-light);
+}
+
+.user-account-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0 16px;
+  height: 42px;
+  border-radius: 50px;
+  background-color: var(--bg-light-green);
+  color: var(--primary-dark);
+  font-weight: 600;
+  text-decoration: none;
+  font-size: 0.9rem;
+  transition: var(--transition-fast);
+  white-space: nowrap;
+}
+
+.user-account-btn:hover {
+  background-color: var(--primary-green);
+  color: #FFFFFF;
+}
+
+.nav-actions .btn-sm {
+  height: 42px;
+  padding: 0 20px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  white-space: nowrap;
 }
 
 .cart-badge {
@@ -1286,7 +1330,7 @@ header.navbar-wrapper .container {
 }
 
 footer {
-  background-color: #121E14 !important;
+  background: linear-gradient(180deg, #1A361D 0%, #142B17 100%) !important;
   color: #E0E7DE !important;
   padding-top: 70px;
   margin-top: auto;
@@ -1338,11 +1382,11 @@ footer {
 }
 
 .footer-bottom {
-  background-color: #0A120B !important;
+  background-color: #0F2011 !important;
   color: rgba(255, 255, 255, 0.85) !important;
   padding: 20px 0;
   font-size: 0.88rem;
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
 }
 
 .footer-bottom p {
@@ -1395,14 +1439,18 @@ footer {
 
 /* Responsive Media Queries */
 @media (max-width: 1199px) {
+  header.navbar-wrapper {
+    z-index: 1550;
+  }
+
   header.navbar-wrapper .container {
     width: 100%;
     padding: 0 15px;
   }
 
   .navbar {
-    padding: 10px 0;
-    gap: 10px;
+    padding: 14px 0;
+    gap: 12px;
   }
 
   .hero-title {
@@ -1413,33 +1461,39 @@ footer {
     display: flex !important;
     align-items: center;
     justify-content: center;
-    width: 42px;
-    height: 42px;
-    font-size: 1.5rem;
-    border-radius: var(--radius-sm);
+    width: 44px;
+    height: 44px;
+    font-size: 1.4rem;
+    border-radius: 50%;
     background: var(--accent-orange) !important;
     color: #FFFFFF !important;
     border: none;
-    box-shadow: 0 4px 12px rgba(230, 81, 0, 0.35);
+    box-shadow: 0 4px 14px rgba(230, 81, 0, 0.35);
     flex-shrink: 0 !important;
     cursor: pointer;
     z-index: 1600 !important;
+    transition: transform 0.25s ease, background-color 0.25s ease;
+  }
+
+  .hamburger-btn:hover {
+    transform: scale(1.05);
+    background-color: #F57C00 !important;
   }
 
   .nav-menu {
     position: fixed;
     top: 0;
     right: -100%;
-    width: 300px;
+    width: 320px;
     max-width: 85vw;
     height: 100vh;
     background: var(--bg-cream);
     flex-direction: column;
     align-items: flex-start;
     justify-content: flex-start;
-    padding: 80px 25px 40px 25px;
+    padding: 85px 25px 40px 25px;
     box-shadow: -5px 0 25px rgba(0, 0, 0, 0.15);
-    transition: var(--transition-normal);
+    transition: right 0.35s cubic-bezier(0.16, 1, 0.3, 1);
     z-index: 1500;
     overflow-y: auto;
     gap: 0;
@@ -1457,7 +1511,7 @@ footer {
   .nav-link {
     display: block;
     width: 100%;
-    padding: 12px 0;
+    padding: 14px 0;
     font-size: 1.05rem;
     border-bottom: 1px solid rgba(0, 0, 0, 0.06);
   }
@@ -1486,6 +1540,18 @@ footer {
 }
 
 @media (max-width: 768px) {
+  .user-account-btn {
+    height: 38px;
+    padding: 0 12px;
+    font-size: 0.85rem;
+  }
+
+  .nav-actions .btn-sm {
+    height: 38px;
+    padding: 0 14px;
+    font-size: 0.85rem;
+  }
+
   .hero-title {
     font-size: 2rem;
     line-height: 1.25;
@@ -1550,27 +1616,45 @@ footer {
 
   /* Optimize header action buttons for small phones */
   .nav-actions .btn-primary {
-    display: none;
+    display: none !important;
+  }
+
+  .nav-actions {
+    gap: 8px;
   }
 
   .logo-brand .logo-text h2 {
-    font-size: 1rem;
+    font-size: 1.1rem;
   }
 
   .logo-icon {
-    width: 36px;
-    height: 36px;
-    font-size: 1.05rem;
+    width: 40px;
+    height: 40px;
+    font-size: 1.15rem;
   }
 
   .logo-brand img {
-    height: 36px !important;
-    max-width: 100px !important;
+    height: 40px !important;
+    max-width: 110px !important;
   }
 
-  .user-account-btn {
-    padding: 5px 10px !important;
-    font-size: 0.8rem !important;
+  .cart-icon-btn,
+  .theme-toggle-btn {
+    width: 38px;
+    height: 38px;
+    font-size: 1.15rem;
+  }
+
+  .lang-switcher-wrapper {
+    height: 38px;
+    padding: 0 10px;
+    font-size: 0.82rem;
+  }
+
+  .hamburger-btn {
+    width: 40px;
+    height: 40px;
+    font-size: 1.3rem;
   }
 
   .stats-grid {
@@ -2580,7 +2664,7 @@ div>div>a.social-yt {
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(0,0,0,0.3);
+  background: rgba(0, 0, 0, 0.3);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -2631,31 +2715,89 @@ div>div>a.social-yt {
   transform: scale(1);
   color: var(--accent-orange);
 }
-/* Google Translate Customization */
-.lang-switcher {
-  display: flex;
+
+/* Custom 3-Language Switcher (English, Hindi, Kannada) */
+.custom-lang-switcher {
+  display: inline-flex;
   align-items: center;
-  margin-right: 15px;
+  gap: 6px;
+  background: linear-gradient(135deg, rgba(230, 81, 0, 0.08), rgba(56, 142, 60, 0.08));
+  border: 1.5px solid rgba(230, 81, 0, 0.3);
+  border-radius: 50px;
+  padding: 0 12px;
+  height: 42px;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  flex-shrink: 0;
 }
-.goog-te-gadget-simple {
-  background-color: var(--card-bg) !important;
-  border: 1px solid var(--border-light) !important;
-  border-radius: var(--radius-sm) !important;
-  padding: 4px 8px !important;
-  font-family: inherit !important;
-  font-size: 0.9rem !important;
+
+.custom-lang-switcher:hover {
+  background: linear-gradient(135deg, var(--accent-orange), #F57C00);
+  border-color: var(--accent-orange);
+  box-shadow: 0 6px 18px rgba(230, 81, 0, 0.28);
+  transform: translateY(-1.5px);
 }
-.goog-te-gadget-simple span {
-  color: var(--text-color) !important;
+
+.custom-lang-switcher .lang-icon {
+  font-size: 1.1rem;
+  line-height: 1;
+  transition: transform 0.35s ease;
+  display: inline-block;
 }
-.goog-te-gadget-icon {
+
+.custom-lang-switcher:hover .lang-icon {
+  transform: rotate(20deg) scale(1.1);
+}
+
+.custom-lang-switcher select {
+  background: transparent;
+  border: none;
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--primary-dark);
+  cursor: pointer;
+  outline: none;
+  padding-right: 4px;
+  transition: color 0.25s ease;
+}
+
+.custom-lang-switcher:hover select {
+  color: #FFFFFF;
+}
+
+.custom-lang-switcher select option {
+  background-color: var(--bg-cream);
+  color: var(--text-dark);
+  font-weight: 600;
+  padding: 8px;
+}
+
+/* Dark Theme Support */
+[data-theme="dark"] .custom-lang-switcher {
+  background: linear-gradient(135deg, rgba(255, 152, 0, 0.15), rgba(129, 199, 132, 0.15));
+  border-color: rgba(255, 152, 0, 0.4);
+}
+
+[data-theme="dark"] .custom-lang-switcher select {
+  color: #FFFFFF;
+}
+
+/* Suppress all Google Translate native elements & popups */
+#google_translate_element,
+.goog-te-banner-frame,
+iframe.goog-te-banner-frame,
+.goog-te-balloon-frame,
+#goog-gt-tt {
   display: none !important;
 }
-/* Hide the Google top banner */
-.goog-te-banner-frame.skiptranslate {
-  display: none !important;
-}
+
 body {
   top: 0px !important;
 }
 
+.goog-text-highlight {
+  background: none !important;
+  box-shadow: none !important;
+}

@@ -10,9 +10,9 @@ $sevas = $stmt->fetchAll();
 
 <div class="page-banner">
   <div class="container">
-    <h1>Sacred Seva Opportunities</h1>
+    <h1><?= __('banner_seva', 'Sacred Seva Opportunities') ?></h1>
     <div class="breadcrumb">
-      <a href="<?= $baseUrl ?>index.php">Home</a> / <span>Seva</span>
+      <a href="<?= $baseUrl ?>index.php"><?= __('nav_home', 'Home') ?></a> / <span><?= __('nav_seva', 'Seva') ?></span>
     </div>
   </div>
 </div>
@@ -20,9 +20,9 @@ $sevas = $stmt->fetchAll();
 <section class="section-padding bg-light">
   <div class="container">
     <div class="text-center" style="max-width: 650px; margin: 0 auto 40px auto;">
-      <span class="section-subtitle">HOLY SERVICE</span>
-      <h2 class="section-title center">Sponsor Feeding & Care For Gau Mata</h2>
-      <p>Select a Seva program below to support our daily fodder, emergency veterinary medicines, and solar shed maintenance.</p>
+      <span class="section-subtitle"><?= __('seva_subtitle', 'HOLY SERVICE') ?></span>
+      <h2 class="section-title center"><?= __('seva_title', 'Sponsor Feeding & Care For Gau Mata') ?></h2>
+      <p><?= __('seva_desc', 'Select a Seva program below to support our daily fodder, emergency veterinary medicines, and solar shed maintenance.') ?></p>
     </div>
 
     <div class="card-grid">
@@ -30,14 +30,14 @@ $sevas = $stmt->fetchAll();
         <div class="card">
           <div class="card-img-wrapper">
             <img src="<?= $baseUrl . htmlspecialchars($seva['image']) ?>" alt="<?= htmlspecialchars($seva['title']) ?>" onerror="this.src='https://images.unsplash.com/photo-1500595046743-cd271d694d30?auto=format&fit=crop&w=600&q=80'">
-            <span class="card-badge"><?= htmlspecialchars($seva['category']) ?></span>
+            <span class="card-badge"><?= htmlspecialchars(__($seva['category'], $seva['category'])) ?></span>
           </div>
           <div class="card-body">
-            <h3 class="card-title"><?= htmlspecialchars($seva['title']) ?></h3>
-            <p class="card-subtitle"><?= htmlspecialchars($seva['subtitle']) ?></p>
+            <h3 class="card-title"><?= htmlspecialchars(__($seva['title'], $seva['title'])) ?></h3>
+            <p class="card-subtitle"><?= htmlspecialchars(__($seva['subtitle'], $seva['subtitle'])) ?></p>
             <p class="card-text"><?= htmlspecialchars(mb_strimwidth($seva['description'], 0, 120, '...')) ?></p>
             <div class="card-meta">
-              <span>Suggested Contribution:</span>
+              <span><?= __('suggested_seva', 'Suggested Contribution:') ?></span>
               <span class="card-price"><?= format_currency($seva['suggested_amount']) ?></span>
             </div>
             <?php 
@@ -49,7 +49,7 @@ $sevas = $stmt->fetchAll();
               <?php if ($sevaMode === 'both'): ?>
                 <div style="display:flex; gap:6px;">
                   <a href="<?= $siteUrl ?>" class="btn btn-primary btn-sm" style="flex:1; display:inline-flex; align-items:center; justify-content:center; gap:3px;">
-                    🌐 Donate Online
+                    <?= __('btn_donate_online', '🌐 Donate Online') ?>
                   </a>
                   <a href="<?= $waUrl ?>" target="_blank" class="btn btn-sm" style="flex:1; background:#25D366; border-color:#25D366; color:white; display:inline-flex; align-items:center; justify-content:center; gap:3px;">
                     <?= get_whatsapp_icon_svg() ?> WhatsApp
@@ -57,10 +57,10 @@ $sevas = $stmt->fetchAll();
                 </div>
               <?php elseif ($sevaMode === 'whatsapp'): ?>
                 <a href="<?= $waUrl ?>" target="_blank" class="btn btn-primary btn-sm" style="width:100%; background:#25D366; border-color:#25D366; color:white; display:inline-flex; align-items:center; justify-content:center; gap:3px;">
-                  <?= get_whatsapp_icon_svg() ?> Offer Seva on WhatsApp
+                  <?= get_whatsapp_icon_svg() ?> <?= __('btn_offer_whatsapp', 'Offer Seva on WhatsApp') ?>
                 </a>
               <?php else: ?>
-                <a href="<?= $siteUrl ?>" class="btn btn-primary btn-sm" style="width:100%;">View Details &amp; Offer Seva</a>
+                <a href="<?= $siteUrl ?>" class="btn btn-primary btn-sm" style="width:100%;"><?= __('btn_view_details_sponsor', 'View Details & Offer Seva') ?></a>
               <?php endif; ?>
             </div>
           </div>

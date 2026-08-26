@@ -33,9 +33,9 @@ $adoptions = $stmtAdp->fetchAll();
 
 <div class="page-banner">
   <div class="container">
-    <h1>Welcome, <?= htmlspecialchars($user['full_name']) ?></h1>
+    <h1><?= __('welcome_user', 'Welcome') ?>, <?= htmlspecialchars($user['full_name']) ?></h1>
     <div class="breadcrumb">
-      <a href="<?= $baseUrl ?>index.php">Home</a> / <span>My Profile</span>
+      <a href="<?= $baseUrl ?>index.php"><?= __('nav_home', 'Home') ?></a> / <span><?= __('nav_my_account', 'My Profile') ?></span>
     </div>
   </div>
 </div>
@@ -57,15 +57,15 @@ $adoptions = $stmtAdp->fetchAll();
           </div>
 
           <div style="font-size:0.95rem; border-top:1px solid var(--border-light); padding-top:15px; line-height:1.8;">
-            <p><strong>Phone:</strong> <?= htmlspecialchars($user['phone'] ?: 'N/A') ?></p>
-            <p><strong>Address:</strong> <?= htmlspecialchars($user['address'] ?: 'N/A') ?></p>
-            <p><strong>Location:</strong> <?= htmlspecialchars($user['city'] ?: '') ?>, <?= htmlspecialchars($user['state'] ?: '') ?></p>
-            <p><strong>Member Since:</strong> <?= date('d M Y', strtotime($user['created_at'])) ?></p>
+            <p><strong><?= __('phone_label', 'Phone:') ?></strong> <?= htmlspecialchars($user['phone'] ?: 'N/A') ?></p>
+            <p><strong><?= __('address_label', 'Address:') ?></strong> <?= htmlspecialchars($user['address'] ?: 'N/A') ?></p>
+            <p><strong><?= __('location_label', 'Location:') ?></strong> <?= htmlspecialchars($user['city'] ?: '') ?>, <?= htmlspecialchars($user['state'] ?: '') ?></p>
+            <p><strong><?= __('member_since_label', 'Member Since:') ?></strong> <?= date('d M Y', strtotime($user['created_at'])) ?></p>
           </div>
 
           <div style="margin-top: 20px; border-top: 1px solid var(--border-light); padding-top: 15px;">
             <a href="<?= $baseUrl ?>pages/login.php?action=logout" class="btn btn-outline btn-block" style="color: #d32f2f; border-color: #d32f2f; display: flex; align-items: center; justify-content: center; gap: 6px; font-weight: 600; text-decoration: none;">
-              🚪 Log Out of Account
+              🚪 <?= __('logout_btn', 'Log Out of Account') ?>
             </a>
           </div>
         </div>
@@ -76,18 +76,18 @@ $adoptions = $stmtAdp->fetchAll();
         
         <!-- Orders History -->
         <div style="background:white; border-radius:var(--radius-md); padding:25px; box-shadow:var(--shadow-sm); margin-bottom:30px; border:1px solid var(--border-light);">
-          <h3 style="margin-bottom:15px; color:var(--primary-dark);">🛍 Your Product Orders (<?= count($orders) ?>)</h3>
+          <h3 style="margin-bottom:15px; color:var(--primary-dark);">🛍 <?= __('your_orders', 'Your Product Orders') ?> (<?= count($orders) ?>)</h3>
           <?php if (!empty($orders)): ?>
             <div class="table-responsive">
               <table class="custom-table">
                 <thead>
                   <tr>
-                    <th>Order #</th>
-                    <th>Date & Time</th>
-                    <th>Total</th>
-                    <th>Payment</th>
-                    <th>Status</th>
-                    <th>Action</th>
+                    <th><?= __('order_num', 'Order #') ?></th>
+                    <th><?= __('date_time', 'Date & Time') ?></th>
+                    <th><?= __('total', 'Total') ?></th>
+                    <th><?= __('payment', 'Payment') ?></th>
+                    <th><?= __('status', 'Status') ?></th>
+                    <th><?= __('action', 'Action') ?></th>
                   </tr>
                 </thead>
                 <tbody>
@@ -96,86 +96,86 @@ $adoptions = $stmtAdp->fetchAll();
                       <td><strong><?= htmlspecialchars($o['order_number']) ?></strong></td>
                       <td><?= date('d M Y, h:i A', strtotime($o['created_at'])) ?></td>
                       <td><?= format_currency($o['total_amount']) ?></td>
-                      <td><span style="color:#2E7D32; font-weight:bold;"><?= htmlspecialchars($o['payment_status']) ?></span></td>
-                      <td><span class="card-badge" style="position:static;"><?= htmlspecialchars($o['order_status']) ?></span></td>
-                      <td><a href="success.php?type=order&number=<?= urlencode($o['order_number']) ?>" class="btn btn-outline btn-sm">Receipt</a></td>
+                      <td><span style="color:#2E7D32; font-weight:bold;"><?= htmlspecialchars(__($o['payment_status'], $o['payment_status'])) ?></span></td>
+                      <td><span class="card-badge" style="position:static;"><?= htmlspecialchars(__($o['order_status'], $o['order_status'])) ?></span></td>
+                      <td><a href="success.php?type=order&number=<?= urlencode($o['order_number']) ?>" class="btn btn-outline btn-sm"><?= __('receipt_btn', 'Receipt') ?></a></td>
                     </tr>
                   <?php endforeach; ?>
                 </tbody>
               </table>
             </div>
           <?php else: ?>
-            <p style="color:var(--text-muted);">No product orders placed yet.</p>
+            <p style="color:var(--text-muted);"><?= __('no_orders_yet', 'No product orders placed yet.') ?></p>
           <?php endif; ?>
         </div>
 
         <!-- Donations History -->
         <div style="background:white; border-radius:var(--radius-md); padding:25px; box-shadow:var(--shadow-sm); margin-bottom:30px; border:1px solid var(--border-light);">
-          <h3 style="margin-bottom:15px; color:var(--primary-dark);">💖 Your Donations & Seva (<?= count($donations) ?>)</h3>
+          <h3 style="margin-bottom:15px; color:var(--primary-dark);">💖 <?= __('your_donations', 'Your Donations & Seva') ?> (<?= count($donations) ?>)</h3>
           <?php if (!empty($donations)): ?>
             <div class="table-responsive">
               <table class="custom-table">
                 <thead>
                   <tr>
-                    <th>Donation #</th>
-                    <th>Program</th>
-                    <th>Amount</th>
-                    <th>Date & Time</th>
-                    <th>80G Receipt</th>
+                    <th><?= __('donation_num', 'Donation #') ?></th>
+                    <th><?= __('program', 'Program') ?></th>
+                    <th><?= __('amount', 'Amount') ?></th>
+                    <th><?= __('date_time', 'Date & Time') ?></th>
+                    <th><?= __('view_80g_btn', '80G Receipt') ?></th>
                   </tr>
                 </thead>
                 <tbody>
                   <?php foreach ($donations as $d): ?>
                     <tr>
                       <td><strong><?= htmlspecialchars($d['donation_number']) ?></strong></td>
-                      <td><?= htmlspecialchars($d['purpose']) ?></td>
+                      <td><?= htmlspecialchars(__($d['purpose'], $d['purpose'])) ?></td>
                       <td style="font-weight:bold; color:var(--accent-orange);"><?= format_currency($d['amount']) ?></td>
                       <td><?= date('d M Y, h:i A', strtotime($d['created_at'])) ?></td>
-                      <td><a href="success.php?type=donation&number=<?= urlencode($d['donation_number']) ?>" class="btn btn-outline btn-sm">View 80G</a></td>
+                      <td><a href="success.php?type=donation&number=<?= urlencode($d['donation_number']) ?>" class="btn btn-outline btn-sm"><?= __('view_80g_btn', 'View 80G') ?></a></td>
                     </tr>
                   <?php endforeach; ?>
                 </tbody>
               </table>
             </div>
           <?php else: ?>
-            <p style="color:var(--text-muted);">No donations recorded yet under this account.</p>
+            <p style="color:var(--text-muted);"><?= __('no_donations_yet', 'No donations recorded yet under this account.') ?></p>
           <?php endif; ?>
         </div>
 
         <!-- Cow Adoptions History -->
         <div style="background:white; border-radius:var(--radius-md); padding:25px; box-shadow:var(--shadow-sm); border:1px solid var(--border-light);">
-          <h3 style="margin-bottom:15px; color:var(--primary-dark);">🐄 Your Cow Adoptions (<?= count($adoptions) ?>)</h3>
+          <h3 style="margin-bottom:15px; color:var(--primary-dark);">🐄 <?= __('your_adoptions', 'Your Cow Adoptions') ?> (<?= count($adoptions) ?>)</h3>
           <?php if (!empty($adoptions)): ?>
             <div class="table-responsive">
               <table class="custom-table">
                 <thead>
                   <tr>
-                    <th>Adoption #</th>
-                    <th>Cow Name</th>
-                    <th>Duration</th>
-                    <th>Total</th>
-                    <th>Status</th>
-                    <th>Date & Time</th>
-                    <th>Certificate</th>
+                    <th><?= __('adoption_num', 'Adoption #') ?></th>
+                    <th><?= __('cow_name', 'Cow Name') ?></th>
+                    <th><?= __('duration', 'Duration') ?></th>
+                    <th><?= __('total', 'Total') ?></th>
+                    <th><?= __('status', 'Status') ?></th>
+                    <th><?= __('date_time', 'Date & Time') ?></th>
+                    <th><?= __('certificate', 'Certificate') ?></th>
                   </tr>
                 </thead>
                 <tbody>
                   <?php foreach ($adoptions as $a): ?>
                     <tr>
                       <td><strong><?= htmlspecialchars($a['adoption_number']) ?></strong></td>
-                      <td><?= htmlspecialchars($a['cow_name']) ?> (<?= htmlspecialchars($a['cow_breed']) ?>)</td>
-                      <td><?= $a['duration_months'] ?> Months</td>
+                      <td><?= htmlspecialchars(__($a['cow_name'], $a['cow_name'])) ?> (<?= htmlspecialchars(__($a['cow_breed'], $a['cow_breed'])) ?>)</td>
+                      <td><?= $a['duration_months'] ?> <?= __('mo_label', 'Months') ?></td>
                       <td style="font-weight:bold;"><?= format_currency($a['total_amount']) ?></td>
-                      <td><span style="color:#2E7D32; font-weight:bold;"><?= htmlspecialchars($a['status']) ?></span></td>
+                      <td><span style="color:#2E7D32; font-weight:bold;"><?= htmlspecialchars(__($a['status'], $a['status'])) ?></span></td>
                       <td><?= date('d M Y, h:i A', strtotime($a['created_at'])) ?></td>
-                      <td><a href="success.php?type=adoption&number=<?= urlencode($a['adoption_number']) ?>" class="btn btn-outline btn-sm">View Certificate</a></td>
+                      <td><a href="success.php?type=adoption&number=<?= urlencode($a['adoption_number']) ?>" class="btn btn-outline btn-sm"><?= __('view_certificate_btn', 'View Certificate') ?></a></td>
                     </tr>
                   <?php endforeach; ?>
                 </tbody>
               </table>
             </div>
           <?php else: ?>
-            <p style="color:var(--text-muted);">You have not adopted any cows yet.</p>
+            <p style="color:var(--text-muted);"><?= __('no_adoptions_yet', 'You have not adopted any cows yet.') ?></p>
           <?php endif; ?>
         </div>
 

@@ -38,9 +38,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 <div class="page-banner">
   <div class="container">
-    <h1>Contact & Visit Us</h1>
+    <h1><?= __('contact_heading', 'Contact & Visit Us') ?></h1>
     <div class="breadcrumb">
-      <a href="<?= $baseUrl ?>index.php">Home</a> / <span>Contact</span>
+      <a href="<?= $baseUrl ?>index.php"><?= __('nav_home', 'Home') ?></a> / <span><?= __('nav_contact', 'Contact') ?></span>
     </div>
   </div>
 </div>
@@ -52,17 +52,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       
       <!-- Contact Info Cards -->
       <div>
-        <span class="section-subtitle">VISIT & CONNECT</span>
-        <h2 style="color:var(--primary-dark); margin-bottom:20px;">We Would Love To Hear From You</h2>
+        <span class="section-subtitle"><?= __('get_in_touch', 'VISIT & CONNECT') ?></span>
+        <h2 style="color:var(--primary-dark); margin-bottom:20px;"><?= __('send_us_message', 'We Would Love To Hear From You') ?></h2>
         <p style="color:var(--text-dark); margin-bottom:30px; line-height:1.8;">
-          Visitors, volunteers, and devotees are welcome to visit our sanctuary. Experience the joy of feeding green grass and petting gentle Gir cows in person.
+          <?= __('contact_intro_text', 'Visitors, volunteers, and devotees are welcome to visit our sanctuary. Experience the joy of feeding green grass and petting gentle Gir cows in person.') ?>
         </p>
 
         <div style="display:flex; flex-direction:column; gap:20px;">
           <div style="background:white; padding:20px; border-radius:var(--radius-md); box-shadow:var(--shadow-sm); border:1px solid var(--border-light); display:flex; gap:15px; align-items:center;">
             <div style="font-size:2rem; color:var(--accent-orange);">📍</div>
             <div>
-              <h4 style="margin-bottom:2px;">Sanctuary Address</h4>
+              <h4 style="margin-bottom:2px;"><?= __('sanctuary_address', 'Sanctuary Address') ?></h4>
               <p style="font-size:0.9rem; color:var(--text-muted);"><?= htmlspecialchars(get_setting('contact_address', 'Vrinda Dham, Mathura Highway, UP')) ?></p>
             </div>
           </div>
@@ -70,7 +70,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
           <div style="background:white; padding:20px; border-radius:var(--radius-md); box-shadow:var(--shadow-sm); border:1px solid var(--border-light); display:flex; gap:15px; align-items:center;">
             <div style="font-size:2rem; color:var(--primary-green);">📞</div>
             <div>
-              <h4 style="margin-bottom:2px;">Helpline & WhatsApp</h4>
+              <h4 style="margin-bottom:2px;"><?= __('helpline_whatsapp', 'Helpline & WhatsApp') ?></h4>
               <p style="font-size:0.9rem; color:var(--text-muted);"><?= htmlspecialchars(get_setting('contact_phone', '+91 98765 43210')) ?></p>
             </div>
           </div>
@@ -78,7 +78,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
           <div style="background:white; padding:20px; border-radius:var(--radius-md); box-shadow:var(--shadow-sm); border:1px solid var(--border-light); display:flex; gap:15px; align-items:center;">
             <div style="font-size:2rem; color:var(--primary-dark);">📧</div>
             <div>
-              <h4 style="margin-bottom:2px;">Email Support</h4>
+              <h4 style="margin-bottom:2px;"><?= __('email_support', 'Email Support') ?></h4>
               <p style="font-size:0.9rem; color:var(--text-muted);"><?= htmlspecialchars(get_setting('contact_email', 'info@kamadhenugoushala.org')) ?></p>
             </div>
           </div>
@@ -86,15 +86,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
           <div style="background:white; padding:20px; border-radius:var(--radius-md); box-shadow:var(--shadow-sm); border:1px solid var(--border-light); display:flex; gap:15px; align-items:center;">
             <div style="font-size:2rem; color:var(--accent-gold);">⏰</div>
             <div>
-              <h4 style="margin-bottom:2px;">Visiting Hours</h4>
-              <p style="font-size:0.9rem; color:var(--text-muted);">Open Daily: 7:00 AM – 12:00 PM & 4:00 PM – 7:00 PM</p>
+              <h4 style="margin-bottom:2px;"><?= __('visiting_hours', 'Visiting Hours') ?></h4>
+              <p style="font-size:0.9rem; color:var(--text-muted);"><?= __('visiting_hours_time', 'Open Daily: 7:00 AM – 12:00 PM & 4:00 PM – 7:00 PM') ?></p>
             </div>
           </div>
 
           <div style="background:white; padding:20px; border-radius:var(--radius-md); box-shadow:var(--shadow-sm); border:1px solid var(--border-light); display:flex; gap:15px; align-items:center;">
             <div style="font-size:2rem; color:var(--primary-dark); display: flex; align-items: center;">📱</div>
             <div>
-              <h4 style="margin-bottom:6px;">Follow Us Online</h4>
+              <h4 style="margin-bottom:6px;"><?= __('follow_us_online', 'Follow Us Online') ?></h4>
               <div style="display:flex; gap:15px; align-items:center;">
                 <a href="<?= htmlspecialchars(get_setting('facebook_url', 'https://facebook.com')) ?>" class="social-fb" target="_blank" title="Facebook" style="color:var(--primary-dark); font-size:1.4rem; display: flex; align-items: center;"><svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 448 512" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M400 32H48C21.5 32 0 53.5 0 80v352c0 26.5 21.5 48 48 48h137.9V327.7h-63v-72.2h63v-55c0-62.2 38-96.4 93.6-96.4 26.6 0 54.7 4.7 54.7 4.7v60h-30.8c-30.8 0-40.4 19.1-40.4 38.7v46.4h67.8l-10.8 72.2h-57V480H400c26.5 0 48-21.5 48-48V80c0-26.5-21.5-48-48-48z"></path></svg></a>
                 <a href="<?= htmlspecialchars(get_setting('instagram_url', 'https://instagram.com')) ?>" class="social-ig" target="_blank" title="Instagram" style="color:var(--primary-dark); font-size:1.4rem; display: flex; align-items: center;"><svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 448 512" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M224.1 141c-63.6 0-114.9 51.3-114.9 114.9s51.3 114.9 114.9 114.9S339 319.5 339 255.9 287.7 141 224.1 141zm0 189.6c-41.1 0-74.7-33.5-74.7-74.7s33.5-74.7 74.7-74.7 74.7 33.5 74.7 74.7-33.6 74.7-74.7 74.7zm146.4-194.3c0 14.9-12 26.8-26.8 26.8-14.9 0-26.8-12-26.8-26.8s12-26.8 26.8-26.8 26.8 12 26.8 26.8zm76.1 27.2c-1.7-35.9-9.9-67.7-36.2-93.9-26.2-26.2-58-34.4-93.9-36.2-37-2.1-147.9-2.1-184.9 0-35.8 1.7-67.6 9.9-93.9 36.1s-34.4 58-36.2 93.9c-2.1 37-2.1 147.9 0 184.9 1.7 35.8 9.9 67.6 36.2 93.9s58 34.4 93.9 36.2c37 2.1 147.9 2.1 184.9 0 35.9-1.7 67.7-9.9 93.9-36.2 26.2-26.2 34.4-58 36.2-93.9 2.1-37 2.1-147.8 0-184.8zM398.8 388c-7.8 19.6-22.9 34.7-42.6 42.6-29.5 11.7-99.5 9-132.1 9s-102.7 2.6-132.1-9c-19.6-7.8-34.7-22.9-42.6-42.6-11.7-29.5-9-99.5-9-132.1s-2.6-102.7 9-132.1c7.8-19.6 22.9-34.7 42.6-42.6 29.5-11.7 99.5-9 132.1-9s102.7-2.6 132.1 9c19.6 7.8 34.7 22.9 42.6 42.6 11.7 29.5 9 99.5 9 132.1s2.7 102.7-9 132.1z"></path></svg></a>
@@ -108,7 +108,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       <!-- Form Column -->
       <div>
         <div class="form-card" style="max-width:100%; margin:0;">
-          <h3 style="margin-bottom:20px; color:var(--primary-dark);">Send Us a Message</h3>
+          <h3 style="margin-bottom:20px; color:var(--primary-dark);"><?= __('send_us_message', 'Send Us a Message') ?></h3>
 
           <?php if (!empty($successMsg)): ?>
             <div class="alert alert-success">
@@ -130,32 +130,32 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <?= csrf_field() ?>
 
             <div class="form-group">
-              <label class="form-label">Your Name *</label>
+              <label class="form-label"><?= __('full_name', 'Your Name *') ?></label>
               <input type="text" name="name" class="form-control" value="<?= htmlspecialchars($_POST['name'] ?? '') ?>" required>
             </div>
 
             <div class="form-row">
               <div class="form-group">
-                <label class="form-label">Email Address *</label>
+                <label class="form-label"><?= __('email_address', 'Email Address *') ?></label>
                 <input type="email" name="email" class="form-control" value="<?= htmlspecialchars($_POST['email'] ?? '') ?>" required>
               </div>
               <div class="form-group">
-                <label class="form-label">Phone Number</label>
+                <label class="form-label"><?= __('phone_number', 'Phone Number') ?></label>
                 <input type="text" name="phone" class="form-control" value="<?= htmlspecialchars($_POST['phone'] ?? '') ?>">
               </div>
             </div>
 
             <div class="form-group">
-              <label class="form-label">Subject *</label>
+              <label class="form-label"><?= __('subject', 'Subject *') ?></label>
               <input type="text" name="subject" class="form-control" value="<?= htmlspecialchars($_POST['subject'] ?? '') ?>" placeholder="e.g. Fodder Donation / Goushala Visit" required>
             </div>
 
             <div class="form-group">
-              <label class="form-label">Message *</label>
+              <label class="form-label"><?= __('your_message', 'Message *') ?></label>
               <textarea name="message" class="form-control" rows="5" required placeholder="Write your message here..."><?= htmlspecialchars($_POST['message'] ?? '') ?></textarea>
             </div>
 
-            <button type="submit" class="btn btn-primary btn-lg btn-block">Send Message 📩</button>
+            <button type="submit" class="btn btn-primary btn-lg btn-block"><?= __('btn_send_message', 'Send Message 📩') ?></button>
           </form>
         </div>
       </div>

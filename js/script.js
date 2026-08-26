@@ -145,7 +145,7 @@ function showToast(message, type = 'success') {
 
   const toast = document.createElement('div');
   toast.className = `toast ${type}`;
-  
+
   const iconMap = {
     success: '✓',
     error: '✕',
@@ -453,7 +453,7 @@ function fallbackCopy(idText) {
  */
 function initThemeToggle() {
   const toggleBtn = document.getElementById('theme-toggle');
-  
+
   // Read saved theme preference or default to light
   const currentTheme = localStorage.getItem('theme') || 'light';
   document.documentElement.setAttribute('data-theme', currentTheme);
@@ -478,10 +478,10 @@ function initThemeToggle() {
       e.preventDefault();
       const activeTheme = document.documentElement.getAttribute('data-theme');
       const newTheme = activeTheme === 'dark' ? 'light' : 'dark';
-      
+
       document.documentElement.setAttribute('data-theme', newTheme);
       localStorage.setItem('theme', newTheme);
-      
+
       updateToggleUI(newTheme);
 
       if (typeof showToast === 'function') {
