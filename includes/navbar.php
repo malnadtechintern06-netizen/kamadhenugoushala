@@ -19,7 +19,7 @@ function isActive($page, $dir = '') {
       <a href="<?= $baseUrl ?>index.php" class="logo-brand">
         <?php $customLogoImg = get_setting('site_logo_image', ''); ?>
         <?php if (!empty($customLogoImg)): ?>
-          <img src="<?= $baseUrl . htmlspecialchars($customLogoImg) ?>" alt="Logo" style="height:54px; width:auto; max-width:160px; object-fit:contain;">
+          <img src="<?= $baseUrl . htmlspecialchars($customLogoImg) ?>" alt="Logo" style="height:42px; width:auto; max-width:130px; object-fit:contain;">
         <?php else: ?>
           <div class="logo-icon"><?= htmlspecialchars(get_setting('site_logo_icon', '🐄')) ?></div>
         <?php endif; ?>
@@ -39,14 +39,37 @@ function isActive($page, $dir = '') {
         <li><a href="<?= $baseUrl ?>pages/events.php" class="nav-link <?= isActive('events.php', 'pages') ?>"><?= __('nav_events', 'Events') ?></a></li>
         <li><a href="<?= $baseUrl ?>pages/gallery.php" class="nav-link <?= isActive('gallery.php', 'pages') ?>"><?= __('nav_gallery', 'Gallery') ?></a></li>
         <li><a href="<?= $baseUrl ?>pages/contact.php" class="nav-link <?= isActive('contact.php', 'pages') ?>"><?= __('nav_contact', 'Contact') ?></a></li>
-        <li class="mobile-only-action" style="margin-top: 20px; width: 100%;">
+        
+        <?php $currentLang = get_current_lang(); ?>
+        <?php if (is_logged_in()): ?>
+          <li class="mobile-only-action"><a href="<?= $baseUrl ?>pages/profile.php" class="nav-link">👤 <?= htmlspecialchars($_SESSION['user_name'] ?? __('nav_my_account', 'My Account')) ?></a></li>
+        <?php else: ?>
+          <li class="mobile-only-action"><a href="<?= $baseUrl ?>pages/login.php" class="nav-link">👤 <?= __('nav_login', 'Login / Register') ?></a></li>
+        <?php endif; ?>
+
+        <li class="mobile-only-action" style="margin-top: 15px; width: 100%;">
+          <div style="display: flex; align-items: center; justify-content: space-between; background: var(--bg-light-green); padding: 10px 14px; border-radius: var(--radius-sm); border: 1px solid var(--border-light); margin-bottom: 12px;">
+            <span style="font-weight: 600; font-size: 0.9rem; color: var(--primary-dark);">🌐 Language</span>
+            <select class="custom-mobile-lang-select" aria-label="Select Language" style="background: transparent; border: none; font-weight: 600; color: var(--primary-dark); cursor: pointer; outline: none;">
+              <option value="en" <?= $currentLang === 'en' ? 'selected' : '' ?>>English</option>
+              <option value="hi" <?= $currentLang === 'hi' ? 'selected' : '' ?>>हिंदी</option>
+              <option value="kn" <?= $currentLang === 'kn' ? 'selected' : '' ?>>ಕನ್ನಡ</option>
+            </select>
+          </div>
+        </li>
+        <li class="mobile-only-action" style="width: 100%;">
+          <div style="display: flex; align-items: center; justify-content: space-between; background: var(--bg-light-green); padding: 10px 14px; border-radius: var(--radius-sm); border: 1px solid var(--border-light); margin-bottom: 12px;">
+            <span style="font-weight: 600; font-size: 0.9rem; color: var(--primary-dark);">🌓 Theme</span>
+            <button class="mobile-theme-toggle-btn" aria-label="Toggle Dark Mode" style="background: var(--bg-white); border: 1.5px solid var(--accent-orange); border-radius: 50px; padding: 5px 14px; font-weight: 600; cursor: pointer; color: var(--primary-dark); font-size: 0.88rem;">🌙 Night Mode</button>
+          </div>
+        </li>
+        <li class="mobile-only-action" style="width: 100%;">
           <a href="<?= $baseUrl ?>pages/donate.php" class="btn btn-primary btn-block text-center" style="display: block; width: 100%; padding: 14px; font-size: 1rem;"><?= __('btn_donate_now', 'Donate Now 💖') ?></a>
         </li>
       </ul>
 
       <!-- Navbar Actions (Cart & Donate CTA) -->
       <div class="nav-actions">
-        <?php $currentLang = get_current_lang(); ?>
         <div class="custom-lang-switcher" title="Select Language">
           <span class="lang-icon">🌐</span>
           <select id="custom-lang-select" aria-label="Select Language">
@@ -65,15 +88,15 @@ function isActive($page, $dir = '') {
 
         <?php if (is_logged_in()): ?>
           <a href="<?= $baseUrl ?>pages/profile.php" class="user-account-btn" title="My Profile">
-            👤 <?= htmlspecialchars(mb_strimwidth($_SESSION['user_name'] ?? __('nav_my_account', 'Account'), 0, 10, '..')) ?>
+            <span>👤</span> <span class="user-name-text"><?= htmlspecialchars(mb_strimwidth($_SESSION['user_name'] ?? __('nav_my_account', 'Account'), 0, 10, '..')) ?></span>
           </a>
         <?php else: ?>
           <a href="<?= $baseUrl ?>pages/login.php" class="user-account-btn" title="Login / Register">
-            👤 <?= __('nav_login', 'Login') ?>
+            <span>👤</span> <span class="user-name-text"><?= __('nav_login', 'Login') ?></span>
           </a>
         <?php endif; ?>
 
-        <a href="<?= $baseUrl ?>pages/donate.php" class="btn btn-primary btn-sm"><?= __('nav_donate', 'Donate Now') ?></a>
+        <a href="<?= $baseUrl ?>pages/donate.php" class="btn btn-primary btn-sm header-donate-btn"><?= __('nav_donate', 'Donate Now') ?></a>
         <button class="hamburger-btn" aria-label="Toggle Menu">☰</button>
       </div>
     </nav>

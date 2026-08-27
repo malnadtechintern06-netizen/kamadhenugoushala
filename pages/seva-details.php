@@ -28,7 +28,7 @@ $pageTitle = htmlspecialchars(__($seva['title'], $seva['title'])) . " - Kamadhen
 
 <section class="section-padding bg-white">
   <div class="container">
-    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 50px;">
+    <div class="grid-responsive-2">
       
       <div>
         <div style="border-radius: var(--radius-md); overflow: hidden; box-shadow: var(--shadow-md); border: 1px solid var(--border-light); margin-bottom: 20px; background:#fdfbf7; display:flex; align-items:center; justify-content:center;">

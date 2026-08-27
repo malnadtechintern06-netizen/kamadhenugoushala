@@ -69,7 +69,7 @@ $upcomingEvents = $stmtEvents->fetchAll();
 <!-- 3. About Section & Statistics -->
 <section class="section-padding bg-white">
   <div class="container">
-    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 40px; align-items: center;">
+    <div class="grid-responsive-2" style="align-items: center;">
       <div>
         <span class="section-subtitle"><?= __('about_subtitle', 'OUR SACRED MISSION') ?></span>
         <h2 class="section-title"><?= htmlspecialchars(__('about_title', get_setting('about_section_title', 'Nurturing Indigenous Desi Cows With Devotion'))) ?></h2>
@@ -111,7 +111,7 @@ $upcomingEvents = $stmtEvents->fetchAll();
 <!-- 3.5 Video Presentation Section -->
 <section class="section-padding" style="background-color: var(--bg-cream);">
   <div class="container">
-    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 40px; align-items: center;">
+    <div class="grid-responsive-2" style="align-items: center;">
       <div>
         <span class="section-subtitle"><?= __('journey_subtitle', 'OUR JOURNEY') ?></span>
         <h2 class="section-title"><?= __('journey_title', 'Experience Our Goushala') ?></h2>

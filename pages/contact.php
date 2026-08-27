@@ -48,7 +48,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <section class="section-padding bg-light">
   <div class="container">
     
-    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 40px;">
+    <div class="grid-responsive-2">
       
       <!-- Contact Info Cards -->
       <div>

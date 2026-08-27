@@ -49,7 +49,7 @@ function navActive($page) {
   
   <!-- Admin Sidebar -->
   <aside class="admin-sidebar">
-    <div class="admin-sidebar-header">
+    <div class="admin-sidebar-header" style="display:flex; justify-content:space-between; align-items:center;">
       <a href="dashboard.php" style="color:white; display:flex; align-items:center; gap:10px;">
         <span style="font-size:1.8rem;">🐄</span>
         <div>
@@ -57,6 +57,7 @@ function navActive($page) {
           <span style="font-size:0.75rem; color:var(--accent-gold);">ADMIN PANEL</span>
         </div>
       </a>
+      <button class="admin-mobile-nav-toggle" onclick="document.querySelector('.admin-nav').classList.toggle('active')" style="display:none; background:rgba(255,255,255,0.15); color:white; border:none; border-radius:6px; padding:6px 12px; font-size:1.2rem; cursor:pointer;" aria-label="Toggle Navigation">☰ Navigation</button>
     </div>
 
     <nav class="admin-nav">

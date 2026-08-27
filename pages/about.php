@@ -16,7 +16,7 @@ require_once __DIR__ . '/../includes/header.php';
 
 <section class="section-padding bg-white">
   <div class="container">
-    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 50px; align-items: center;">
+    <div class="grid-responsive-2" style="align-items: center;">
       <div>
         <span class="section-subtitle"><?= __('about_heritage', 'OUR HERITAGE') ?></span>
         <h2 class="section-title"><?= htmlspecialchars(__('about_title', get_setting('about_page_title', 'Dedicated to the Eternal Sacred Service of Gau Mata'))) ?></h2>

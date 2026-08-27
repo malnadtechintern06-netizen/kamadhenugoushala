@@ -147,7 +147,7 @@ require_once __DIR__ . '/../includes/header.php';
     <form method="POST" action="checkout.php">
       <?= csrf_field() ?>
 
-      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 40px; align-items: start;">
+      <div class="grid-responsive-2" style="align-items: start;">
         
         <!-- Shipping Details Form -->
         <div class="form-card" style="margin:0; max-width:100%;">

@@ -79,15 +79,15 @@
 <!-- Custom i18n Language Switcher & Full Page Translation Script -->
 <script type="text/javascript">
 document.addEventListener('DOMContentLoaded', function() {
-  const langSelect = document.getElementById('custom-lang-select');
-  if (langSelect) {
-    langSelect.addEventListener('change', function() {
+  const langSelects = document.querySelectorAll('#custom-lang-select, .custom-mobile-lang-select');
+  langSelects.forEach(select => {
+    select.addEventListener('change', function() {
       const selected = this.value;
       const url = new URL(window.location.href);
       url.searchParams.set('lang', selected);
       window.location.href = url.toString();
     });
-  }
+  });
 
   const currentLang = "<?= get_current_lang() ?>";
   if (currentLang !== 'en') {

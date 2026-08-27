@@ -125,9 +125,18 @@ function s($key, $default = '') {
   }
   .settings-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(420px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
     gap: 28px;
     margin-bottom: 30px;
+  }
+  @media (max-width: 768px) {
+    .settings-grid {
+      grid-template-columns: 1fr !important;
+      gap: 18px;
+    }
+    .settings-card {
+      padding: 20px 16px 14px !important;
+    }
   }
   .settings-card {
     background: #fff;

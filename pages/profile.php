@@ -43,7 +43,7 @@ $adoptions = $stmtAdp->fetchAll();
 <section class="section-padding bg-light">
   <div class="container">
     
-    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 35px; align-items: start;">
+    <div class="grid-responsive-2" style="align-items: start;">
       
       <!-- Account Info Sidebar -->
       <div>

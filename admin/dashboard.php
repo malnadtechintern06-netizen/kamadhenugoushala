@@ -55,7 +55,7 @@ $recentDonations = $pdo->query("SELECT * FROM donations ORDER BY id DESC LIMIT 5
 </div>
 
 <!-- Recent Tables Grid -->
-<div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap:30px;">
+<div class="grid-responsive-2">
   
   <!-- Recent Orders Table -->
   <div style="background:white; padding:25px; border-radius:var(--radius-md); box-shadow:var(--shadow-sm); border:1px solid var(--border-light);">

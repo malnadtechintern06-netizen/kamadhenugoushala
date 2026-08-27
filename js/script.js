@@ -452,29 +452,26 @@ function fallbackCopy(idText) {
  * Day & Night Theme Toggle Handler (Light / Dark Mode)
  */
 function initThemeToggle() {
-  const toggleBtn = document.getElementById('theme-toggle');
-
-  // Read saved theme preference or default to light
+  const toggleBtns = document.querySelectorAll('#theme-toggle, .mobile-theme-toggle-btn');
   const currentTheme = localStorage.getItem('theme') || 'light';
   document.documentElement.setAttribute('data-theme', currentTheme);
 
   const updateToggleUI = (theme) => {
-    if (!toggleBtn) return;
-    if (theme === 'dark') {
-      toggleBtn.innerHTML = '☀️';
-      toggleBtn.title = 'Switch to Day Mode (Light)';
-      toggleBtn.setAttribute('aria-label', 'Switch to Day Mode');
-    } else {
-      toggleBtn.innerHTML = '🌙';
-      toggleBtn.title = 'Switch to Night Mode (Dark)';
-      toggleBtn.setAttribute('aria-label', 'Switch to Night Mode');
-    }
+    toggleBtns.forEach(btn => {
+      if (btn.classList.contains('mobile-theme-toggle-btn')) {
+        btn.innerHTML = theme === 'dark' ? '☀️ Day Mode' : '🌙 Night Mode';
+      } else {
+        btn.innerHTML = theme === 'dark' ? '☀️' : '🌙';
+        btn.title = theme === 'dark' ? 'Switch to Day Mode (Light)' : 'Switch to Night Mode (Dark)';
+        btn.setAttribute('aria-label', theme === 'dark' ? 'Switch to Day Mode' : 'Switch to Night Mode');
+      }
+    });
   };
 
   updateToggleUI(currentTheme);
 
-  if (toggleBtn) {
-    toggleBtn.addEventListener('click', (e) => {
+  toggleBtns.forEach(btn => {
+    btn.addEventListener('click', (e) => {
       e.preventDefault();
       const activeTheme = document.documentElement.getAttribute('data-theme');
       const newTheme = activeTheme === 'dark' ? 'light' : 'dark';
@@ -488,7 +485,7 @@ function initThemeToggle() {
         showToast(newTheme === 'dark' ? '🌙 Switched to Night Mode' : '☀️ Switched to Day Mode', 'info');
       }
     });
-  }
+  });
 }
 
 

@@ -38,7 +38,7 @@ $pageTitle = htmlspecialchars(__($prod['name'], $prod['name'])) . " - Kamadhenu 
 
 <section class="section-padding bg-white">
   <div class="container">
-    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 50px;">
+    <div class="grid-responsive-2">
       
       <!-- Media -->
       <div>

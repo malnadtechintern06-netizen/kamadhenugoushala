@@ -1,4 +1,4 @@
-﻿/* ==========================================================================
+/* ==========================================================================
    Kamadhenu Goushala - Master stylesheet
    Colors: Dark --Warm Gold #D9A441 | Warm Cream #FFFDF5 | Natural Leaf Green | Cream #FFFDF7
    ========================================================================== */
@@ -61,6 +61,8 @@
 html {
   scroll-behavior: smooth;
   font-size: 16px;
+  overflow-x: hidden;
+  max-width: 100vw;
 }
 
 body {
@@ -71,6 +73,8 @@ body {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+  overflow-x: hidden;
+  max-width: 100vw;
 }
 
 a {
@@ -311,26 +315,27 @@ header.navbar-wrapper .container {
 .logo-brand {
   display: flex;
   align-items: center;
-  gap: 14px;
+  gap: 10px;
   color: var(--primary-dark);
   flex-shrink: 0;
 }
 
 .logo-icon {
-  width: 54px;
-  height: 54px;
+  width: 42px;
+  height: 42px;
   background: linear-gradient(135deg, var(--primary-dark), var(--primary-green));
   color: var(--accent-orange);
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.65rem;
+  font-size: 1.3rem;
   font-weight: bold;
+  flex-shrink: 0;
 }
 
 .logo-text h2 {
-  font-size: 1.5rem;
+  font-size: 1.2rem;
   margin-bottom: 0;
   line-height: 1.2;
   color: var(--primary-dark);
@@ -338,10 +343,10 @@ header.navbar-wrapper .container {
 }
 
 .logo-text p {
-  font-size: 0.8rem;
+  font-size: 0.72rem;
   color: var(--accent-orange);
   font-weight: 600;
-  letter-spacing: 1px;
+  letter-spacing: 0.5px;
   margin-top: 1px;
   white-space: nowrap;
 }
@@ -681,10 +686,31 @@ header.navbar-wrapper .container {
   background-color: var(--bg-white);
 }
 
-/* Card Styling */
+/* Card Styling & Responsive Utility Grids */
+.grid-responsive-2,
+.grid-2-col {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 30px;
+}
+
+.grid-responsive-3,
+.grid-3-col {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 30px;
+}
+
+.grid-responsive-4,
+.grid-4-col {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+}
+
 .card-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
   gap: 30px;
   margin-top: 30px;
 }
@@ -1445,12 +1471,19 @@ footer {
 
   header.navbar-wrapper .container {
     width: 100%;
-    padding: 0 15px;
+    padding: 0 12px;
   }
 
   .navbar {
-    padding: 14px 0;
-    gap: 12px;
+    padding: 10px 0;
+    gap: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .logo-brand .logo-text h2 {
+    font-size: 1.15rem;
   }
 
   .hero-title {
@@ -1461,9 +1494,9 @@ footer {
     display: flex !important;
     align-items: center;
     justify-content: center;
-    width: 44px;
-    height: 44px;
-    font-size: 1.4rem;
+    width: 40px;
+    height: 40px;
+    font-size: 1.3rem;
     border-radius: 50%;
     background: var(--accent-orange) !important;
     color: #FFFFFF !important;
@@ -1496,6 +1529,7 @@ footer {
     transition: right 0.35s cubic-bezier(0.16, 1, 0.3, 1);
     z-index: 1500;
     overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
     gap: 0;
     margin: 0;
   }
@@ -1532,6 +1566,20 @@ footer {
     width: 100%;
     position: relative;
     height: auto;
+    padding: 15px 0;
+  }
+
+  .admin-mobile-nav-toggle {
+    display: inline-block !important;
+  }
+
+  .admin-nav {
+    display: none;
+    margin-top: 15px;
+  }
+
+  .admin-nav.active {
+    display: flex;
   }
 
   .cart-layout {
@@ -1540,16 +1588,87 @@ footer {
 }
 
 @media (max-width: 768px) {
-  .user-account-btn {
-    height: 38px;
-    padding: 0 12px;
-    font-size: 0.85rem;
+  /* Reduce website name & logo elements on mobile screens */
+  .logo-brand {
+    gap: 6px !important;
+    max-width: 45%;
   }
 
-  .nav-actions .btn-sm {
-    height: 38px;
-    padding: 0 14px;
-    font-size: 0.85rem;
+  .logo-icon {
+    width: 30px !important;
+    height: 30px !important;
+    font-size: 0.85rem !important;
+    flex-shrink: 0 !important;
+  }
+
+  .logo-brand img {
+    height: 30px !important;
+    max-width: 85px !important;
+  }
+
+  .logo-brand .logo-text h2 {
+    font-size: 0.88rem !important;
+    line-height: 1.1 !important;
+    margin-bottom: 0 !important;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .logo-brand .logo-text p {
+    display: none !important;
+  }
+
+  /* Streamline top header: Hide Donate Now & Theme toggle from header (moved inside Hamburger drawer) */
+  .nav-actions {
+    gap: 6px !important;
+    display: flex !important;
+    align-items: center !important;
+    flex-shrink: 0 !important;
+    margin-left: auto;
+  }
+
+  .nav-actions .custom-lang-switcher,
+  .nav-actions .theme-toggle-btn,
+  .nav-actions .btn-primary,
+  .header-donate-btn {
+    display: none !important;
+  }
+
+  .cart-icon-btn {
+    width: 36px !important;
+    height: 36px !important;
+    font-size: 1.05rem !important;
+    flex-shrink: 0 !important;
+  }
+
+  .user-account-btn {
+    height: 36px !important;
+    padding: 0 10px !important;
+    font-size: 0.82rem !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 4px !important;
+    flex-shrink: 0 !important;
+  }
+
+  .user-account-btn span.user-name-text {
+    display: inline !important;
+  }
+
+  /* Hamburger button replaces Donate button position on top header right end */
+  .hamburger-btn {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 40px !important;
+    height: 40px !important;
+    font-size: 1.3rem !important;
+    flex-shrink: 0 !important;
+    background: var(--accent-orange) !important;
+    color: #FFFFFF !important;
+    border-radius: 50% !important;
+    margin-left: 4px !important;
+    box-shadow: 0 4px 12px rgba(230, 81, 0, 0.35) !important;
   }
 
   .hero-title {
@@ -1580,9 +1699,14 @@ footer {
     gap: 10px;
   }
 
+  .form-card {
+    padding: 24px 18px;
+    max-width: 100%;
+  }
+
   .form-row {
     flex-direction: column;
-    gap: 0;
+    gap: 12px;
   }
 
   .table-responsive {
@@ -1592,8 +1716,37 @@ footer {
     -webkit-overflow-scrolling: touch;
   }
 
-  .logo-text p {
-    display: none;
+  .admin-main {
+    padding: 18px 15px;
+  }
+
+  .admin-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .toast-container {
+    bottom: 15px;
+    left: 15px;
+    right: 15px;
+    width: auto;
+  }
+
+  .toast {
+    min-width: 0;
+    width: 100%;
+  }
+
+  .lightbox-close {
+    top: 10px;
+    right: 10px;
+  }
+
+  .lightbox-img {
+    max-height: 70vh;
+    width: 100%;
+    object-fit: contain;
   }
 }
 
@@ -1610,51 +1763,60 @@ footer {
     font-size: 1.6rem;
   }
 
+  .hero-buttons {
+    flex-direction: column;
+    width: 100%;
+    gap: 12px;
+  }
+
+  .hero-buttons .btn {
+    width: 100%;
+  }
+
   .top-bar {
     display: none;
   }
 
-  /* Optimize header action buttons for small phones */
-  .nav-actions .btn-primary {
-    display: none !important;
-  }
-
-  .nav-actions {
-    gap: 8px;
+  .logo-brand {
+    gap: 4px !important;
+    max-width: 45%;
   }
 
   .logo-brand .logo-text h2 {
-    font-size: 1.1rem;
+    font-size: 0.82rem !important;
   }
 
   .logo-icon {
-    width: 40px;
-    height: 40px;
-    font-size: 1.15rem;
+    width: 26px !important;
+    height: 26px !important;
+    font-size: 0.78rem !important;
   }
 
   .logo-brand img {
-    height: 40px !important;
-    max-width: 110px !important;
+    height: 26px !important;
+    max-width: 70px !important;
   }
 
-  .cart-icon-btn,
-  .theme-toggle-btn {
-    width: 38px;
-    height: 38px;
-    font-size: 1.15rem;
+  .nav-actions {
+    gap: 4px !important;
   }
 
-  .lang-switcher-wrapper {
-    height: 38px;
-    padding: 0 10px;
-    font-size: 0.82rem;
+  .user-account-btn {
+    height: 34px !important;
+    padding: 0 6px !important;
+    font-size: 0.76rem !important;
+  }
+
+  .cart-icon-btn {
+    width: 34px !important;
+    height: 34px !important;
+    font-size: 0.95rem !important;
   }
 
   .hamburger-btn {
-    width: 40px;
-    height: 40px;
-    font-size: 1.3rem;
+    width: 36px !important;
+    height: 36px !important;
+    font-size: 1.2rem !important;
   }
 
   .stats-grid {
@@ -1667,6 +1829,34 @@ footer {
 
   .page-banner {
     padding: 35px 0;
+  }
+
+  .form-card {
+    padding: 18px 14px;
+  }
+
+  .filter-bar {
+    padding: 12px;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+  }
+
+  .search-input-group {
+    min-width: 0;
+    width: 100%;
+  }
+
+  .donation-presets {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+  }
+
+  .preset-btn {
+    min-width: 0;
+    padding: 10px 6px;
+    font-size: 0.85rem;
   }
 }
 

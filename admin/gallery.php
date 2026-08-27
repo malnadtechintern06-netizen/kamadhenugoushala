@@ -72,7 +72,7 @@ $categories = $pdo->query("SELECT * FROM gallery_categories ORDER BY id ASC")->f
 $galleryPhotos = $pdo->query("SELECT g.*, c.name as category_name FROM gallery g JOIN gallery_categories c ON g.category_id = c.id ORDER BY g.id DESC")->fetchAll();
 ?>
 
-<div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap:30px; align-items:start;">
+<div class="grid-responsive-2" style="align-items:start;">
   
   <!-- Upload / Edit Form -->
   <div style="background:white; padding:25px; border-radius:var(--radius-md); box-shadow:var(--shadow-sm); border:1px solid var(--border-light);">

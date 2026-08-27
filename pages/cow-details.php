@@ -33,7 +33,7 @@ $pageTitle = htmlspecialchars(__($cow['name'], $cow['name'])) . " (" . htmlspeci
 
 <section class="section-padding bg-white">
   <div class="container">
-    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 50px;">
+    <div class="grid-responsive-2">
       
       <!-- Cow Media Column -->
       <div>
@@ -63,7 +63,7 @@ $pageTitle = htmlspecialchars(__($cow['name'], $cow['name'])) . " (" . htmlspeci
         <h2 style="font-size: 2.5rem; color: var(--primary-dark); margin-bottom: 10px;"><?= htmlspecialchars(__($cow['name'], $cow['name'])) ?></h2>
         
         <div style="background: var(--bg-light-green); padding: 20px; border-radius: var(--radius-md); margin-bottom: 25px; border: 1px solid var(--border-light);">
-          <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; font-size: 0.95rem;">
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 15px; font-size: 0.95rem;">
             <div><strong><?= __('breed_label_full', 'Breed:') ?></strong> <?= htmlspecialchars(__($cow['breed'], $cow['breed'])) ?></div>
             <div><strong><?= __('age_label_full', 'Age:') ?></strong> <?= $cow['age_years'] ?> <?= __('years_label', 'Years') ?></div>
             <div><strong><?= __('gender_label_full', 'Gender:') ?></strong> <?= htmlspecialchars(__($cow['gender'], $cow['gender'])) ?></div>
